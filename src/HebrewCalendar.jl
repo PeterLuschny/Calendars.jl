@@ -116,10 +116,11 @@ end
 # Computes the day number of the Hebrew date = (year, month, day).
 DNumberHebrew(date) = DNumberHebrew(date[1], date[2], date[3])
 
-# Computes the Hebrew date from an ADNumber.
+# Computes the Hebrew date from an DNumber.
 function HebrewDate(dn)
-    if dn <= 0  # Date is pre-Gregorian
-       return (0, 0, 0)
+    if dn < HebrewEpoch  # Date is pre-Hebrew
+       @warn(Warning(AM))
+       return InvalidDate
     end
 
     year = div(dn + HebrewEpoch, 366) # Approximation from below.
@@ -138,5 +139,5 @@ function HebrewDate(dn)
     # Calculate the day by subtraction.
     day = dn - DNumberHebrew(year, month, 1) + 1
 
-    return (year, month, day)
+    return (AM, year, month, day)
 end

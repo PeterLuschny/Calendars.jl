@@ -3,13 +3,18 @@
 
 # Calendars, Conversions of Dates, Change of Calendars  
 
-Currently we support three calendars: 
+Currently we support five calendars: 
 
-* Gregorian (CE)
-* Hebrew (AM)
-* Islamic (AH)
+| Acronym | Calendar  |
+| :---:   |  :---     | 
+| CE      | Current Epoch |
+| AD      | Julian    |
+| AM      | Hebrew    |
+| AH      | Islamic   |
+| ID      | ISODates  |
 
-Dates can be converted from each other. The main function provided is 
+
+Dates can be converted from each other. The main function provided is:
 
     ConvertDate(date, A, B, show=false). 
 
@@ -42,6 +47,28 @@ For example:
     This order is also used in the signature of the functions.
     For example, 2022-07-12 represents the 12th of July 2022. 
 
+A second function returns a table of the dates of all supported calendars.
+
+
+    CalendarDates(date, calendar, show=false).
+
+    
+The parameters follow the same conventions as those of ConvertDate.
+
+For example:
+
+    >> CalendarDates((3141, 5, 9), "Gregorian", true) 
+
+    computes a table, which is the day number plus a tuple of five dates. 
+    If 'show' is 'true' the table below will be printed.
+
+        DayNumber    DN 1146990
+        CurrentEpoch CE 3141-05-09
+        Julian       AD 3141-04-17
+        Hebrew       AM 6901-02-09
+        Islamic      AH 2597-02-10
+        ISODate      ID 3141-19-05
+
 ---
 
     We use the algorithms by Nachum Dershowitz and Edward M. Reingold,
@@ -50,4 +77,5 @@ For example:
 
     Calendar calculator, owned by Anton Ignaz Joseph Graf von Fugger-Glött, 
     Prince-Provost of Ellwangen, Ostalbkreis, 1765 - Landesmuseum Württemberg,
-    Stuttgart, Germany. The picture is in the public domain, CCO 1.0. 
+    Stuttgart, Germany. The picture is in the public domain, CCO 1.0.
+ 

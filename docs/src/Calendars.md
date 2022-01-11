@@ -1,3 +1,5 @@
+![CalendarCalculator](CalendarCalculator.jpg)
+
      Parts of the Julia code in this package is ported from the Lisp 
      and C++ code in 'Calendrical Calculations' by Nachum Dershowitz
      and Edward M. Reingold, Software---Practice & Experience,
@@ -8,6 +10,11 @@
 
      Copyright of this port Peter Luschny, 2022-01-04. 
      Licensed under the MIT license.
+
+    The picture 'Calendar calculator', owned by Anton Ignaz Joseph 
+    Graf von Fugger-Glött, Prince-Provost of Ellwangen, Ostalbkreis, 
+    1765 - Landesmuseum Württemberg, Stuttgart, Germany. 
+    The picture is in the public domain, CCO 1.0. 
 
  ---------------------------------------------------------------
 
@@ -47,14 +54,13 @@
      birth is 5516-11-25, and the associated day number is the 
      same as the one associated with the Gregorian date.
 
-     We use the acronyms CE for 'Current Epoch' to denote proleptic
-     Gregorian dates, AH for 'Anno Hegirae' for Islamic dates, and 
-     AM for 'Anno Mundi' to denote Hebrew dates. Thus CE, AH, and 
-     AM are names of calendars. For example we write 
-           CE 1756-01-27  =  AM 5516-11-25  ->  DN 641027.
+     We use the acronyms CE for 'Current Epoch' to denote proleptic 
+     Gregorian dates, AH for 'Anno Hegirae' for Islamic dates, AM for
+     'Anno Mundi' to denote Hebrew dates, and ID for 'ISODate'. Thus 
+     CE, AH, AM, and ID are names of calendars. For example we write 
+          CE 1756-01-27  =  AM 5516-11-25  ->  DN 641027.
 
-     Limitations: Currently, we support no conversions of dates 
-     before CE 0001-01-01. The invalid date 0000-00-00 (which has 
-     the invalid day number 0) is returned to either signal invalid
-     input or limitations of the method.
-
+     Limitations: Currently, we do not support conversions for dates 
+     prior to the epoch of the respective calendar. The invalid date
+     0000-00-00 (which has the invalid day number 0) is returned to
+     either signal invalid input or limitations of the method.

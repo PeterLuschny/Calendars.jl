@@ -9,3 +9,6 @@ DateFromDNumber
 ```@docs
 ConvertDate
 ```
+```@docs
+CalendarDates
+```

@@ -33,8 +33,9 @@ DNumberIslamic(date) = DNumberIslamic(date[1], date[2], date[3])
 
 # Computes the Islamic date from the day number.
 function IslamicDate(dn)
-    if dn <= 0  # Date is pre-Gregorian
-        return (0, 0, 0)
+    if dn < IslamicEpoch  # Date is pre-Islamic
+        @warn(Warning(AH))
+        return InvalidDate
     end
 
     # Search forward year by year from approximate year.
@@ -52,5 +53,5 @@ function IslamicDate(dn)
 
     day = dn - DNumberIslamic(year, month, 1) + 1
 
-    return (year, month, day)
+    return (AH, year, month, day)
 end
