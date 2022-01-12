@@ -66,9 +66,9 @@ CDate(c, d::Tuple{Int, Int, Int}) = CDate(c, d[1], d[2], d[3])
 CDate(d) = CDate(d[1], d[2], d[3], d[4])
 
 
-DateInfo = NTuple{6, Tuple{String, Int64, Int64, Int64}}
+DateTable = NTuple{6, Tuple{String, Int64, Int64, Int64}}
 
-function PrintDateInfo(D)
+function PrintDateTable(D)
     for d in D
         println(CalendarSpecifiers[d[1]], " ", CDate(d))
     end

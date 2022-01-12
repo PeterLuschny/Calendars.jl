@@ -167,19 +167,19 @@ DN 2565796 -> AH 6600-11-21 -> CE 7025-11-29
 DN 2275902 -> AH 5782-10-28 -> AM 9992-12-27
 =#
 
-function TestDateInfos()
+function TestDateTables()
 TestDates = [
-((DN,     0,0,1),(CE,1,1,1),     (AD,1,1,3),     (ID,1,1,1),     (AM,3761,10,18), (AH,   0,0, 0))::DateInfo,
-((DN,0,0,405733),(CE,1111,11,11),(AD,1111,11,4), (ID,1111,45,6), (AM,4872,9,2),   (AH, 505,4,29))::DateInfo,
-((DN,0,0,811256),(CE,2222,2,22), (AD,2222,2,7),  (ID,2222,8,5),  (AM,5982,12,10), (AH,1649,9,10))::DateInfo,
-((DN,0,0,641027),(CE,1756,1,27), (AD,1756,1,16), (ID,1756,5,2),  (AM,5516,11,25), (AH,1169,4,24))::DateInfo,
-((DN,0,0,738156),(CE,2022,1,1),  (AD,2021,12,19),(ID,2021,52,6), (AM,5782,10,28), (AH,1443,5,27))::DateInfo,
-((DN,0,0,738424),(CE,2022,9,26), (AD,2022,9,13), (ID,2022,39,1), (AM,5783,7,1),   (AH,1444,2,29))::DateInfo
+((DN,     0,0,1),(CE,1,1,1),     (AD,1,1,3),     (ID,1,1,1),     (AM,3761,10,18), (AH,   0,0, 0))::DateTable,
+((DN,0,0,405733),(CE,1111,11,11),(AD,1111,11,4), (ID,1111,45,6), (AM,4872,9,2),   (AH, 505,4,29))::DateTable,
+((DN,0,0,811256),(CE,2222,2,22), (AD,2222,2,7),  (ID,2222,8,5),  (AM,5982,12,10), (AH,1649,9,10))::DateTable,
+((DN,0,0,641027),(CE,1756,1,27), (AD,1756,1,16), (ID,1756,5,2),  (AM,5516,11,25), (AH,1169,4,24))::DateTable,
+((DN,0,0,738156),(CE,2022,1,1),  (AD,2021,12,19),(ID,2021,52,6), (AM,5782,10,28), (AH,1443,5,27))::DateTable,
+((DN,0,0,738424),(CE,2022,9,26), (AD,2022,9,13), (ID,2022,39,1), (AM,5783,7,1),   (AH,1444,2,29))::DateTable
 ]
 
     for D in TestDates
         println()
-        PrintDateInfo(D)
+        PrintDateTable(D)
     end
 end
 
@@ -254,5 +254,5 @@ TestIsoDates();       println()
 TestConversions1();   println()
 TestConversions2();   println()
 
-TestDateInfos()
+TestDateTables()
 TestCalenderDates()

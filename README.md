@@ -1,7 +1,10 @@
 <img src="https://github.com/PeterLuschny/Calendars.jl/blob/main/docs/src/CalendarCalculator.jpg">
---
+
+[![doc-stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://docs.juliahub.com/Calendars/yDHMq/0.1.2/Calendars/)
 
 # Calendars, Conversions of Dates, Change of Calendars  
+
+
 
 Currently we support five calendars: 
 
@@ -22,10 +25,15 @@ It converts a date represented by the calendar 'A' to the
 representation of the date in the calendar 'B'.
 
     * The date is an integer triple (year, month, day).
+      The parts of the date can be given as a triple or 
+      individually one after the other.
 
-    * 'A' and 'B' is one of "Gregorian", "Hebrew", or "Islamic".
+    * 'A' and 'B' is one of "Gregorian", "Hebrew", "Islamic",
+      "Julian", or "IsoDate".
 
-      Alternatively you can use the acronyms "CE", "AM", and "AH".
+      Alternatively you can use the acronyms "CE", "AM", "AH", 
+      "AD", or "ID".
+
       They stand for 'Current Epoch' (denoting proleptic Gregorian
       dates), AM for 'Anno Mundi' to denote Hebrew dates, and 
       AH for 'Anno Hegirae' for Islamic dates.
@@ -35,10 +43,10 @@ representation of the date in the calendar 'B'.
 
 For example:
 
-    >> ConvertDate((1756, 1, 27), "Gregorian", "Hebrew") 
+    julia> ConvertDate((1756, 1, 27), "Gregorian", "Hebrew") 
 
-    converts the Gregorian date 1756-01-27 to the
-    Hebrew date 5516-11-25. If 'show' is 'true' the line 
+    computes from the Gregorian date (1756, 1, 27) the
+    Hebrew date (5516, 11, 25). If 'show' is 'true' the line
            "CE 1756-01-27 -> AM 5516-11-25" 
     is printed.
 
@@ -57,7 +65,7 @@ The parameters follow the same conventions as those of ConvertDate.
 
 For example:
 
-    >> CalendarDates((3141, 5, 9), "Gregorian", true) 
+    julia> CalendarDates((3141, 5, 9), "Gregorian", true) 
 
     computes a table, which is the day number plus a tuple of five dates. 
     If 'show' is 'true' the table below will be printed.
@@ -75,7 +83,8 @@ For example:
     described in 'Calendrical Calculations', Software--Practice & Experience, 
     vol. 20, no. 9 (September, 1990), pp. 899--928.
 
-    Calendar calculator, owned by Anton Ignaz Joseph Graf von Fugger-Glött, 
-    Prince-Provost of Ellwangen, Ostalbkreis, 1765 - Landesmuseum Württemberg,
-    Stuttgart, Germany. The picture is in the public domain, CCO 1.0.
+    The picture shows the 'Calendar calculator', owned by Anton 
+    Ignaz Joseph Graf von Fugger-Glött, Prince-Provost of Ellwangen, 
+    Ostalbkreis, 1765 - Landesmuseum Württemberg, Stuttgart, Germany. 
+    The picture is in the public domain, CCO 1.0.
  
