@@ -1,8 +1,8 @@
 <img src="https://github.com/PeterLuschny/Calendars.jl/blob/main/docs/src/CalendarCalculator.jpg">
 
 
-Registered on [JuliaHub](https://juliahub.com/ui/Packages/Calendars/yDHMq/0.1.2), 
-read the [Docs](https://docs.juliahub.com/Calendars/yDHMq/0.1.2/Calendars/), get the source from the [repository](https://github.com/PeterLuschny/Calendars.jl) or install with Pkg.add("Calendars").
+Registered on [JuliaHub](https://juliahub.com/ui/Packages/Calendars/yDHMq/0.1.3), 
+read the [Docs](https://docs.juliahub.com/Calendars/yDHMq/0.1.3/Calendars/), get the source from the [repository](https://github.com/PeterLuschny/Calendars.jl) or install with Pkg.add("Calendars").
 
 # Calendars, Conversions of Dates, Change of Calendars  
 
