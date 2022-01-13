@@ -1,8 +1,9 @@
 <img src="https://github.com/PeterLuschny/Calendars.jl/blob/main/docs/src/CalendarCalculator.jpg">
 
+.
 
-Registered on [JuliaHub](https://juliahub.com/ui/Packages/Calendars/yDHMq/0.1.2), 
-read the [Docs](https://docs.juliahub.com/Calendars/yDHMq/0.1.2/Calendars/), get the source from the [repository](https://github.com/PeterLuschny/Calendars.jl) or install with Pkg.add("Calendars").
+Registered on [JuliaHub](https://juliahub.com/ui/Packages/Calendars/yDHMq/0.1.4), 
+read the [Docs](https://docs.juliahub.com/Calendars/yDHMq/0.1.4/Calendars/), get the source from the [repository](https://github.com/PeterLuschny/Calendars.jl) or install with Pkg.add("Calendars").
 
 # Calendars, Conversions of Dates, Change of Calendars  
 
@@ -70,6 +71,8 @@ computes a table, which is the day number plus a tuple of five dates. If 'show' 
         ISODate       ID 1756-05-02
 
 The package provides additional functions; read the documentation for this.
+
+You might start exploring with a Jupyter [notebook](https://github.com/PeterLuschny/Calendars.jl/blob/main/notebook/Calendars.ipynb).
 
 ---
 

@@ -174,7 +174,7 @@ julia> DateFromDNumber(641027, "CE")
 ```
 
     Returns the date (CE, 1756, 1, 27). If 'show' is 'true' 
-    the line "DN 641027 -> CE 1756-01-27" is printed.
+    the line "DN 0641027 -> CE 1756-01-27" is printed.
 
     If an error occurs "00 0000 00 00" (representing the
     invalid date) is returned.
@@ -244,7 +244,7 @@ function ConvertDate(date::Tuple{Int, Int, Int},
     dn = DNumberFromDate(date, from)
     rdate = DateFromDNumber(dn, to)  
     debug && print(CDate(DN, dn), " -> ")
-    show  && println(CDate(CName(from), date), " -> ", rdate)
+    show  && println(CDate(CName(from), date), " -> ", CDate(rdate))
 
     return rdate 
 end

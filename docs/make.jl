@@ -12,8 +12,8 @@ makedocs(
     checkdocs = :none,
     doctest = false,
     pages = [
-        "Functions" => "index.md",
-        "Introduction" => "Calendars.md"
+        "Introduction" => "Calendars.md",
+        "Functions" => "index.md"
     ]
 )
 
