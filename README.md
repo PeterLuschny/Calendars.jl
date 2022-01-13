@@ -1,12 +1,13 @@
 <img src="https://github.com/PeterLuschny/Calendars.jl/blob/main/docs/src/CalendarCalculator.jpg">
 
-[![doc-stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://docs.juliahub.com/Calendars/yDHMq/0.1.2/Calendars/)
+
+Registered on [JuliaHub](https://juliahub.com/ui/Packages/Calendars/yDHMq/0.1.2), 
+read the [Docs](https://docs.juliahub.com/Calendars/yDHMq/0.1.2/Calendars/), get the source from the [repository](https://github.com/PeterLuschny/Calendars.jl) or install with Pkg.add("Calendars").
 
 # Calendars, Conversions of Dates, Change of Calendars  
 
 
-
-Currently we support five calendars: 
+The package _Calendar_ provides a Julia implementation of five calendars: 
 
 | Acronym | Calendar  |
 | :---:   |  :---     | 
@@ -17,74 +18,65 @@ Currently we support five calendars:
 | ID      | ISODates  |
 
 
-Dates can be converted from each other. The main function provided is:
+Dates can be converted from one to each other. 
+Note that we follow ISO 8601 for calendar date representations: 
+Year, followed by the month, then the day, YYYY-MM-DD. 
+This order is also used in the signature of the functions.
+For example, 2022-07-12 represents the 12th of July 2022. 
+
+The main function provided is:
 
     ConvertDate(date, A, B, show=false). 
 
 It converts a date represented by the calendar 'A' to the 
 representation of the date in the calendar 'B'.
 
-    * The date is an integer triple (year, month, day).
-      The parts of the date can be given as a triple or 
-      individually one after the other.
+    * The date is an integer triple (year, month, day). The parts of the date can be given as a triple or individually one after the other.
 
-    * 'A' and 'B' is one of "Gregorian", "Hebrew", "Islamic",
-      "Julian", or "IsoDate".
+    * 'A' and 'B' is one of "Gregorian", "Hebrew", "Islamic", "Julian", or "IsoDate".
 
-      Alternatively you can use the acronyms "CE", "AM", "AH", 
-      "AD", or "ID".
+    Alternatively you can use the acronyms "CE", "AM", "AH", "AD", or "ID".
 
-      They stand for 'Current Epoch' (denoting proleptic Gregorian
-      dates), AM for 'Anno Mundi' to denote Hebrew dates, and 
-      AH for 'Anno Hegirae' for Islamic dates.
+    They stand for 'Current Epoch' (denoting proleptic Gregorian dates), AM for 'Anno Mundi' to denote Hebrew dates, and AH for 'Anno Hegirae' for Islamic dates.
 
-    * If the optional parameter 'show' is set to 'true', both
-      dates are printed. 'show' is 'false' by default.
+    * If the optional parameter 'show' is set to 'true', both dates are printed. 'show' is 'false' by default.
 
 For example:
 
     julia> ConvertDate((1756, 1, 27), "Gregorian", "Hebrew") 
 
-    computes from the Gregorian date (1756, 1, 27) the
-    Hebrew date (5516, 11, 25). If 'show' is 'true' the line
-           "CE 1756-01-27 -> AM 5516-11-25" 
-    is printed.
+    or written alternatively
 
-    Note that we follow ISO 8601 for calendar date representations: 
-    Year, followed by the month, then the day, YYYY-MM-DD. 
-    This order is also used in the signature of the functions.
-    For example, 2022-07-12 represents the 12th of July 2022. 
+    julia> ConvertDate(1756, 1, 27, "CE", "AM")
+
+    computes from the Gregorian date (1756, 1, 27) the Hebrew date (5516, 11, 25). If 'show' is 'true' the line
+
+           "CE 1756-01-27 -> AM 5516-11-25" 
+
+    is printed.
 
 A second function returns a table of the dates of all supported calendars.
 
-
     CalendarDates(date, calendar, show=false).
 
-    
-The parameters follow the same conventions as those of ConvertDate.
+The parameters follow the same conventions as those of ConvertDate. For example:
 
-For example:
+    julia> CalendarDates(1756, 1, 27, "Gregorian", true) 
 
-    julia> CalendarDates((3141, 5, 9), "Gregorian", true) 
+    computes a table, which is the day number plus a tuple of five dates. If 'show' is 'true' the table below will be printed.
 
-    computes a table, which is the day number plus a tuple of five dates. 
-    If 'show' is 'true' the table below will be printed.
+        DayNumber     DN 641027
+        CurrentEpoch  CE 1756-01-27
+        Julian        AD 1756-01-16
+        Hebrew        AM 5516-11-25
+        Islamic       AH 1169-04-24
+        ISODate       ID 1756-05-02
 
-        DayNumber    DN 1146990
-        CurrentEpoch CE 3141-05-09
-        Julian       AD 3141-04-17
-        Hebrew       AM 6901-02-09
-        Islamic      AH 2597-02-10
-        ISODate      ID 3141-19-05
+The package provides additional functions; read the documentation for this.
 
 ---
 
-    We use the algorithms by Nachum Dershowitz and Edward M. Reingold,
-    described in 'Calendrical Calculations', Software--Practice & Experience, 
-    vol. 20, no. 9 (September, 1990), pp. 899--928.
+    We use the algorithms by Nachum Dershowitz and Edward M. Reingold, described in 'Calendrical Calculations', Software--Practice & Experience, vol. 20, no. 9 (September, 1990), pp. 899--928.
 
-    The picture shows the 'Calendar calculator', owned by Anton 
-    Ignaz Joseph Graf von Fugger-Glött, Prince-Provost of Ellwangen, 
-    Ostalbkreis, 1765 - Landesmuseum Württemberg, Stuttgart, Germany. 
-    The picture is in the public domain, CCO 1.0.
+    The picture shows the 'Calendar calculator', owned by Anton Ignaz Joseph Graf von Fugger-Glött, Prince-Provost of Ellwangen, Ostalbkreis, 1765 - Landesmuseum Württemberg, Stuttgart, Germany. The picture is in the public domain, CCO 1.0.
  

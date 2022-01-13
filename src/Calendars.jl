@@ -84,6 +84,10 @@ include("IsoCalendar.jl")
 
 """
 
+```julia
+DNumberFromDate(date::Tuple{Int, Int, Int}, calendar::String, show::Bool)
+```
+
 Return the day number correspondig to the calendar date.
 
     * The date is an integer triple (year, month, day).
@@ -97,9 +101,17 @@ Return the day number correspondig to the calendar date.
     * If the optional parameter 'show' is set to 'true', 
       date and number are printed. 'show' is 'false' by default.
 
-    julia> DNumberFromDate((1756, 1, 27), "Gregorian") 
+```julia
+julia> DNumberFromDate((1756, 1, 27), "Gregorian") 
+```
 
-    returns the day number 641027. If 'show' is 'true' 
+Alternatively you can write
+
+```julia
+julia> DNumberFromDate(1756, 1, 27, "CE") 
+```
+
+    Returns the day number 641027. If 'show' is 'true' 
     the line "CE 1756-01-27 -> DN 641027" is printed.
 
     If an error occurs 0 (representing the invalid day number)
@@ -136,6 +148,10 @@ DNumberFromDate((year, month, day), calendar, show)
 
 """
 
+```julia
+DateFromDNumber(dn::Int, calendar::String, show::Bool)
+```
+
 Return the calendar date from a day number.
 
     * The day number is an integer >= 1.
@@ -147,9 +163,17 @@ Return the calendar date from a day number.
     * If the optional parameter 'show' is set to 'true', date
       and number are printed. 'show' is 'false' by default.
 
-    julia> DateFromDNumber(641027, "Gregorian") 
+```julia
+julia> DateFromDNumber(641027, "Gregorian") 
+```
 
-    returns the date (CE, 1756, 1, 27). If 'show' is 'true' 
+Alternatively you can write
+
+```julia
+julia> DateFromDNumber(641027, "CE") 
+```
+
+    Returns the date (CE, 1756, 1, 27). If 'show' is 'true' 
     the line "DN 641027 -> CE 1756-01-27" is printed.
 
     If an error occurs "00 0000 00 00" (representing the
@@ -181,6 +205,10 @@ end
 
 """
 
+```julia
+ConvertDate(date::Tuple{Int, Int, Int}, from::String, to::String, show::Bool)
+```
+
 Convert a date represented by the calendar 'from' to the 
 representation of the date in the calendar 'to'.
 
@@ -195,9 +223,17 @@ representation of the date in the calendar 'to'.
     * If the optional parameter 'show' is set to 'true', both
       dates are printed. 'show' is 'false' by default.
 
-    julia> ConvertDate((1756, 1, 27), "Gregorian", "Hebrew") 
+```julia
+julia> ConvertDate((1756, 1, 27), "Gregorian", "Hebrew") 
+```
 
-    computes from the Gregorian date (1756, 1, 27) the
+Alternatively you can write
+
+```julia
+julia> ConvertDate(1756, 1, 27, "CE", "AM") 
+```
+
+    Computes from the Gregorian date (1756, 1, 27) the
     Hebrew date (5516, 11, 25). If 'show' is 'true' the
     line "CE 1756-01-27 -> AM 5516-11-25" is printed.
 """
@@ -219,6 +255,10 @@ ConvertDate((year, month, day), from, to, show, debug)
 
 """
 
+```julia
+CalendarDates(date::Tuple{Int, Int, Int}, calendar::String, show::Bool)
+```
+
 Return a table of the dates of all supported calendars. 
 
     * The date is an integer triple (year, month, day).
@@ -232,18 +272,26 @@ Return a table of the dates of all supported calendars.
     * If the optional parameter 'show' is set to 'true', the
       date table is printed. 'show' is 'false' by default.
 
-    julia> CalendarDates((3141, 5, 9), "Gregorian", true) 
+```julia
+julia> CalendarDates((1756, 1, 27), "Gregorian", true) 
+```
 
-    computes a 'DateTable', which is the day number plus 
+Alternatively you can write
+
+```julia
+julia> CalendarDates(1756, 1, 27, "CE", true) 
+```
+
+    Computes a 'DateTable', which is the day number plus 
     a tuple of five dates. If 'show' is 'true' the table 
     below will be printed.
 
-        DayNumber    DN 1146990
-        CurrentEpoch CE 3141-05-09
-        Julian       AD 3141-04-17
-        Hebrew       AM 6901-02-09
-        Islamic      AH 2597-02-10
-        ISODate      ID 3141-19-05
+        DayNumber     DN 641027
+        CurrentEpoch  CE 1756-01-27
+        Julian        AD 1756-01-16
+        Hebrew        AM 5516-11-25
+        Islamic       AH 1169-04-24
+        ISODate       ID 1756-05-02
 """
 function CalendarDates(date::Tuple{Int, Int, Int}, calendar, show=false)
 
