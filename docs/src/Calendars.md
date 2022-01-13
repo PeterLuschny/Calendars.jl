@@ -78,4 +78,4 @@ either signal invalid input or a limitation of the methods.
 
 - Copyright of the Julia implementations: Peter Luschny, 2022-01-04. Licensed under the MIT license.
 
-- The picture shows the 'Calendar calculator', owned by Anton Ignaz Joseph Graf von Fugger-Glött, Prince-Provost of Ellwangen, Ostalbkreis, 1765 - Landesmuseum Württemberg, Stuttgart, Germany. The picture is in the public domain, CCO 1.0. 
+- The picture shows the 'Calendar calculator', owned by Anton Ignaz Joseph Graf von Fugger-Glött, Prince-Provost of Ellwangen, Ostalbkreis, 1765 - Landesmuseum Württemberg, Stuttgart, Germany. The picture is in the public domain. 

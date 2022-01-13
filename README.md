@@ -28,32 +28,29 @@ The main function provided is:
 
     ConvertDate(date, A, B, show=false). 
 
-It converts a date represented by the calendar 'A' to the 
-representation of the date in the calendar 'B'.
+It converts a date represented by the calendar 'A' to the representation of the date in the calendar 'B'.
 
-    * The date is an integer triple (year, month, day). The parts of the date can be given as a triple or individually one after the other.
+* The date is an integer triple (year, month, day). The parts of the date can be given as a triple or individually one after the other.
 
-    * 'A' and 'B' is one of "Gregorian", "Hebrew", "Islamic", "Julian", or "IsoDate".
+* 'A' and 'B' is one of the calendars "Gregorian", "Hebrew", "Islamic", "Julian", or "IsoDate".
 
-    Alternatively you can use the acronyms "CE", "AM", "AH", "AD", or "ID".
+Alternatively you can use the acronyms "CE", "AM", "AH", "AD", or "ID" explained in the table above.
 
-    They stand for 'Current Epoch' (denoting proleptic Gregorian dates), AM for 'Anno Mundi' to denote Hebrew dates, and AH for 'Anno Hegirae' for Islamic dates.
-
-    * If the optional parameter 'show' is set to 'true', both dates are printed. 'show' is 'false' by default.
+* If the optional parameter 'show' is set to 'true', both dates are printed. 'show' is 'false' by default.
 
 For example:
 
     julia> ConvertDate((1756, 1, 27), "Gregorian", "Hebrew") 
 
-    or written alternatively
+or written alternatively
 
     julia> ConvertDate(1756, 1, 27, "CE", "AM")
 
-    computes from the Gregorian date (1756, 1, 27) the Hebrew date (5516, 11, 25). If 'show' is 'true' the line
+computes from the Gregorian date (1756, 1, 27) the Hebrew date (5516, 11, 25). If 'show' is 'true' the line
 
-           "CE 1756-01-27 -> AM 5516-11-25" 
+    "CE 1756-01-27 -> AM 5516-11-25" 
 
-    is printed.
+is printed.
 
 A second function returns a table of the dates of all supported calendars.
 
@@ -63,7 +60,7 @@ The parameters follow the same conventions as those of ConvertDate. For example:
 
     julia> CalendarDates(1756, 1, 27, "Gregorian", true) 
 
-    computes a table, which is the day number plus a tuple of five dates. If 'show' is 'true' the table below will be printed.
+computes a table, which is the day number plus a tuple of five dates. If 'show' is 'true' the table below will be printed.
 
         DayNumber     DN 641027
         CurrentEpoch  CE 1756-01-27
@@ -76,7 +73,7 @@ The package provides additional functions; read the documentation for this.
 
 ---
 
-    We use the algorithms by Nachum Dershowitz and Edward M. Reingold, described in 'Calendrical Calculations', Software--Practice & Experience, vol. 20, no. 9 (September, 1990), pp. 899--928.
+We use the algorithms by Nachum Dershowitz and Edward M. Reingold, described in 'Calendrical Calculations', Software--Practice & Experience, vol. 20, no. 9 (September, 1990), pp. 899--928.
 
-    The picture shows the 'Calendar calculator', owned by Anton Ignaz Joseph Graf von Fugger-Glött, Prince-Provost of Ellwangen, Ostalbkreis, 1765 - Landesmuseum Württemberg, Stuttgart, Germany. The picture is in the public domain, CCO 1.0.
+The picture shows the 'Calendar calculator', owned by Anton Ignaz Joseph Graf von Fugger-Glött, Prince-Provost of Ellwangen, Ostalbkreis, 1765 - Landesmuseum Württemberg, Stuttgart, Germany. The picture is in the public domain.
  
