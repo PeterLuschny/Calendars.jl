@@ -73,7 +73,7 @@
 module Calendars
 
 export DNumberFromDate, DateFromDNumber, ConvertDate, CalendarDates 
-export DateStr, CDate, DateTable, PrintDateTable 
+export DateStr, CDate, DateTable, PrintDateTable, adate 
 
 include("CalendarUtils.jl")
 include("GregorianCalendar.jl")
@@ -117,7 +117,7 @@ julia> DNumberFromDate(1756, 1, 27, "CE")
     If an error occurs 0 (representing the invalid day number)
     is returned.
 """
-function DNumberFromDate(date::Tuple{Int, Int, Int}, calendar, show=false)
+function DNumberFromDate(date::Tuple{Int, Int, Int}, calendar::String, show=false)
 
     # Use a symbol for the calendar name.
     cname = CName(calendar)
@@ -142,7 +142,7 @@ function DNumberFromDate(date::Tuple{Int, Int, Int}, calendar, show=false)
     return dn 
 end
 
-DNumberFromDate(year::Int, month::Int, day::Int, calendar, show=false) =
+DNumberFromDate(year::Int, month::Int, day::Int, calendar::String, show=false) =
 DNumberFromDate((year, month, day), calendar, show) 
 
 
@@ -179,7 +179,7 @@ julia> DateFromDNumber(641027, "CE")
     If an error occurs "00 0000 00 00" (representing the
     invalid date) is returned.
 """
-function DateFromDNumber(dn::Int, calendar, show=false)
+function DateFromDNumber(dn::Int, calendar::String, show=false)
     # Use a symbol for the calendar name.
     cname = CName(calendar)
     if cname == CE
@@ -238,7 +238,7 @@ julia> ConvertDate(1756, 1, 27, "CE", "AM")
     line "CE 1756-01-27 -> AM 5516-11-25" is printed.
 """
 function ConvertDate(date::Tuple{Int, Int, Int}, 
-                     from, to, show=false, debug=false)
+         from::String, to::String, show=false, debug=false)
     (CName(from) == XX || CName(to) == XX) && return InvalidDate
     
     dn = DNumberFromDate(date, from)
@@ -249,7 +249,7 @@ function ConvertDate(date::Tuple{Int, Int, Int},
     return rdate 
 end
 
-ConvertDate(year::Int, month::Int, day::Int, from, to, show=false, debug=false) = 
+ConvertDate(year::Int, month::Int, day::Int, from::String, to::String, show=false, debug=false) = 
 ConvertDate((year, month, day), from, to, show, debug) 
 
 
@@ -293,7 +293,7 @@ julia> CalendarDates(1756, 1, 27, "CE", true)
         Islamic       AH 1169-04-24
         ISODate       ID 1756-05-02
 """
-function CalendarDates(date::Tuple{Int, Int, Int}, calendar, show=false)
+function CalendarDates(date::Tuple{Int, Int, Int}, calendar::String, show=false)
 
     dn = DNumberFromDate(date, calendar)
     DNumber = (DN, 0, 0, dn)
@@ -303,12 +303,12 @@ function CalendarDates(date::Tuple{Int, Int, Int}, calendar, show=false)
     AHdate = DateFromDNumber(dn, AH)
     IDdate = DateFromDNumber(dn, ID)
     
-    Table = (DNumber, CEdate, ADdate, AMdate, AHdate, IDdate)
+    Table = (CEdate, ADdate, AMdate, AHdate, IDdate, DNumber)
     show && PrintDateTable(Table)
     return Table
 end
 
-CalendarDates(year::Int, month::Int, day::Int, calendar, show=false) = 
+CalendarDates(year::Int, month::Int, day::Int, calendar::String, show=false) = 
 CalendarDates((year, month, day), calendar, show) 
 
 end # module

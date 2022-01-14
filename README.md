@@ -2,8 +2,8 @@
 
 .
 
-Registered on [JuliaHub](https://juliahub.com/ui/Packages/Calendars/yDHMq/0.1.4), 
-read the [Docs](https://docs.juliahub.com/Calendars/yDHMq/0.1.4/Calendars/), get the source from the [repository](https://github.com/PeterLuschny/Calendars.jl) or install with Pkg.add("Calendars").
+Registered on [JuliaHub](https://juliahub.com/ui/Packages/Calendars/yDHMq), 
+read the [Docs](https://docs.juliahub.com/Calendars/yDHMq), get the source from the [repository](https://github.com/PeterLuschny/Calendars.jl) or install with Pkg.add("Calendars").
 
 # Calendars, Conversions of Dates, Change of Calendars  
 
