@@ -12,3 +12,6 @@ ConvertDate
 ```@docs
 CalendarDates
 ```
+```@docs
+isValidDate
+```

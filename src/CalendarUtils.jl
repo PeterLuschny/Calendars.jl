@@ -10,15 +10,15 @@ AH = :"AH"  # Anno Hegirae
 ID = :"ID"  # ISO Date
 XX = :"00"  # Unknown 
 
-const InvalidDate = ("00", 0, 0, 0, 0)
-const InvalidDateString = "00 0000-00-00"
+const InvalidDate = (XX, 0, 0, 0)
+const InvalidDateString = "0000-00-00"
 
 # Map calendar specifiers or character codes to tokens.
 CalendarSpecifiers = Dict{String, String}(
     "DN" => "DayNumber   ",
     "CE" => "CurrentEpoch",
     "AD" => "Julian      ",
-    "ID" => "ISODate     ",
+    "ID" => "IsoDate     ",
     "AM" => "Hebrew      ",
     "AH" => "Islamic     ",
     "00" => "INVALID     "
@@ -31,7 +31,7 @@ function CName(calendar) # CName = CalendarName
     (calendar == "Julian"    || calendar == "AD") && return AD
     (calendar == "Hebrew"    || calendar == "AM") && return AM
     (calendar == "Islamic"   || calendar == "AH") && return AH
-    (calendar == "ISODate"   || calendar == "ID") && return ID
+    (calendar == "IsoDate"   || calendar == "ID") && return ID
     (calendar == "DayNumber" || calendar == "DN") && return DN
     @warn("Unknown calendar: $calendar")
     return XX

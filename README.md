@@ -16,7 +16,7 @@ The package _Calendar_ provides a Julia implementation of five calendars:
 | AD      | Julian    |
 | AM      | Hebrew    |
 | AH      | Islamic   |
-| ID      | ISODates  |
+| ID      | IsoDate   |
 
 
 Dates can be converted from one to each other. 
@@ -61,14 +61,14 @@ The parameters follow the same conventions as those of ConvertDate. For example:
 
     julia> CalendarDates(1756, 1, 27, "Gregorian", true) 
 
-computes a table, which is the day number plus a tuple of five dates. If 'show' is 'true' the table below will be printed.
+computes a table, which is a tuple of five dates plus the day number. If 'show' is 'true' the table below will be printed.
 
-        DayNumber     DN 641027
         CurrentEpoch  CE 1756-01-27
         Julian        AD 1756-01-16
         Hebrew        AM 5516-11-25
         Islamic       AH 1169-04-24
-        ISODate       ID 1756-05-02
+        IsoDate       ID 1756-05-02
+        DayNumber     DN 641027
 
 The package provides additional functions; read the documentation for this.
 

@@ -2,12 +2,15 @@
 # ========================= Julian dates ====================
 
 # Day number of the start of the Julian calendar.
-const JulianEpoch = -2
+const EpochJulian = -2
+
+function isLeapYearJulian(year)
+    rem(year, 4) == 0
+end
 
 # Return the last day of the month for the Julian calendar.
-function LastDayOfJulianMonth(year, month)
-    leap = rem(year, 4) == 0
-
+function LastDayOfMonthJulian(year, month)
+    leap = isLeapYearJulian(year)
     month == 2 && return leap ? 29 : 28
     month in [4, 6, 9, 11] ? 30 : 31
 end
@@ -15,10 +18,10 @@ end
 # Returns the day number from the Julian date.
 function DNumberJulian(year, month, day)
     for m in (month-1):-1:1  # days in prior months this year
-        day += LastDayOfJulianMonth(year, m)
+        day += LastDayOfMonthJulian(year, m)
     end
 
-    return (JulianEpoch      # days elapsed before absolute date 1
+    return (EpochJulian      # days elapsed before absolute date 1
         + 365 * (year - 1)   # days in previous years ignoring leap days
         + div(year - 1, 4)   # leap days before this year...
         + day                # days this year
@@ -29,14 +32,14 @@ end
 DNumberJulian(date) = DNumberJulian(date[1], date[2], date[3])
 
 # Computes the Julian date from the day number.
-function JulianDate(dn)
-    if dn < JulianEpoch  # Date is pre-Julian
+function DateJulia(dn)
+    if dn < EpochJulian  # Date is pre-Julian
        @warn(Warning(AD))
        return InvalidDate
     end
 
     # Search forward year by year from approximate year
-    year = div(dn + JulianEpoch, 366)
+    year = div(dn + EpochJulian, 366)
 
     while dn >= DNumberJulian(year + 1, 1, 1)
         year += 1
@@ -45,7 +48,7 @@ function JulianDate(dn)
     # Search forward month by month from January
     month = 1
     while dn > DNumberJulian(year, month, 
-               LastDayOfJulianMonth(year, month))
+               LastDayOfMonthJulian(year, month))
         month += 1
     end
 

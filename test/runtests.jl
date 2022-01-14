@@ -1,13 +1,13 @@
 using Calendars
 using Test
 
-function TestGregorianDates()
-    SomeGregorianDates = [ (1, 1, 1), (1756, 1, 27), (2022, 1, 1), 
+function TestDateGregorian()
+    SomeDateGregorian = [ (1, 1, 1), (1756, 1, 27), (2022, 1, 1), 
                            (2022, 9, 26) ] 
 
-    for date in SomeGregorianDates
+    for date in SomeDateGregorian
         # dn = DNumberGregorian(date)
-        # gdate = GregorianDate(dn) 
+        # gdate = DateGregorian(dn) 
         dn = DNumberFromDate(date, "Gregorian")
         gdate = DateFromDNumber(dn, "Gregorian")
         @test gdate == (CE, date[1], date[2], date[3])  
@@ -22,12 +22,12 @@ CE 2022-01-01 -> DN 738156 -> CE 2022-01-01
 CE 2022-09-26 -> DN 738424 -> CE 2022-09-26
 =#
 
-function TestJulianDates()
-    SomeJulianDates = [ (1, 1, 3), (1756, 1, 16), (2021, 12, 19), (2022, 9, 13) ] 
+function TestDateJulian()
+    SomeDateJulian = [ (1, 1, 3), (1756, 1, 16), (2021, 12, 19), (2022, 9, 13) ] 
 
-    for date in SomeJulianDates
+    for date in SomeDateJulian
         #dn = DNumberJulian(date)
-        #jdate = JulianDate(dn) 
+        #jdate = DateJulia(dn) 
         dn = DNumberFromDate(date, "Julian")
         jdate = DateFromDNumber(dn, "Julian")
         @test jdate == (AD, date[1], date[2], date[3]) 
@@ -43,13 +43,13 @@ AD 2022-09-13 -> DN 738424 -> AD 2022-09-13
 =#
 
 
-function TestHebrewDates()
-    SomeHebrewDates  = [ (5516, 11, 25), (5782, 7, 1), (5782, 10, 27), 
+function TestDateHebrew()
+    SomeDateHebrew  = [ (5516, 11, 25), (5782, 7, 1), (5782, 10, 27), 
                          (5782,  6, 29), (5783, 7, 1) ]
 
-    for date in SomeHebrewDates
+    for date in SomeDateHebrew
         # dn = DNumberHebrew(date)
-        # hdate = HebrewDate(dn) 
+        # hdate = DateHebrew(dn) 
         dn = DNumberFromDate(date, "Hebrew")
         hdate = DateFromDNumber(dn, "Hebrew")
         @test hdate == (AM, date[1], date[2], date[3])
@@ -66,12 +66,12 @@ AM 5783-07-01 -> DN 738424 -> AM 5783-07-01
 =#
 
 
-function TestIslamicDates()
-    SomeIslamicDates = [ (1, 1, 1), (1756, 1, 27), (2022, 1, 1), (2022, 9, 26) ] 
+function TestDateIslamic()
+    SomeDateIslamic = [ (1, 1, 1), (1756, 1, 27), (2022, 1, 1), (2022, 9, 26) ] 
 
-    for date in SomeIslamicDates
+    for date in SomeDateIslamic
         # dn = DNumberIslamic(date)
-        # idate = IslamicDate(dn) 
+        # idate = DateIslamic(dn) 
         dn = DNumberFromDate(date, "Islamic")
         idate = DateFromDNumber(dn, "Islamic")
         @test idate == (AH, date[1], date[2], date[3])
@@ -86,19 +86,25 @@ AH 2022-01-01 -> DN 943190 -> AH 2022-01-01
 AH 2022-09-26 -> DN 943451 -> AH 2022-09-26
 =# 
 
-function TestIsoDates()
-    SomeIsoDates = [ (1, 1, 1), 
-    (1756, 5, 2), (2021, 52, 6), (2022, 39, 1) ] 
+function TestDateIso()
+    SomeDateIso = [ (1, 1, 1), (1756, 5, 2), (2021, 52, 6), (2022, 39, 1) ] 
 
-    for date in SomeIsoDates
+    for date in SomeDateIso
         # dn = DNumberIso(date)
-        # idate = ISODate(dn) 
-        dn = DNumberFromDate(date, "ISODate")
-        idate = DateFromDNumber(dn, "ISODate")
+        # idate = IsoDate(dn) 
+        dn = DNumberFromDate(date, "IsoDate")
+        idate = DateFromDNumber(dn, "IsoDate")
         @test idate == (ID, date[1], date[2], date[3])
         println(CDate(ID, date), " -> ", CDate(DN, dn), " -> ", CDate(idate))
     end
 end
+
+#=
+ID 0001-01-01 -> DN 0000001 -> ID 0001-01-01
+ID 1756-05-02 -> DN 0641027 -> ID 1756-05-02
+ID 2021-52-06 -> DN 0738156 -> ID 2021-52-06
+ID 2022-39-01 -> DN 0738424 -> ID 2022-39-01
+=#
 
 # Symbols for calendar names
 DN = :"DN"  # Day Number
@@ -187,28 +193,28 @@ end
 DayNumber    DN 0000001
 CurrentEpoch CE 0001-01-01
 Julian       AD 0001-01-03
-ISODate      ID 0001-01-01
+IsoDate      ID 0001-01-01
 Hebrew       AM 3761-10-18
 Islamic      AH 0000-00-00
 
 DayNumber    DN 0405733
 CurrentEpoch CE 1111-11-11
 Julian       AD 1111-11-04
-ISODate      ID 1111-45-06
+IsoDate      ID 1111-45-06
 Hebrew       AM 4872-09-02
 Islamic      AH 0505-04-29
 
 DayNumber    DN 0811256
 CurrentEpoch CE 2222-02-22
 Julian       AD 2222-02-07
-ISODate      ID 2222-08-05
+IsoDate      ID 2222-08-05
 Hebrew       AM 5982-12-10
 Islamic      AH 1649-09-10
 
 DayNumber    DN 0641027
 CurrentEpoch CE 1756-01-27
 Julian       AD 1756-01-16
-ISODate      ID 1756-05-02
+IsoDate      ID 1756-05-02
 Hebrew       AM 5516-11-25
 Islamic      AH 1169-04-24
 =#
@@ -238,21 +244,16 @@ CalendarDates(3141, 4,17, AD, true); println()
 CalendarDates(3141,19, 5, ID, true); println()
 CalendarDates(6901, 2, 9, AM, true); println()
 CalendarDates(2597, 2,10, AH, true); println()
-println("---")
-CalendarDates(1,    1, 1, CE, true); println()
-CalendarDates(1,    1, 3, AD, true); println()
-CalendarDates(3761,10,18, AM, true); println()
-CalendarDates(1,    1, 1, ID, true); println()
 end
 
-TestGregorianDates(); println()
-TestJulianDates();    println()
-TestHebrewDates();    println()
-TestIslamicDates();   println()
-TestIsoDates();       println()
+TestDateGregorian(); println()
+TestDateJulian();    println()
+TestDateHebrew();    println()
+TestDateIslamic();   println()
+TestDateIso();       println()
  
-TestConversions1();   println()
-TestConversions2();   println()
+TestConversions1();  println()
+TestConversions2();  println()
 
 TestDateTables()
 TestCalenderDates()

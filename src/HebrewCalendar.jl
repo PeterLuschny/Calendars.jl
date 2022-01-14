@@ -2,21 +2,24 @@
 # ========================= Hebrew dates ====================
 
 # Day number of the start of Hebrew calendar.
-const HebrewEpoch = -1373429 
+# The Jewish calendar's epoch (reference date), 1 Tishrei AM 1, 
+# is equivalent to Monday, 7 October 3761 BCE in the 
+# proleptic Julian calendar (from Wikipedia).
+const EpochHebrew = -1373429 
 
 # True if Heshvan is long in Hebrew year.
 function isLongHeshvan(year)
-    rem(DaysInHebrewYear(year), 10) == 5
+    rem(DaysInYearHebrew(year), 10) == 5
 end
 
 # True if Kislev is short in Hebrew year.
 function isShortKislev(year)
-    rem(DaysInHebrewYear(year), 10) == 3
+    rem(DaysInYearHebrew(year), 10) == 3
 end
 
 # True if year is an Hebrew leap year
-function isHebrewLeapYear(year)
-    (((7 * year) + 1) % 19) < 7
+function isLeapYearHebrew(year)
+    rem(7 * year + 1, 19) < 7
 end
 
 function isLongMonth(year, month)
@@ -26,29 +29,35 @@ function isLongMonth(year, month)
     || (month == 8 && ! isLongHeshvan(year))
     || (month == 9 && isShortKislev(year))
     ||  month == 10
-    || (month == 12 && ! isHebrewLeapYear(year))
+    || (month == 12 && ! isLeapYearHebrew(year))
     ||  month == 13 )
 end
 
 # Last day of month in Hebrew year.
-function LastDayOfHebrewMonth(year, month)
+function LastDayOfMonthHebrew(year, month)
     isLongMonth(year, month) ? 29 : 30
 end
 
 # Last month of Hebrew year.
-function LastMonthOfHebrewYear(year)
-    isHebrewLeapYear(year) ? 13 : 12
+function LastMonthOfYearHebrew(year)
+    isLeapYearHebrew(year) ? 13 : 12
 end
 
 # Number of days in Hebrew year.
-function DaysInHebrewYear(year::Int)
-    HebrewCalendarElapsedDays(year + 1) -
-        HebrewCalendarElapsedDays(year)
+function DaysInYearHebrew(year::Int)
+    ElapsedDaysHebrew(year + 1) - ElapsedDaysHebrew(year)
+end
+
+# Is the date a valid Hebrew date?
+function isValidDateHebrew(year, month, day)
+    lm = LastMonthOfYearHebrew(year)
+    ld = LastDayOfMonthHebrew(year, month)
+    year >= 1 && (month in 1:lm) && (day in 1:ld) 
 end
 
 # Number of days elapsed from the Sunday prior to the start of the
 # Hebrew calendar to the mean conjunction of Tishri of Hebrew year.
-function HebrewCalendarElapsedDays(year)
+function ElapsedDaysHebrew(year)
     
     MonthsElapsed = ( 235 * div(year - 1, 19)  # Months in complete cycles so far.
                      + 12 * rem(year - 1, 19)  # Regular months in this cycle.
@@ -65,10 +74,10 @@ function HebrewCalendarElapsedDays(year)
         ConjunctionParts >= 19440           # If new moon is at or after midday,
         || (DayOfWeek == 2                  # ...or is on a Tuesday...
             && ConjunctionParts >= 9924     # at 9 hours, 204 parts or later...
-            && ! isHebrewLeapYear(year))    # ...of a common year,
+            && ! isLeapYearHebrew(year))    # ...of a common year,
         || (DayOfWeek == 1                  # ...or is on a Monday at...
             && ConjunctionParts >= 16789    # 15 hours, 589 parts or later...
-            && isHebrewLeapYear(year - 1))  # at the end of a leap year
+            && isLeapYearHebrew(year - 1))  # at the end of a leap year
     )  
         # Then postpone Rosh HaShanah one day
         ConjunctionDay += 1
@@ -87,57 +96,64 @@ function HebrewCalendarElapsedDays(year)
     return ConjunctionDay
 end
 
-# Computes the day number from the Hebrew date = (year, month, day).
-function DNumberHebrew(year, month, day) 
+# Computes the day number from a valid Hebrew date.
+function DNumberValidHebrew(year, month, day) 
 
-    DayInYear = HebrewEpoch + HebrewCalendarElapsedDays(year) + day 
+    DayInYear = EpochHebrew + ElapsedDaysHebrew(year) + day 
     if month < 7   # Before Tishri, so add days in prior months
 
-        MonthInYear = LastMonthOfHebrewYear(year)
+        MonthInYear = LastMonthOfYearHebrew(year)
 
         # this year before and after Nisan.
         for m in 7:MonthInYear
-            DayInYear += LastDayOfHebrewMonth(year, m)
+            DayInYear += LastDayOfMonthHebrew(year, m)
         end
 
         for m in 1:month - 1
-            DayInYear += LastDayOfHebrewMonth(year, m)
+            DayInYear += LastDayOfMonthHebrew(year, m)
         end
 
     else # Add days in prior months this year
         for m in 7:month - 1
-            DayInYear += LastDayOfHebrewMonth(year, m)
+            DayInYear += LastDayOfMonthHebrew(year, m)
         end 
     end
 
     return DayInYear 
 end
 
-# Computes the day number of the Hebrew date = (year, month, day).
+# Computes the day number of a valid Hebrew date.
+DNumberValidHebrew(date) = DNumberValidHebrew(date[1], date[2], date[3])
+
+# Computes the day number from a date which might not be a valid Hebrew date.
+DNumberHebrew(year, month, day) = 
+(isValidDateHebrew(year, month, day) ? DNumberValidHebrew(year, month, day) : 0)
+
+# Computes the day number from a date which might not be a valid Hebrew date.
 DNumberHebrew(date) = DNumberHebrew(date[1], date[2], date[3])
 
 # Computes the Hebrew date from an DNumber.
-function HebrewDate(dn)
-    if dn < HebrewEpoch  # Date is pre-Hebrew
+function DateHebrew(dn)
+    if dn < EpochHebrew  # Date is pre-Hebrew
        @warn(Warning(AM))
        return InvalidDate
     end
 
-    year = div(dn + HebrewEpoch, 366) # Approximation from below.
+    year = div(dn + EpochHebrew, 366) # Approximation from below.
     # Search forward for year from the approximation.
-    while dn >= DNumberHebrew(year + 1, 7, 1)
+    while dn >= DNumberValidHebrew(year + 1, 7, 1)
         year += 1
     end
 
     # Search forward for month from either Tishri (7) or Nisan (1).
-    month = dn < DNumberHebrew(year, 1, 1) ? 7 : 1
+    month = dn < DNumberValidHebrew(year, 1, 1) ? 7 : 1
 
-    while dn > DNumberHebrew(year, month, (LastDayOfHebrewMonth(year, month)))
+    while dn > DNumberValidHebrew(year, month, (LastDayOfMonthHebrew(year, month)))
         month += 1
     end
 
     # Calculate the day by subtraction.
-    day = dn - DNumberHebrew(year, month, 1) + 1
+    day = dn - DNumberValidHebrew(year, month, 1) + 1
 
     return (AM, year, month, day)
 end

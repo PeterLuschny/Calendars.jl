@@ -1,11 +1,14 @@
+# This is part of Calendars.jl. See the copyright note there.
+# ======================= REPL calendar =====================
 
 # This is an undocumented gadget for the Julia REPL.
-# First "using Calendars" and then "adate()".
+# Might be removed in later versions without notice.
 
 # Interactively query the dates for all calendars in the REPL.
 function adate() 
 
     msg = "You should have entered a numeric value, bye ..."
+    nov = " is not a valid date! Try again ..."
 
     while true
         print("Enter year      (>0): ") 
@@ -22,7 +25,7 @@ function adate()
             println(msg)
             return
         end
-        print("Enter day    (1..30): ") 
+        print("Enter day    (1..31): ") 
         d = try
             parse(Int, readline())
         catch e
@@ -30,11 +33,11 @@ function adate()
             return
         end
         println()
-        if !(y in 1:9999) || !(m in 1:12) || !(d in 1:30)
-            println("$y-$m-$d is not a valid date! Try again ...")
+        if ! isValidDate(y, m, d, "CE") 
+            println(DateStr(y, m, d) * nov)
         else
             try
-                Calendars.CalendarDates(y, m, d, "CE", true)
+                CalendarDates(y, m, d, "CE", true)
             catch e
                 println(e)
                 return

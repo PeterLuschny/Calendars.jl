@@ -53,10 +53,10 @@ You might start exploring with a Jupyter [notebook](https://github.com/PeterLusc
 Registered on [JuliaHub](https://juliahub.com/ui/Packages/Calendars/yDHMq), read the [Docs](https://docs.juliahub.com/Calendars/yDHMq), get the source from the [repository](https://github.com/PeterLuschny/Calendars.jl) on GitHub, or install with Pkg.add("Calendars").
 
 ---
-## Copyright
+## Credits
 
 - Parts of the Julia code in this package is ported from the Lisp and C++ code in 'Calendrical Calculations' by Nachum Dershowitz and Edward M. Reingold, Software---Practice & Experience, vol. 20, no. 9 (September, 1990), pp. 899--928. The code is in the public domain, but any use of it should publicly acknowledge this source, which is done herewith.
 
-- Copyright of the Julia implementations: Peter Luschny, 2022-01-04. Licensed under the MIT license.
-
 - The picture shows the 'Calendar calculator', owned by Anton Ignaz Joseph Graf von Fugger-Glött, Prince-Provost of Ellwangen, Ostalbkreis, 1765 - Landesmuseum Württemberg, Stuttgart, Germany. The picture is in the public domain. 
+ 
+- Copyright of the Julia implementations: Peter Luschny, 2022-01-04. Licensed under the MIT license.

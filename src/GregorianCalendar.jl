@@ -2,24 +2,32 @@
 # ====================== Gregorian dates ====================
 
 # Day number of the start of the Gregorian calendar.
-const GregorianEpoch = 1
+const EpochGregorian = 1
 
 # Is a divisible by b?
 divisible(a, b) = rem(a, b) == 0
 
-# Return the last day of the month for the Gregorian calendar.
-function LastDayOfGregorianMonth(year, month) 
-    leap = (( divisible(year, 4) && divisible(year, 100))
-           || divisible(year, 400) )
+function isLeapYearGregorian(year)
+    (divisible(year, 4) && divisible(year, 100)) || divisible(year, 400) 
+end
 
+# Return the last day of the month for the Gregorian calendar.
+function LastDayOfMonthGregorian(year, month) 
+    leap = isLeapYearGregorian(year)
     month == 2 && return leap ? 29 : 28
     month in [4, 6, 9, 11] ? 30 : 31
 end
 
-# Computes the day number from the Gregorian date.
-function DNumberGregorian(year, month, day) 
+# Is the date a valid Gregorian date?
+function isValidDateGregorian(year, month, day)
+    ld = LastDayOfMonthGregorian(year, month)
+    year >= 1 && (month in 1:12) && (day in 1:ld) 
+end
+
+# Computes the day number from a valid Gregorian date.
+function DNumberValidGregorian(year, month, day) 
     for m in (month - 1):-1:1  # days in prior months this year
-        day += LastDayOfGregorianMonth(year, m)
+        day += LastDayOfMonthGregorian(year, m)
     end
 
     return (day                # days this year
@@ -29,12 +37,16 @@ function DNumberGregorian(year, month, day)
         + div(year - 1, 400) ) # ...plus prior years divisible by 400
 end
 
-# Computes the day number from the Gregorian date = (year, month, day).
+# Computes the day number from a date which might not be a valid Gregorian date.
+DNumberGregorian(year, month, day) = 
+(isValidDateGregorian(year, month, day) ? DNumberValidGregorian(year, month, day) : 0)
+
+# Computes the day number from a date which might not be a valid Gregorian date.
 DNumberGregorian(date) = DNumberGregorian(date[1], date[2], date[3])
 
 # Computes the Gregorian date from a day number.
-function GregorianDate(dn) 
-    if dn < GregorianEpoch  # Date is pre-Gregorian
+function DateGregorian(dn) 
+    if dn < EpochGregorian  # Date is pre-Gregorian
        @warn(Warning(CE))
        return InvalidDate
     end
@@ -42,17 +54,17 @@ function GregorianDate(dn)
     year = div(dn, 366)
 
     # Search forward year by year from approximate year.
-    while dn >= DNumberGregorian(year + 1, 1, 1)
+    while dn >= DNumberValidGregorian(year + 1, 1, 1)
         year += 1 
     end
 
     # Search forward month by month from January.
     month = 1
-    while dn > DNumberGregorian(year, month, 
-                LastDayOfGregorianMonth(year, month))
+    while dn > DNumberValidGregorian(year, month, 
+                LastDayOfMonthGregorian(year, month))
         month += 1
     end
 
-    day = dn - DNumberGregorian(year, month, 1) + 1
+    day = dn - DNumberValidGregorian(year, month, 1) + 1
     return (CE, year, month, day)
 end

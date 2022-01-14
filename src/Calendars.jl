@@ -57,7 +57,7 @@
 
 # We use the acronyms CE for 'Current Epoch' to denote proleptic 
 # Gregorian dates, AH for 'Anno Hegirae' for Islamic dates, AM for
-# 'Anno Mundi' to denote Hebrew dates, and ID for 'ISODate'. Thus 
+# 'Anno Mundi' to denote Hebrew dates, and ID for 'IsoDate'. Thus 
 # CE, AH, AM, and ID are acronyms for names of calendars. 
 
 # For example with these conventions we can write Mozart's birthday 
@@ -73,7 +73,7 @@
 module Calendars
 
 export DNumberFromDate, DateFromDNumber, ConvertDate, CalendarDates 
-export DateStr, CDate, DateTable, PrintDateTable, adate 
+export DateStr, CDate, DateTable, PrintDateTable, isValidDate, adate 
 
 include("CalendarUtils.jl")
 include("GregorianCalendar.jl")
@@ -81,6 +81,7 @@ include("HebrewCalendar.jl")
 include("IslamicCalendar.jl")
 include("JulianCalendar.jl")
 include("IsoCalendar.jl")
+include("REPLCalendar.jl")
 
 """
 
@@ -183,15 +184,15 @@ function DateFromDNumber(dn::Int, calendar::String, show=false)
     # Use a symbol for the calendar name.
     cname = CName(calendar)
     if cname == CE
-        date = GregorianDate(dn)
+        date = DateGregorian(dn)
     elseif cname == AD
-        date = JulianDate(dn)
+        date = DateJulia(dn)
     elseif cname == AM
-        date = HebrewDate(dn)
+        date = DateHebrew(dn)
     elseif cname == AH
-        date = IslamicDate(dn) 
+        date = DateIslamic(dn) 
     elseif cname == ID
-        date = IsoDate(dn) 
+        date = DateIso(dn) 
     else
         @warn("Unknown calendar: $calendar")
         return InvalidDate
@@ -238,12 +239,11 @@ julia> ConvertDate(1756, 1, 27, "CE", "AM")
     line "CE 1756-01-27 -> AM 5516-11-25" is printed.
 """
 function ConvertDate(date::Tuple{Int, Int, Int}, 
-         from::String, to::String, show=false, debug=false)
+                     from::String, to::String, show=false)
     (CName(from) == XX || CName(to) == XX) && return InvalidDate
     
     dn = DNumberFromDate(date, from)
     rdate = DateFromDNumber(dn, to)  
-    debug && print(CDate(DN, dn), " -> ")
     show  && println(CDate(CName(from), date), " -> ", CDate(rdate))
 
     return rdate 
@@ -286,12 +286,12 @@ julia> CalendarDates(1756, 1, 27, "CE", true)
     a tuple of five dates. If 'show' is 'true' the table 
     below will be printed.
 
-        DayNumber     DN 641027
         CurrentEpoch  CE 1756-01-27
         Julian        AD 1756-01-16
         Hebrew        AM 5516-11-25
         Islamic       AH 1169-04-24
-        ISODate       ID 1756-05-02
+        IsoDate       ID 1756-05-02
+        DayNumber     DN 641027
 """
 function CalendarDates(date::Tuple{Int, Int, Int}, calendar::String, show=false)
 
@@ -310,5 +310,58 @@ end
 
 CalendarDates(year::Int, month::Int, day::Int, calendar::String, show=false) = 
 CalendarDates((year, month, day), calendar, show) 
+
+
+"""
+
+```julia
+isValidDate(year::Int, month::Int, day::Int, calendar::String)::Bool
+```
+
+Query if the given date is a valid date in the given calendar.
+
+    * The date is an integer triple (year, month, day).
+      The parts of the date can be given as a triple or 
+      individually one after the other.
+    
+    * The 'calendar' is "Gregorian", "Hebrew", "Islamic",
+      "Julian", or "IsoDate". Alternatively use the acronyms 
+      "CE", "AM", "AH", "AD" or "ID".
+
+```julia
+julia> isValidDate((1756, 1, 27), "Gregorian") 
+```
+
+Alternatively you can write
+
+```julia
+julia> isValidDate(1756, 1, 27, "CE") 
+```
+
+    This query affirms that 1756-01-27 is a valid Gregorian date.
+"""
+function isValidDate(year::Int, month::Int, day::Int, calendar::String)  
+
+    # Use a symbol for the calendar name.
+    cname = CName(calendar)
+    if cname == CE
+        val = isValidDateGregorian(year, month, day)
+    elseif cname == AD
+        val = isValidDateJulia(year, month, day)
+    elseif cname == AM
+        val = isValidDateHebrew(year, month, day)
+    elseif cname == AH
+        val = isValidDateIslamic(year, month, day)
+    elseif cname == ID
+        val = isValidDateIso(year, month, day)
+    else
+        @warn("Unknown calendar: $calendar")
+        return false
+    end
+    return val
+end
+
+isValidDate(date::Tuple{Int, Int, Int}, calendar::String) = 
+isValidDate(date[1], date[2], date[3], calendar) 
 
 end # module
