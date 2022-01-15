@@ -1,5 +1,5 @@
 using Calendars
-using Test
+using Test, Dates
 
 function TestDateGregorian()
     SomeDateGregorian = [ (1, 1, 1), (1756, 1, 27), (2022, 1, 1), 
@@ -257,3 +257,8 @@ TestConversions2();  println()
 
 TestDateTables()
 TestCalenderDates()
+
+println("Today in all calendars:\n")
+now = Dates.yearmonthday(Dates.now())
+CalendarDates(now, "CE", true)
+ 

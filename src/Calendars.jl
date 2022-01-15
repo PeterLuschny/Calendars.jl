@@ -73,7 +73,7 @@
 module Calendars
 
 export DNumberFromDate, DateFromDNumber, ConvertDate, CalendarDates 
-export DateStr, CDate, DateTable, PrintDateTable, isValidDate, adate 
+export DateStr, CDate, DateTable, PrintDateTable, isValidDate, idate 
 
 include("CalendarUtils.jl")
 include("GregorianCalendar.jl")
@@ -186,7 +186,7 @@ function DateFromDNumber(dn::Int, calendar::String, show=false)
     if cname == CE
         date = DateGregorian(dn)
     elseif cname == AD
-        date = DateJulia(dn)
+        date = DateJulian(dn)
     elseif cname == AM
         date = DateHebrew(dn)
     elseif cname == AH
@@ -249,8 +249,8 @@ function ConvertDate(date::Tuple{Int, Int, Int},
     return rdate 
 end
 
-ConvertDate(year::Int, month::Int, day::Int, from::String, to::String, show=false, debug=false) = 
-ConvertDate((year, month, day), from, to, show, debug) 
+ConvertDate(year::Int, month::Int, day::Int, from::String, to::String, show=false) = 
+ConvertDate((year, month, day), from, to, show) 
 
 
 """
@@ -267,7 +267,8 @@ Return a table of the dates of all supported calendars.
     
     * The 'calendar' is "Gregorian", "Hebrew", "Islamic",
       "Julian", or "IsoDate". Alternatively use the acronyms 
-      "CE", "AM", "AH", "AD" or "ID".
+      "CE", "AM", "AH", "AD" or "ID". 'calendar' is "CE" by
+      default.
 
     * If the optional parameter 'show' is set to 'true', the
       date table is printed. 'show' is 'false' by default.
@@ -293,7 +294,7 @@ julia> CalendarDates(1756, 1, 27, "CE", true)
         IsoDate       ID 1756-05-02
         DayNumber     DN 641027
 """
-function CalendarDates(date::Tuple{Int, Int, Int}, calendar::String, show=false)
+function CalendarDates(date::Tuple{Int, Int, Int}, calendar="CE", show=false)
 
     dn = DNumberFromDate(date, calendar)
     DNumber = (DN, 0, 0, dn)
@@ -308,7 +309,7 @@ function CalendarDates(date::Tuple{Int, Int, Int}, calendar::String, show=false)
     return Table
 end
 
-CalendarDates(year::Int, month::Int, day::Int, calendar::String, show=false) = 
+CalendarDates(year::Int, month::Int, day::Int, calendar="CE", show=false) = 
 CalendarDates((year, month, day), calendar, show) 
 
 
@@ -347,7 +348,7 @@ function isValidDate(year::Int, month::Int, day::Int, calendar::String)
     if cname == CE
         val = isValidDateGregorian(year, month, day)
     elseif cname == AD
-        val = isValidDateJulia(year, month, day)
+        val = isValidDateJulian(year, month, day)
     elseif cname == AM
         val = isValidDateHebrew(year, month, day)
     elseif cname == AH

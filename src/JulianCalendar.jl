@@ -15,8 +15,14 @@ function LastDayOfMonthJulian(year, month)
     month in [4, 6, 9, 11] ? 30 : 31
 end
 
+# Is the date a valid Julian date?
+function isValidDateJulian(year, month, day)
+    ld = LastDayOfMonthJulian(year, month)
+    year >= 1 && (month in 1:12) && (day in 1:ld) 
+end
+
 # Returns the day number from the Julian date.
-function DNumberJulian(year, month, day)
+function DNumberValidJulian(year, month, day)
     for m in (month-1):-1:1  # days in prior months this year
         day += LastDayOfMonthJulian(year, m)
     end
@@ -28,11 +34,16 @@ function DNumberJulian(year, month, day)
     )
 end
 
-# Computes the day number from the Julian date = (year, month, day).
+
+# Computes the day number from a date which might not be a valid Julian date.
+DNumberJulian(year, month, day) = 
+(isValidDateJulian(year, month, day) ? DNumberValidJulian(year, month, day) : 0)
+
+# Computes the day number from a date which might not be a valid Julian date.
 DNumberJulian(date) = DNumberJulian(date[1], date[2], date[3])
 
 # Computes the Julian date from the day number.
-function DateJulia(dn)
+function DateJulian(dn)
     if dn < EpochJulian  # Date is pre-Julian
        @warn(Warning(AD))
        return InvalidDate
@@ -41,17 +52,17 @@ function DateJulia(dn)
     # Search forward year by year from approximate year
     year = div(dn + EpochJulian, 366)
 
-    while dn >= DNumberJulian(year + 1, 1, 1)
+    while dn >= DNumberValidJulian(year + 1, 1, 1)
         year += 1
     end
 
     # Search forward month by month from January
     month = 1
-    while dn > DNumberJulian(year, month, 
+    while dn > DNumberValidJulian(year, month, 
                LastDayOfMonthJulian(year, month))
         month += 1
     end
 
-    day = dn - DNumberJulian(year, month, 1) + 1
+    day = dn - DNumberValidJulian(year, month, 1) + 1
     return (AD, year, month, day)
 end

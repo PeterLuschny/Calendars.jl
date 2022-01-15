@@ -44,14 +44,20 @@ DNumberIso(date) = DNumberIso(date[1], date[2], date[3])
 # Computes the ISO date from a day number.
 function DateIso(dn)
 
-        year = DateGregorian(dn - 3)[2]
+    # year = DateGregorian(dn - 3)[2]
+    d = dn - 3
+    year = div(d, 366)
+    # Search forward year by year from approximate year.
+    while d >= DNumberValidGregorian(year + 1, 1, 1)
+        year += 1 
+    end
 
-        # Search forward year by year from approximate year.
-        if dn >= DNumberValidIso(year + 1, 1, 1) 
-            year += 1
-        end
-                         # Sunday : Monday..Saturday
-        day = rem(dn, 7) == 0 ? 7 : rem(dn, 7)
-        week = 1 + div(dn - DNumberValidIso(year, 1, 1), 7)
-        return (ID, year, week, day)
+    # Search forward year by year from approximate year.
+    if dn >= DNumberValidIso(year + 1, 1, 1) 
+        year += 1
+    end
+                     # Sunday : Monday..Saturday
+    day = rem(dn, 7) == 0 ? 7 : rem(dn, 7)
+    week = 1 + div(dn - DNumberValidIso(year, 1, 1), 7)
+    return (ID, year, week, day)
 end
