@@ -42,13 +42,13 @@ Alternatively you can use the acronyms "CE", "AM", "AH", "AD", or "ID" explained
 For example:
 
 ```julia
-    julia> ConvertDate((1756, 1, 27), "Gregorian", "Hebrew") 
+julia> ConvertDate((1756, 1, 27), "Gregorian", "Hebrew") 
 ```
 
 or written alternatively
 
 ```julia
-    julia> ConvertDate(1756, 1, 27, "CE", "AM")
+julia> ConvertDate(1756, 1, 27, "CE", "AM")
 ```
 
 computes from the Gregorian date (1756, 1, 27) the Hebrew date (5516, 11, 25). If 'show' is 'true' the line
@@ -64,7 +64,7 @@ A second function returns a table of the dates of all supported calendars.
 The parameters follow the same conventions as those of ConvertDate. For example:
 
 ```julia
-    julia> CalendarDates(1756, 1, 27, "Gregorian", true) 
+julia> CalendarDates(1756, 1, 27, "Gregorian", true) 
 ```
 
 computes a table, which is a tuple of five dates plus the day number. If 'show' is 'true' the table below will be printed.
