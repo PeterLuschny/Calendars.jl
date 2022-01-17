@@ -69,18 +69,23 @@ julia> CalendarDates(1756, 1, 27, "Gregorian", true)
 
 computes a table, which is a tuple of five dates plus the day number. If 'show' is 'true' the table below will be printed.
 
-        CurrentEpoch  CE 1756-01-27
-        Julian        AD 1756-01-16
-        Hebrew        AM 5516-11-25
-        Islamic       AH 1169-04-24
-        IsoDate       ID 1756-05-02
-        DayNumber     DN 641027
+```julia
+    CurrentEpoch  CE 1756-01-27
+    Julian        AD 1756-01-16
+    Hebrew        AM 5516-11-25
+    Islamic       AH 1169-04-24
+    IsoDate       ID 1756-05-02
+    DayNumber     DN 641027
+``` 
 
 The package provides additional functions; read the documentation for this.
 
 You might start exploring with a Jupyter [notebook](https://github.com/PeterLuschny/Calendars.jl/blob/main/notebook/Calendars.ipynb).
 
 ---
+
+
+### Credits
 
 We use the algorithms by Nachum Dershowitz and Edward M. Reingold, described in 'Calendrical Calculations', Software--Practice & Experience, vol. 20, no. 9 (September, 1990), pp. 899--928.
 

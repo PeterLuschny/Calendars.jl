@@ -21,14 +21,18 @@ function isValidDateIso(year, week, day)
     year >= 1 && (week in 1:lw) && (day in 1:7) 
 end
 
+# Return the days this year so far.
+function DayOfYearIso(year, week, day) 
+    day += 7 * (week - 1)  # days in prior weeks this year
+    return day - 1
+end
+
 # Computes the day number from a valid ISO date.
 function DNumberValidIso(year, week, day) 
-
+          # days in prior years
     prior = XdayOnOrBefore(DNumberGregorian(year, 1, 4), 1)
-    return ( prior             # days in prior years
-           + 7 * (week - 1)    # days in prior weeks this year
-           + (day - 1)         # prior days this week
-    )
+    day  = DayOfYearIso(year, week, day) 
+    return prior + day
 end
 
 # Computes the day number from a valid ISO date.

@@ -24,11 +24,17 @@ function isValidDateGregorian(year, month, day)
     year >= 1 && (month in 1:12) && (day in 1:ld) 
 end
 
-# Computes the day number from a valid Gregorian date.
-function DNumberValidGregorian(year, month, day) 
+# Return the days this year so far.
+function DayOfYearGregorian(year, month, day) 
     for m in (month - 1):-1:1  # days in prior months this year
         day += LastDayOfMonthGregorian(year, m)
     end
+    return day
+end
+
+# Computes the day number from a valid Gregorian date.
+function DNumberValidGregorian(year, month, day) 
+    day = DayOfYearGregorian(year, month, day) 
 
     return (day                # days this year
         + 365 * (year - 1)     # days in previous years ignoring leap days

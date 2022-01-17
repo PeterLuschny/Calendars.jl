@@ -4,7 +4,7 @@
 # This is an undocumented gadget for the Julia REPL.
 # Might be removed in later versions without notice.
 
-# using Dates
+using Dates
 
 # Interactively query the dates for all calendars in the REPL.
 function idate() 
@@ -13,10 +13,9 @@ function idate()
     nov = " is not a valid date! Try again ..."
     csv = "The calendar specifier was not valid, using CE."
 
-    # We do not want 'Dates' in the dependencies. 
-    # now = Dates.yearmonthday(Dates.now())
-    # CalendarDates(now, "CE", true)
-    # println()
+    now = Dates.yearmonthday(Dates.now())
+    CalendarDates(now, "CE", true)
+    println()
 
     while true
         println("Enter a calendar specifier:")
@@ -80,6 +79,8 @@ function idate()
                 println(e)
                 return
             end
+            #println("The ", OrdinalDate(y, m, d, cs), 
+            #        "-th day of the $cs-year.")
         end
         println()
     end

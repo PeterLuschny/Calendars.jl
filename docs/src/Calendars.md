@@ -33,12 +33,14 @@ For instance, the date of Mozart's birth is `1756-01-27`. The day number associa
 Using our conventions we can write Mozart's birthday 
 alternatively as
 
-    - Day Number     DN 641027
+```
     - Current Epoch  CE 1756-01-27
     - Julian         AD 1756-01-16
     - Hebrew         AM 5516-11-25
     - Islamic        AH 1169-04-24
-    - ISO Date       ID 1756-05-02
+    - ISO Date       ID 1756-05-02    
+    - Day Number     DN 641027
+```
 
 ## Limitations
 
@@ -59,4 +61,4 @@ Registered on [JuliaHub](https://juliahub.com/ui/Packages/Calendars/yDHMq), read
 
 - The picture shows the 'Calendar calculator', owned by Anton Ignaz Joseph Graf von Fugger-Glött, Prince-Provost of Ellwangen, Ostalbkreis, 1765 - Landesmuseum Württemberg, Stuttgart, Germany. The picture is in the public domain. 
  
-- Copyright of the Julia implementations: Peter Luschny, 2022-01-04. Licensed under the MIT license.
+- Copyright of the Julia implementations: Peter Luschny, 2022. Licensed under the MIT license.

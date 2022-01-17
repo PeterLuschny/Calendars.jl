@@ -45,7 +45,7 @@ end
 
 # Number of days in Hebrew year.
 function DaysInYearHebrew(year::Int)
-    ElapsedDaysHebrew(year + 1) - ElapsedDaysHebrew(year)
+    RoshHaShanah(year + 1) - RoshHaShanah(year)
 end
 
 # Is the date a valid Hebrew date?
@@ -57,7 +57,7 @@ end
 
 # Number of days elapsed from the Sunday prior to the start of the
 # Hebrew calendar to the mean conjunction of Tishri of Hebrew year.
-function ElapsedDaysHebrew(year)
+function RoshHaShanah(year)
     
     MonthsElapsed = ( 235 * div(year - 1, 19)  # Months in complete cycles so far.
                      + 12 * rem(year - 1, 19)  # Regular months in this cycle.
@@ -65,7 +65,7 @@ function ElapsedDaysHebrew(year)
 
     PartsElapsed = 204 + 793 * rem(MonthsElapsed, 1080)
     HoursElapsed = (5 + 12 * MonthsElapsed 
-                   + 793 * div(MonthsElapsed, 1080) + div(PartsElapsed, 1080))
+                 + 793 * div(MonthsElapsed, 1080) + div(PartsElapsed, 1080))
     ConjunctionDay = 1 + 29 * MonthsElapsed + div(HoursElapsed, 24)
     ConjunctionParts = 1080 * rem(HoursElapsed, 24) + rem(PartsElapsed, 1080)
     DayOfWeek = rem(ConjunctionDay, 7) 
@@ -84,10 +84,9 @@ function ElapsedDaysHebrew(year)
         DayOfWeek = rem(ConjunctionDay, 7)
     end
 
-    if (
-        DayOfWeek == 0     # If Rosh HaShanah would occur on Sunday,
-        || DayOfWeek == 3  # or Wednesday,
-        || DayOfWeek == 5  # or Friday
+    if ( DayOfWeek == 0  # If Rosh HaShanah would occur on Sunday,
+      || DayOfWeek == 3  # or Wednesday,
+      || DayOfWeek == 5  # or Friday
     ) 
       # Then postpone it one (more) day
       ConjunctionDay += 1
@@ -96,30 +95,34 @@ function ElapsedDaysHebrew(year)
     return ConjunctionDay
 end
 
-# Computes the day number from a valid Hebrew date.
-function DNumberValidHebrew(year, month, day) 
-
-    DayInYear = EpochHebrew + ElapsedDaysHebrew(year) + day 
+# Return the days this year so far.
+function DayOfYearHebrew(year, month, day) 
+    DaysInYear = day 
     if month < 7   # Before Tishri, so add days in prior months
 
         MonthInYear = LastMonthOfYearHebrew(year)
 
         # this year before and after Nisan.
         for m in 7:MonthInYear
-            DayInYear += LastDayOfMonthHebrew(year, m)
+            DaysInYear += LastDayOfMonthHebrew(year, m)
         end
 
         for m in 1:month - 1
-            DayInYear += LastDayOfMonthHebrew(year, m)
+            DaysInYear += LastDayOfMonthHebrew(year, m)
         end
 
     else # Add days in prior months this year
         for m in 7:month - 1
-            DayInYear += LastDayOfMonthHebrew(year, m)
+            DaysInYear += LastDayOfMonthHebrew(year, m)
         end 
     end
+    return DaysInYear
+end
 
-    return DayInYear 
+# Computes the day number from a valid Hebrew date.
+function DNumberValidHebrew(year, month, day) 
+    DayInYear = DayOfYearHebrew(year, month, day)
+    return DayInYear + EpochHebrew + RoshHaShanah(year)
 end
 
 # Computes the day number of a valid Hebrew date.

@@ -21,11 +21,17 @@ function isValidDateJulian(year, month, day)
     year >= 1 && (month in 1:12) && (day in 1:ld) 
 end
 
-# Returns the day number from the Julian date.
-function DNumberValidJulian(year, month, day)
-    for m in (month-1):-1:1  # days in prior months this year
+# Return the days this year so far.
+function DayOfYearJulian(year, month, day) 
+    for m in (month - 1):-1:1  # days in prior months this year
         day += LastDayOfMonthJulian(year, m)
     end
+    return day
+end
+
+# Returns the day number from a valid Julian date.
+function DNumberValidJulian(year, month, day)
+    day = DayOfYearJulian(year, month, day) 
 
     return (EpochJulian      # days elapsed before absolute date 1
         + 365 * (year - 1)   # days in previous years ignoring leap days

@@ -246,6 +246,13 @@ CalendarDates(6901, 2, 9, AM, true); println()
 CalendarDates(2597, 2,10, AH, true); println()
 end
 
+function TestDuration()
+    Duration((2022, 1, 1), "CE", (2022, 1, 1), "ID", true)
+    Duration((2022, 1, 1), "ID", (2022, 1, 1), "CE", true)
+    Duration((2022, 1, 1), "CE", (2022, 1, 1), "CE", true)
+    Duration((2022, 1, 1), "ID", (2022, 1, 3), "CE", true)
+end
+
 TestDateGregorian(); println()
 TestDateJulian();    println()
 TestDateHebrew();    println()
@@ -258,7 +265,31 @@ TestConversions2();  println()
 TestDateTables()
 TestCalenderDates()
 
+#=
+function TestDayOfYear()
+    date = (2022, 1, 1)
+    for c in [CE, AD, AM, AH, ID]  
+        println(CDate(c, date), " ::", lpad(DayOfYear(date, c),  4, " "))
+    end
+    date = (1756,  1, 27)
+    for c in [CE, AD, AM, AH, ID]  
+        println(CDate(c, date), " ::", lpad(DayOfYear(date, c),  4, " "))
+    end
+    date = (1949, 11, 29)
+    for c in [CE, AD, AM, AH, ID]  
+        println(CDate(c, date), " ::", lpad(DayOfYear(date, c),  4, " "))
+    end
+    date = (1990, 10, 20)  
+    for c in [CE, AD, AM, AH, ID]  
+        println(CDate(c, date), " ::", lpad(DayOfYear(date, c),  4, " "))
+    end
+end
+
+TestDayOfYear(); println()
+
 println("Today in all calendars:\n")
 now = Dates.yearmonthday(Dates.now())
 CalendarDates(now, "CE", true)
- 
+println("Today is the ", DayOfYear(now, "CE"), 
+"-th day of the year ", now[1], " in the Gregorian calendar.")
+=#
