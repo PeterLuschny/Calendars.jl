@@ -11,9 +11,9 @@
 
 module Calendars
 
-export DNumberFromDate, DateFromDNumber, ConvertDate, CalendarDates 
-export DateStr, CDate, DateTable, PrintDateTable, isValidDate
-export Duration, idate 
+export DayNumberFromDate, DateFromDayNumber, ConvertDate, CalendarDates 
+export CDate, CDateStr, DateStr, DateTable, PrintDateTable, isValidDate
+export Duration, idate
 
 include("CalendarUtils.jl")
 include("GregorianCalendar.jl")
@@ -26,32 +26,30 @@ include("REPLCalendar.jl")
 """
 
 ```julia
-DNumberFromDate(date::Tuple{Int, Int, Int},
-                calendar::String, show::Bool)
+DayNumberFromDate(date::Cdate, show::Bool)
 ```
 
 Return the day number correspondig to the calendar date.
 
-    * The date is an integer triple (year, month, day).
-    The parts of the date can be given as a triple or 
-    individually one after the other.
-
-    * The calendar is "Gregorian", "Hebrew", "Islamic", 
-    "Julian", or "IsoDate". Alternatively use the acronyms
-    "CE", "AM", "AH", "AD" and "ID".  
+    * The date is a tuple (calendar, year, month, day).
+    The parts of the date can be given as a tuple or 
+    individually part by part. The calendar is 
+    "Gregorian", "Hebrew", "Islamic", "Julian", 
+    or "IsoDate". Alternatively the acronyms
+    "CE", "AM", "AH", "AD" and "ID" can be used.  
 
     * If the optional parameter 'show' is set to 'true',
     date and number are printed. 'show' is 'false' by
     default.
 
 ```julia
-julia> DNumberFromDate((1756, 1, 27), "Gregorian") 
+julia> DayNumberFromDate("Gregorian", 1756, 1, 27) 
 ```
 
 Alternatively you can write
 
 ```julia
-julia> DNumberFromDate(1756, 1, 27, "CE") 
+julia> DayNumberFromDate("CE", 1756, 1, 27) 
 ```
 
     Returns the day number 641027. If 'show' is 'true'
@@ -60,39 +58,37 @@ julia> DNumberFromDate(1756, 1, 27, "CE")
     If an error occurs 0 (representing the invalid day 
     number) is returned.
 """
-function DNumberFromDate(date::Tuple{Int, Int, Int}, calendar::String, show=false)
-
-    # Use a symbol for the calendar name.
-    cname = CName(calendar)
-    if cname == CE 
-        dn = DNumberGregorian(date)
-    elseif cname == AD
-        dn = DNumberJulian(date)
-    elseif cname == AM
-        dn = DNumberHebrew(date)
-    elseif cname == AH
-        dn = DNumberIslamic(date)
-    elseif cname == ID
-        dn = DNumberIso(date)
+function DayNumberFromDate(d::CDate, show=false)
+    calendar = CName(d[1])
+    if calendar == CE 
+        dn = DNumberGregorian(d)
+    elseif calendar == AD
+        dn = DNumberJulian(d)
+    elseif calendar == AM
+        dn = DNumberHebrew(d)
+    elseif calendar == AH
+        dn = DNumberIslamic(d)
+    elseif calendar == ID
+        dn = DNumberIso(d)
     else
         @warn("Unknown calendar: $calendar")
-        return 0
+        return InvalidDayNumber
     end
 
     if show
-        println(CDate(cname, date), " -> ", CDate(DN, dn))
+        println(CDateStr(d), " -> ", CDateStr(dn))
     end
     return dn 
 end
 
-DNumberFromDate(year::Int, month::Int, day::Int, calendar::String, show=false) =
-DNumberFromDate((year, month, day), calendar, show) 
+DayNumberFromDate(calendar::String, year::Int64, month::Int64, day::Int64, show=false) =
+DayNumberFromDate((calendar, year, month, day),  show) 
 
 
 """
 
 ```julia
-DateFromDNumber(dn::Int, calendar::String, show::Bool)
+DateFromDayNumber(dn::Int64, calendar::String, show::Bool)
 ```
 
 Return the calendar date from a day number.
@@ -108,13 +104,13 @@ Return the calendar date from a day number.
     default.
 
 ```julia
-julia> DateFromDNumber(641027, "Gregorian") 
+julia> DateFromDayNumber(641027, "Gregorian") 
 ```
 
 Alternatively you can write
 
 ```julia
-julia> DateFromDNumber(641027, "CE") 
+julia> DateFromDayNumber(641027, "CE") 
 ```
 
     Returns the date (CE, 1756, 1, 27). If 'show' is 
@@ -124,18 +120,18 @@ julia> DateFromDNumber(641027, "CE")
     If an error occurs "00 0000 00 00" (representing 
     the invalid date) is returned.
 """
-function DateFromDNumber(dn::Int, calendar::String, show=false)
+function DateFromDayNumber(dn::Int64, calendar::String, show=false)
     # Use a symbol for the calendar name.
-    cname = CName(calendar)
-    if cname == CE
+    cal = CName(calendar)
+    if cal == CE
         date = DateGregorian(dn)
-    elseif cname == AD
+    elseif cal == AD
         date = DateJulian(dn)
-    elseif cname == AM
+    elseif cal == AM
         date = DateHebrew(dn)
-    elseif cname == AH
+    elseif cal == AH
         date = DateIslamic(dn) 
-    elseif cname == ID
+    elseif cal == ID
         date = DateIso(dn) 
     else
         @warn("Unknown calendar: $calendar")
@@ -143,7 +139,7 @@ function DateFromDNumber(dn::Int, calendar::String, show=false)
     end
 
     if show 
-        println(CDate(DN, dn), " -> ", CDate(date))
+        println(CDateStr(DN, dn), " -> ", CDateStr(date))
     end
     return date 
 end
@@ -151,18 +147,19 @@ end
 """
 
 ```julia
-ConvertDate(date::Tuple{Int, Int, Int}, 
-            from::String, to::String, show::Bool)
+ConvertDate(date::CDate, to::String, show::Bool)
 ```
 
-Convert a date represented by the calendar 'from' to the
-representation of the date in the calendar 'to'.
+Convert the given date to a date in the calendar 'to'.
 
-    * The date is an integer triple (year, month, day).
-    The parts of the date can be given as a triple or
-    individually one after the other.
+    * The date is a tuple (calendar, year, month, day).
+    The parts of the date can be given as a tuple or 
+    individually part by part. The calendar is 
+    "Gregorian", "Hebrew", "Islamic", "Julian", 
+    or "IsoDate". Alternatively the acronyms
+    "CE", "AM", "AH", "AD" and "ID" can be used. 
     
-    * The 'from' and 'to' is "Gregorian", "Hebrew",
+    * 'to' is the name of a calendar, "Gregorian", "Hebrew",
     "Islamic", "Julian", or "IsoDate". Alternatively use
     the acronyms "CE", "AM", "AH", "AD" or "ID".
     
@@ -170,40 +167,40 @@ representation of the date in the calendar 'to'.
     both dates are printed. 'show' is 'false' by default.
 
 ```julia
-julia> ConvertDate((1756, 1, 27), "Gregorian", "Hebrew") 
+julia> ConvertDate(("Gregorian", 1756, 1, 27), "Hebrew") 
 ```
 
 Alternatively you can write
 
 ```julia
-julia> ConvertDate(1756, 1, 27, "CE", "AM") 
+julia> ConvertDate("CE", 1756, 1, 27, "AM") 
 ```
 
-    Computes from the Gregorian date (1756, 1, 27) the 
-    Hebrew date (5516, 11, 25). If 'show' is 'true' the 
+    Converts the Gregorian date ("CE", 1756, 1, 27) to the 
+    Hebrew date ("AM", 5516, 11, 25). If 'show' is 'true' the 
     line "CE 1756-01-27 -> AM 5516-11-25" is printed.
 """
-function ConvertDate(date::Tuple{Int, Int, Int}, 
-                     from::String, to::String, show=false)
-
-    (CName(from) == XX || CName(to) == XX) && return InvalidDate
-    
-    dn = DNumberFromDate(date, from)
-    rdate = DateFromDNumber(dn, to)  
-    show  && println(CDate(CName(from), date), " -> ", CDate(rdate))
+function ConvertDate(date::CDate, to::String, show=false)
+    inc = CName(date[1]) 
+    toc = CName(to)
+    (inc == XX || toc == XX) && return InvalidDate
+    d = (inc, date[2], date[3], date[4])
+    ! isValidDate(d) && return InvalidDate
+    dn = DayNumberFromDate(d)
+    rdate = DateFromDayNumber(dn, toc)  
+    show && println(CDateStr(date), " -> ", CDateStr(rdate))
 
     return rdate 
 end
 
-ConvertDate(year::Int, month::Int, day::Int, from::String, to::String, show=false) = 
-ConvertDate((year, month, day), from, to, show) 
+ConvertDate(calendar::String, year::Int, month::Int, day::Int, to::String, show=false) = 
+ConvertDate((CName(calendar), year, month, day), to, show) 
 
 
 """
 
 ```julia
-CalendarDates(date::Tuple{Int, Int, Int}, 
-              calendar::String, show::Bool)
+CalendarDates(date::CDate, show::Bool)
 ```
 
 Return a table of the dates of all supported calendars. 
@@ -222,13 +219,13 @@ Return a table of the dates of all supported calendars.
     default.
 
 ```julia
-julia> CalendarDates((1756, 1, 27), "Gregorian", true) 
+julia> CalendarDates(("Gregorian", 1756, 1, 27),  true) 
 ```
 
 Alternatively you can write
 
 ```julia
-julia> CalendarDates(1756, 1, 27, "CE", true) 
+julia> CalendarDates("CE", 1756, 1, 27, true) 
 ```
 
     Computes a 'DateTable', which is the day number plus 
@@ -243,30 +240,29 @@ julia> CalendarDates(1756, 1, 27, "CE", true)
     DayNumber     DN 641027
 ```
 """
-function CalendarDates(date::Tuple{Int, Int, Int}, calendar="CE", show=false)
+function CalendarDates(date::CDate, show=false)
 
-    dn = DNumberFromDate(date, calendar)
-    DNumber = (DN, 0, 0, dn)
-    CEdate = DateFromDNumber(dn, CE)
-    ADdate = DateFromDNumber(dn, AD)
-    AMdate = DateFromDNumber(dn, AM)
-    AHdate = DateFromDNumber(dn, AH)
-    IDdate = DateFromDNumber(dn, ID)
-    
-    Table = (CEdate, ADdate, AMdate, AHdate, IDdate, DNumber)
+    dn = DayNumberFromDate(date)
+    Table = (
+        DateFromDayNumber(dn, CE),
+        DateFromDayNumber(dn, AD),
+        DateFromDayNumber(dn, AM),
+        DateFromDayNumber(dn, AH),
+        DateFromDayNumber(dn, ID),
+        (DN, 0, 0, dn)
+    )
     show && PrintDateTable(Table)
     return Table
 end
 
-CalendarDates(year::Int, month::Int, day::Int, calendar="CE", show=false) = 
-CalendarDates((year, month, day), calendar, show) 
+CalendarDates(calendar::String, year::Int, month::Int, day::Int,
+show=false) = CalendarDates((calendar, year, month, day), show) 
 
 
 """
 
 ```julia
-isValidDate(year::Int, month::Int, day::Int, 
-            calendar::String)::Bool
+isValidDate(date::CDate)::Bool
 ```
 
 Query if the given date is a valid date in the given
@@ -281,32 +277,30 @@ calendar.
     "CE", "AM", "AH", "AD" or "ID".
 
 ```julia
-julia> isValidDate((1756, 1, 27), "Gregorian") 
+julia> isValidDate(("Gregorian", 1756, 1, 27)) 
 ```
 
 Alternatively you can write
 
 ```julia
-julia> isValidDate(1756, 1, 27, "CE") 
+julia> isValidDate("CE", 1756, 1, 27) 
 ```
 
     This query affirms that 1756-01-27 is a valid Gregorian
     date.
 """
-function isValidDate(year::Int, month::Int, day::Int, calendar::String)  
-
-    # Use a symbol for the calendar name.
-    cname = CName(calendar)
-    if cname == CE
-        val = isValidDateGregorian(year, month, day)
-    elseif cname == AD
-        val = isValidDateJulian(year, month, day)
-    elseif cname == AM
-        val = isValidDateHebrew(year, month, day)
-    elseif cname == AH
-        val = isValidDateIslamic(year, month, day)
-    elseif cname == ID
-        val = isValidDateIso(year, month, day)
+function isValidDate(d::CDate)  
+    calendar = CName(d[1])
+    if calendar == CE
+        val = isValidDateGregorian(d)
+    elseif calendar == AD
+        val = isValidDateJulian(d)
+    elseif calendar == AM
+        val = isValidDateHebrew(d)
+    elseif calendar == AH
+        val = isValidDateIslamic(d)
+    elseif calendar == ID
+        val = isValidDateIso(d)
     else
         @warn("Unknown calendar: $calendar")
         return false
@@ -314,7 +308,7 @@ function isValidDate(year::Int, month::Int, day::Int, calendar::String)
     return val
 end
 
-isValidDate(date::Tuple{Int, Int, Int}, calendar::String) = 
-isValidDate(date[1], date[2], date[3], calendar) 
+isValidDate(calendar::String, year::Int64, month::Int64, day::Int64) = 
+isValidDate((calendar, year, month, day)) 
 
 end # module

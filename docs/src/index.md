@@ -1,10 +1,10 @@
 # Functions
 
 ```@docs
-DNumberFromDate
+DayNumberFromDate
 ```
 ```@docs
-DateFromDNumber
+DateFromDayNumber
 ```
 ```@docs
 ConvertDate

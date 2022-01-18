@@ -7,32 +7,36 @@
 const EpochIslamic = 227014 
 
 # True if year is an Islamic leap year.
-function isLeapYearIslamic(year)
+function isLeapYearIslamic(year::Int64)::Bool
     return rem(11 * year + 14, 30) < 11
 end
 
 # Last month of Islamic year.
-function LastMonthOfYearIslamic(year)
+function LastMonthOfYearIslamic(year::Int64)
     isLeapYearIslamic(year) ? 13 : 12
 end
 
 # Last day in month during year on the Islamic calendar.
-function LastDayOfMonthIslamic(year, month)
+function LastDayOfMonthIslamic(year::Int64, month::Int64)
     b = (rem(month, 2) == 1 
-        || (month == 12 && isLeapYearIslamic(year)))
+      || (month == 12 && isLeapYearIslamic(year)))
     return b ? 30 : 29
 end
 
 # Is the date a valid Islamic date?
-function isValidDateIslamic(year, month, day)
-    lm = LastMonthOfYearIslamic(year)
-    ld = LastDayOfMonthIslamic(year, month)
-    year >= 1 && (month in 1:lm) && (day in 1:ld) 
+function isValidDateIslamic(d::CDate)
+    d[1] != AH && return false
+    lm = LastMonthOfYearIslamic(d[2])
+    ld = LastDayOfMonthIslamic(d[2], d[3])
+    b = (d[2] >= 1) && (d[3] in 1:lm) && (d[4] in 1:ld) 
+    !b && @warn("$d is not a valid Islamic date!")
+    return b
 end
 
 # Return the days this year so far.
-function DayOfYearIslamic(year, month, day) 
-                        # days so far this month
+# Does not depend on 'year' but kept in the signature.
+function DayOfYearIslamic(year::Int64, month::Int64, day::Int64) 
+    # days so far this month plus ...
     day += ( 29 * (month - 1)   # days so far...
         + div(month, 2)         #   ...this year
     )
@@ -40,29 +44,38 @@ function DayOfYearIslamic(year, month, day)
 end
 
 # Computes the day number from a valid Islamic date.
-function DNumberValidIslamic(year, month, day)
+function DNumberValidIslamic(year::Int64, month::Int64, day::Int64)
 
     day = DayOfYearIslamic(year, month, day)
-    days = (EpochIslamic         # days before start of calendar 
-        + 354 * (year - 1)       # non-leap days in prior years
-        + div(3 + 11 * year, 30) # leap days in prior years
+    days = (EpochIslamic          # days before start of calendar 
+         + 354 * (year - 1)       # non-leap days in prior years
+         + div(3 + 11 * year, 30) # leap days in prior years
     )
     return day + days
 end
 
 # Computes the day number from a valid Islamic date.
-DNumberValidIslamic(date) = DNumberValidIslamic(date[1], date[2], date[3])
+DNumberValidIslamic(d::CDate) = DNumberValidIslamic(d[2], d[3], d[4])
 
 # Computes the day number from a date which might not be a valid Islamic date.
-DNumberIslamic(year, month, day) = 
-(isValidDateIslamic(year, month, day) ? DNumberValidIslamic(year, month, day) : 0)
+function DNumberIslamic(year::Int64, month::Int64, day::Int64)  
+    if isValidDateIslamic((AH, year, month, day)) 
+        return DNumberValidIslamic(year, month, day)
+    end
+    return InvalidDayNumber
+end
 
 # Computes the day number from a date which might not be a valid Islamic date.
-DNumberIslamic(date) = DNumberIslamic(date[1], date[2], date[3])
+function DNumberIslamic(d::CDate) 
+    if isValidDateIslamic((AH, d[2], d[3], d[4]))
+        return DNumberValidIslamic(d[2], d[3], d[4])
+    end
+    return InvalidDayNumber
+end
 
 # Computes the Islamic date from the day number.
-function DateIslamic(dn)
-    if dn < EpochIslamic  # Date is pre-Islamic
+function DateIslamic(dn::Int64)
+    if dn < EpochIslamic  # date is pre-Islamic
         @warn(Warning(AH))
         return InvalidDate
     end

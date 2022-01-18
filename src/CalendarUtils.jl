@@ -10,6 +10,21 @@ AH = :"AH"  # Anno Hegirae
 ID = :"ID"  # ISO Date
 XX = :"00"  # Unknown 
 
+# Return symbolic name representing a calendar. 
+function CName(calendar) # CName = CalendarName 
+    (calendar == "CurrentEpoch" || calendar == "Gregorian" 
+    || calendar == "CE") && return CE
+    (calendar == "Julian"    || calendar == "AD") && return AD
+    (calendar == "Hebrew"    || calendar == "AM") && return AM
+    (calendar == "Islamic"   || calendar == "AH") && return AH
+    (calendar == "IsoDate"   || calendar == "ID") && return ID
+    (calendar == "DayNumber" || calendar == "DN") && return DN
+    @warn("Unknown calendar: $calendar")
+    return XX
+end
+
+const InvalidDayNumber = Int64(0)
+const InvalidDuration = Int64(-1)
 const InvalidDate = (XX, 0, 0, 0)
 const InvalidDateString = "0000-00-00"
 
@@ -24,23 +39,11 @@ CalendarSpecifiers = Dict{String, String}(
     "00" => "INVALID     "
 )
 
-# Return symbolic name representing a calendar. 
-function CName(calendar) # CName = CalendarName 
-    (calendar == "CurrentEpoch" || calendar == "Gregorian" 
-    || calendar == "CE") && return CE
-    (calendar == "Julian"    || calendar == "AD") && return AD
-    (calendar == "Hebrew"    || calendar == "AM") && return AM
-    (calendar == "Islamic"   || calendar == "AH") && return AH
-    (calendar == "IsoDate"   || calendar == "ID") && return ID
-    (calendar == "DayNumber" || calendar == "DN") && return DN
-    @warn("Unknown calendar: $calendar")
-    return XX
-end
+const CDate = Tuple{String, Int64, Int64, Int64}
 
 function DateStr(year, month, day)
-    # Invalid date
     if year <= 0 || month <= 0 || day <= 0
-        return "0000-00-00"
+        return "0000-00-00"   # Invalid date
     else
         y = lpad(year,  4, "0")
         m = lpad(month, 2, "0")
@@ -49,32 +52,30 @@ function DateStr(year, month, day)
     return "$y-$m-$d"
 end
 
-DateStr(d::Tuple{Int, Int, Int}) = DateStr(d[1], d[2], d[3]) 
+DateStr(d::CDate) = DateStr(d[2], d[3], d[4]) 
 
-# CDate = CalendarDate
-function CDate(c, year, month, day)
-    if c == DN 
-        s = lpad(day, 7, "0")
+function CDateStr(d::CDate)
+    if d[1] == DN 
+        s = lpad(d[4], 7, "0")
     else
-        s = DateStr(year, month, day)
+        s = DateStr(d[2], d[3], d[4])
     end
-    return "$c $s"
+    return "$(d[1]) $s"
 end
+CDateStr(day::Int64) = CDateStr((DN, 0, 0, day))
+CDateStr(cal::String, d::Tuple{Int64, Int64, Int64}) = 
+CDateStr((cal, d[1], d[2], d[3]))
 
-CDate(c, d::Int) = CDate(c, 0, 0, d)
-CDate(c, d::Tuple{Int, Int, Int}) = CDate(c, d[1], d[2], d[3])
-CDate(d) = CDate(d[1], d[2], d[3], d[4])
-
-
-DateTable = NTuple{6, Tuple{String, Int64, Int64, Int64}}
+# Typename  
+DateTable = NTuple{6, CDate}
 
 function PrintDateTable(D)
     for d in D
-        println(CalendarSpecifiers[d[1]], " ", CDate(d))
+        println(CalendarSpecifiers[d[1]], " ", CDateStr(d))
     end
 end
 
-Warning(d) = "Date is prior to epoch " * d
+Warning(d) = "Date is prior to epoch " * string(d)
 
 
 # Given two dates d1 = (c1, y1, m1, d1) and d2 = (c2, y2, m2, d2),
@@ -94,22 +95,21 @@ Warning(d) = "Date is prior to epoch " * d
 #
 # Example: Duration((2022, 1, 1), "CE", (2022, 1, 1), "ID", true)
 # julia> CE 2022-01-01 -- ID 2022-01-01 -> Duration 2
-function Duration(first::Tuple{Int, Int, Int}, cal1::String, 
-                  bound::Tuple{Int, Int, Int}, cal2::String, show=false)
-    if isValidDate(first, cal1) && isValidDate(bound, cal2)
-        a = DNumberFromDate(first, cal1)
-        b = DNumberFromDate(bound, cal2)
-        dur = abs(b - a)
+function Duration(a::CDate, b::CDate, show=false)
+    if isValidDate(a) && isValidDate(b)
+        an = DayNumberFromDate(a)
+        bn = DayNumberFromDate(b)
+        dur = abs(bn - an)
         
         if show
-            ad = CDate(CName(cal1), first)
-            bd = CDate(CName(cal2), bound)
+            ad = CDateStr(a)
+            bd = CDateStr(b)
             show && println(ad, " <--> ", bd, " -> Duration ", dur)
         end
         return dur 
     end
-    @warn("Invalid Date: $cal1 $first $cal2 $bound")
-    return -1
+    @warn("Invalid Date: $a $b")
+    return InvalidDuration
 end
 
 #=
@@ -121,6 +121,6 @@ function DayOfLife(birthdate)
         return Duration(birthdate, CE, now, CE) + 1
     end
     @warn("Invalid Date: CE $birthdate")
-    return -1
+    return InvalidDuration
 end
 =#

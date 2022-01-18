@@ -14,7 +14,7 @@ function idate()
     csv = "The calendar specifier was not valid, using CE."
 
     now = Dates.yearmonthday(Dates.now())
-    CalendarDates(now, "CE", true)
+    CalendarDates(("CE", now), true)
     println()
 
     while true
@@ -70,11 +70,12 @@ function idate()
             return
         end
         println()
-        if ! isValidDate(y, m, d, cs) 
-            println(DateStr(y, m, d) * nov)
+        date = (cs, y, m, d)
+        if ! isValidDate(date) 
+            println(CDateStr(date), nov)
         else
             try
-                CalendarDates(y, m, d, cs, true)
+                CalendarDates(date, true)
             catch e
                 println(e)
                 return

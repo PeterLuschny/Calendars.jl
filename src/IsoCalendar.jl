@@ -5,30 +5,35 @@
 # x = 0 means Sunday, x = 1 means Monday, and so on.
 XdayOnOrBefore(dn, x) = dn - rem(dn - x, 7)
 
-function isLeapYearIso(year)
+function isLeapYearIso(year::Int64)
     f(y) = rem(y + div(y, 4) - div(y, 100) + div(y, 400), 7) 
     f(year) == 4 || f(year - 1) == 3
 end
 
 # Return the last week of the year for the Iso calendar.
-function LastWeekOfYearIso(year)
+function LastWeekOfYearIso(year::Int64)
     isLeapYearIso(year) ? 53 : 52
 end
 
 # Is the date a valid Iso date?
-function isValidDateIso(year, week, day)
-    lw = LastWeekOfYearIso(year)
-    year >= 1 && (week in 1:lw) && (day in 1:7) 
+function isValidDateIso(d::CDate)
+    d[1] != ID && return false
+    lw = LastWeekOfYearIso(d[2])
+    # of course "d[3]" is a misnomer but does not hurt
+    b = d[2] >= 1 && (d[3] in 1:lw) && (d[4] in 1:7) 
+    !b && @warn(Warning(ID))
+    return b
 end
 
 # Return the days this year so far.
-function DayOfYearIso(year, week, day) 
+# Does not depend on 'year' but kept in the signature.
+function DayOfYearIso(year::Int64, week::Int64, day::Int64) 
     day += 7 * (week - 1)  # days in prior weeks this year
     return day - 1
 end
 
 # Computes the day number from a valid ISO date.
-function DNumberValidIso(year, week, day) 
+function DNumberValidIso(year::Int64, week::Int64, day::Int64) 
           # days in prior years
     prior = XdayOnOrBefore(DNumberGregorian(year, 1, 4), 1)
     day  = DayOfYearIso(year, week, day) 
@@ -36,17 +41,26 @@ function DNumberValidIso(year, week, day)
 end
 
 # Computes the day number from a valid ISO date.
-DNumberValidIso(date) = DNumberValidIso(date[1], date[2], date[3])
+DNumberValidIso(d::CDate) = DNumberValidIso(d[2], d[3], d[4])
 
 # Computes the day number from a date which might not be a valid Iso date.
-DNumberIso(year, week, day) = 
-(isValidDateIso(year, week, day) ? DNumberValidIso(year, week, day) : 0)
+function DNumberIso(year::Int64, month::Int64, day::Int64)  
+    if isValidDateIso((ID, year, month, day)) 
+        return DNumberValidIso(year, month, day) 
+    end
+    return InvalidDayNumber
+end
 
 # Computes the day number from a date which might not be a valid Iso date.
-DNumberIso(date) = DNumberIso(date[1], date[2], date[3])
+function DNumberIso(d::CDate)  
+    if isValidDateIso((ID, d[2], d[3], d[4]))
+        return DNumberValidIso(d[2], d[3], d[4])
+    end
+    return InvalidDayNumber
+end
 
 # Computes the ISO date from a day number.
-function DateIso(dn)
+function DateIso(dn::Int64)
 
     # year = DateGregorian(dn - 3)[2]
     d = dn - 3
