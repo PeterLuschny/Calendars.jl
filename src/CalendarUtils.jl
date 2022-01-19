@@ -24,6 +24,7 @@ function CName(calendar) # CName = CalendarName
 end
 
 const InvalidDayNumber = Int64(0)
+const InvalidDayOfYear = Int64(0)
 const InvalidDuration = Int64(-1)
 const InvalidDate = (XX, 0, 0, 0)
 const InvalidDateString = "0000-00-00"
@@ -54,13 +55,14 @@ end
 
 DateStr(d::CDate) = DateStr(d[2], d[3], d[4]) 
 
-function CDateStr(d::CDate)
-    if d[1] == DN 
-        s = lpad(d[4], 7, "0")
+function CDateStr(cd::CDate)
+    cal, year, month, day = cd
+    if cal == DN 
+        s = lpad(day, 7, "0")
     else
-        s = DateStr(d[2], d[3], d[4])
+        s = DateStr(year, month, day)
     end
-    return "$(d[1]) $s"
+    return "$cal $s"
 end
 CDateStr(day::Int64) = CDateStr((DN, 0, 0, day))
 CDateStr(cal::String, d::Tuple{Int64, Int64, Int64}) = 
@@ -76,51 +78,3 @@ function PrintDateTable(D)
 end
 
 Warning(d) = "Date is prior to epoch " * string(d)
-
-
-# Given two dates d1 = (c1, y1, m1, d1) and d2 = (c2, y2, m2, d2),
-# and assume without loss of generality d1 <= d2.
-# Period(d1, d2) = { date | DNumber(d1) <= DNumber(date) < DNumber(d2) }
-
-# This means that a /period/ is a half-open interval in the calendar, 
-# where the start date d1 is inclusive but the end date d2 is exclusive. 
-# Thus Period(d1, d2) represents the set of /ellapsed days/ since d1,
-# limited by date d2.
-
-# Duration(d1, d2) = Cardinality(Period(d1, d2))
-# We compute Duration(d1, d2) = Abs(DNumber(d2) - DNumber(d1)).
-# /Duration/ is a measure and symmetric in the variables.
-# The setup makes it possible to consider time periods even when
-# the start and end dates are given in different calendars.
-#
-# Example: Duration((2022, 1, 1), "CE", (2022, 1, 1), "ID", true)
-# julia> CE 2022-01-01 -- ID 2022-01-01 -> Duration 2
-function Duration(a::CDate, b::CDate, show=false)
-    if isValidDate(a) && isValidDate(b)
-        an = DayNumberFromDate(a)
-        bn = DayNumberFromDate(b)
-        dur = abs(bn - an)
-        
-        if show
-            ad = CDateStr(a)
-            bd = CDateStr(b)
-            show && println(ad, " <--> ", bd, " -> Duration ", dur)
-        end
-        return dur 
-    end
-    @warn("Invalid Date: $a $b")
-    return InvalidDuration
-end
-
-#=
-using Dates 
-# DayOfLife is an OrdinalDate, not a Duration!
-function DayOfLife(birthdate) 
-    if isValidDate(birthdate, CE) 
-        now = Dates.yearmonthday(Dates.now())
-        return Duration(birthdate, CE, now, CE) + 1
-    end
-    @warn("Invalid Date: CE $birthdate")
-    return InvalidDuration
-end
-=#

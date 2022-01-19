@@ -23,10 +23,10 @@ function TestDateGregorian()
         ] 
 
     for date in SomeDateGregorian
-        # dn = DNumberGregorian(date)
+        # dn = DayNumberGregorian(date)
         # gdate = DateGregorian(dn) 
         dn = DayNumberFromDate(date)
-        gdate = DateFromDayNumber(dn, "Gregorian")
+        gdate = DateFromDayNumber("Gregorian", dn)
         @test gdate == ("CE", date[2], date[3], date[4])
         println(CDateStr(date), " -> ", CDateStr(dn), " -> ", CDateStr(gdate))
     end
@@ -52,10 +52,10 @@ function TestDateJulian()
         ] 
 
     for date in SomeDateJulian
-        #dn = DNumberJulian(date)
+        #dn = DayNumberJulian(date)
         #jdate = DateJulia(dn) 
         dn = DayNumberFromDate(date)
-        jdate = DateFromDayNumber(dn, "Julian")
+        jdate = DateFromDayNumber("Julian", dn)
         @test jdate == ("AD", date[2], date[3], date[4]) 
         println(CDateStr(date), " -> ", CDateStr(dn), " -> ", CDateStr(jdate))
     end
@@ -79,10 +79,10 @@ function TestDateHebrew()
         ]
 
     for date in SomeDateHebrew
-        # dn = DNumberHebrew(date)
+        # dn = DayNumberHebrew(date)
         # hdate = DateHebrew(dn) 
         dn = DayNumberFromDate(date)
-        hdate = DateFromDayNumber(dn, "Hebrew")
+        hdate = DateFromDayNumber("Hebrew", dn)
         @test hdate == ("AM", date[2], date[3], date[4])
         println(CDateStr(date), " -> ", CDateStr(dn), " -> ", CDateStr(hdate))
     end
@@ -106,10 +106,10 @@ function TestDateIslamic()
         ] 
 
     for date in SomeDateIslamic
-        # dn = DNumberIslamic(date)
+        # dn = DayNumberIslamic(date)
         # idate = DateIslamic(dn) 
         dn = DayNumberFromDate(date)
-        idate = DateFromDayNumber(dn, "Islamic")
+        idate = DateFromDayNumber("Islamic", dn)
         @test idate == ("AH", date[2], date[3], date[4])
         println(CDateStr(date), " -> ", CDateStr(dn), " -> ", CDateStr(idate))
     end
@@ -132,10 +132,10 @@ function TestDateIso()
         ] 
 
     for date in SomeDateIso
-        # dn = DNumberIso(date)
+        # dn = DayNumberIso(date)
         # idate = IsoDate(dn) 
         dn = DayNumberFromDate(date)
-        idate = DateFromDayNumber(dn, "IsoDate")
+        idate = DateFromDayNumber("IsoDate", dn)
         @test idate == ("ID", date[2], date[3], date[4])
         println(CDateStr(date), " -> ", CDateStr(dn), " -> ", CDateStr(idate))
     end
@@ -275,10 +275,31 @@ function TestCalenderDates()
 end
 
 function TestDuration()
-    Duration((CE, 2022, 1, 1), (ID, 2022, 1, 1), true)
-    Duration((ID, 2022, 1, 1), (CE, 2022, 1, 1), true)
-    Duration((CE, 2022, 1, 1), (CE, 2022, 1, 1), true)
-    Duration((ID, 2022, 1, 1), (CE, 2022, 1, 3), true)
+    Duration((CE, 2022, 1, 1), (ID, 2022, 1, 1), true) 
+    Duration((ID, 2022, 1, 1), (CE, 2022, 1, 1), true) 
+    Duration((CE, 2022, 1, 1), (CE, 2022, 1, 1), true) 
+    Duration((ID, 2022, 1, 1), (CE, 2022, 1, 3), true) 
+
+    # DayOfLife is an OrdinalDate, not a Duration!
+    function DayOfLife(birthdate::CDate) 
+        if isValidDate(birthdate) 
+            y, m, d = Dates.yearmonthday(Dates.now())
+            return Duration(birthdate, (CE, y, m, d)) + 1
+        end
+        @warn("Invalid Date: $birthdate")
+        return InvalidDuration
+    end
+
+    println("Mozart would be ", DayOfLife((CE, 1756, 1, 27)), " days old today.")
+end
+
+function TestDayOfYear()
+    println("Today in all calendars:\n")
+    now = Dates.yearmonthday(Dates.now())
+    date = ("CE", now[1], now[2], now[3])
+    CalendarDates(date, true)
+    # println("Today is the ", DayOfYear(date), 
+    # "-th day of the year ", date[2], " in the Gregorian calendar.")
 end
 
 function TestAll()
@@ -288,9 +309,11 @@ function TestAll()
     TestDateIslamic();   println()
     TestDateIso();       println()
  
-    TestConversions();  println()
-    TestDateTables();   println()
-    TestCalenderDates()
+    TestConversions();   println()
+    TestDateTables();    println()
+    TestCalenderDates(); println()
+    TestDuration();      println()
+    TestDayOfYear();
 end
 
 TestAll()
@@ -318,10 +341,5 @@ end
 TestDayOfYear(); println()
 =#
 
-println("Today in all calendars:\n")
-now = Dates.yearmonthday(Dates.now())
-date = ("CE", now[1], now[2], now[3])
-CalendarDates(date, true)
-# println("Today is the ", DayOfYear(date), 
-# "-th day of the year ", date[2], " in the Gregorian calendar.")
+
 

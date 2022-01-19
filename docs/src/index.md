@@ -15,3 +15,9 @@ CalendarDates
 ```@docs
 isValidDate
 ```
+```@docs
+DayOfYear
+``` 
+```@docs
+Duration
+```

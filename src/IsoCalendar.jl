@@ -16,13 +16,13 @@ function LastWeekOfYearIso(year::Int64)
 end
 
 # Is the date a valid Iso date?
-function isValidDateIso(d::CDate)
-    d[1] != ID && return false
-    lw = LastWeekOfYearIso(d[2])
-    # of course "d[3]" is a misnomer but does not hurt
-    b = d[2] >= 1 && (d[3] in 1:lw) && (d[4] in 1:7) 
-    !b && @warn(Warning(ID))
-    return b
+function isValidDateIso(cd::CDate)
+    cal, year, week, day = cd
+    CName(cal) != ID && return false
+    lwy = LastWeekOfYearIso(year)
+    val = (year >= 1) && (week in 1:lwy) && (day in 1:7) 
+    !val && @warn(Warning(ID))
+    return val
 end
 
 # Return the days this year so far.
@@ -33,28 +33,29 @@ function DayOfYearIso(year::Int64, week::Int64, day::Int64)
 end
 
 # Computes the day number from a valid ISO date.
-function DNumberValidIso(year::Int64, week::Int64, day::Int64) 
+function DayNumberValidIso(year::Int64, week::Int64, day::Int64) 
           # days in prior years
-    prior = XdayOnOrBefore(DNumberGregorian(year, 1, 4), 1)
+    prior = XdayOnOrBefore(DayNumberGregorian(year, 1, 4), 1)
     day  = DayOfYearIso(year, week, day) 
     return prior + day
 end
 
 # Computes the day number from a valid ISO date.
-DNumberValidIso(d::CDate) = DNumberValidIso(d[2], d[3], d[4])
+DayNumberValidIso(d::CDate) = DayNumberValidIso(d[2], d[3], d[4])
 
 # Computes the day number from a date which might not be a valid Iso date.
-function DNumberIso(year::Int64, month::Int64, day::Int64)  
+function DayNumberIso(year::Int64, month::Int64, day::Int64)  
     if isValidDateIso((ID, year, month, day)) 
-        return DNumberValidIso(year, month, day) 
+        return DayNumberValidIso(year, month, day) 
     end
     return InvalidDayNumber
 end
 
 # Computes the day number from a date which might not be a valid Iso date.
-function DNumberIso(d::CDate)  
-    if isValidDateIso((ID, d[2], d[3], d[4]))
-        return DNumberValidIso(d[2], d[3], d[4])
+function DayNumberIso(cd::CDate)
+    cal, year, week, day = cd  
+    if isValidDateIso((ID, year, week, day))
+        return DayNumberValidIso(year, week, day)
     end
     return InvalidDayNumber
 end
@@ -66,16 +67,16 @@ function DateIso(dn::Int64)
     d = dn - 3
     year = div(d, 366)
     # Search forward year by year from approximate year.
-    while d >= DNumberValidGregorian(year + 1, 1, 1)
+    while d >= DayNumberValidGregorian(year + 1, 1, 1)
         year += 1 
     end
 
     # Search forward year by year from approximate year.
-    if dn >= DNumberValidIso(year + 1, 1, 1) 
+    if dn >= DayNumberValidIso(year + 1, 1, 1) 
         year += 1
     end
                      # Sunday : Monday..Saturday
     day = rem(dn, 7) == 0 ? 7 : rem(dn, 7)
-    week = 1 + div(dn - DNumberValidIso(year, 1, 1), 7)
+    week = 1 + div(dn - DayNumberValidIso(year, 1, 1), 7)
     return (ID, year, week, day)
 end

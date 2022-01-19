@@ -19,12 +19,13 @@ function LastDayOfMonthGregorian(year::Int64, month::Int64)
 end
 
 # Is the date a valid Gregorian date?
-function isValidDateGregorian(d::CDate)
-    d[1] != CE && return false
-    ld = LastDayOfMonthGregorian(d[2], d[3])
-    b = (d[2] >= 1) && (d[3] in 1:12) && (d[4] in 1:ld) 
-    !b && @warn(Warning(CE))
-    return b
+function isValidDateGregorian(cd::CDate)
+    cal, year, month, day = cd
+    CName(cal) != CE && return false
+    ldm = LastDayOfMonthGregorian(year, month)
+    val = (year >= 1) && (month in 1:12) && (day in 1:ldm) 
+    !val && @warn(Warning(CE))
+    return val
 end
 
 # Return the days this year so far.
@@ -36,7 +37,7 @@ function DayOfYearGregorian(year::Int64, month::Int64, day::Int64)
 end
 
 # Computes the day number from a valid Gregorian date.
-function DNumberValidGregorian(year::Int64, month::Int64, day::Int64) 
+function DayNumberValidGregorian(year::Int64, month::Int64, day::Int64) 
     day = DayOfYearGregorian(year, month, day) 
 
     return (day                # days this year
@@ -47,17 +48,18 @@ function DNumberValidGregorian(year::Int64, month::Int64, day::Int64)
 end
 
 # Computes the day number from a date which might not be a valid Gregorian date.
-function DNumberGregorian(d::CDate)
-    if isValidDateGregorian((CE, d[2], d[3], d[4]))
-        return DNumberValidGregorian(d[2], d[3], d[4])
+function DayNumberGregorian(cd::CDate)
+    cal, year, month, day = cd
+    if isValidDateGregorian((CE, year, month, day))
+        return DayNumberValidGregorian(year, month, day)
     end
     return InvalidDayNumber
 end
 
 # Computes the day number from a date which might not be a valid Gregorian date.
-function DNumberGregorian(year::Int64, month::Int64, day::Int64)
+function DayNumberGregorian(year::Int64, month::Int64, day::Int64)
     if isValidDateGregorian((CE, year, month, day)) 
-        return DNumberValidGregorian(year, month, day) 
+        return DayNumberValidGregorian(year, month, day) 
     end
     return InvalidDayNumber
 end
@@ -72,17 +74,17 @@ function DateGregorian(dn::Int64)
     year = div(dn, 366)
 
     # Search forward year by year from approximate year.
-    while dn >= DNumberValidGregorian(year + 1, 1, 1)
+    while dn >= DayNumberValidGregorian(year + 1, 1, 1)
         year += 1 
     end
 
     # Search forward month by month from January.
     month = 1
-    while dn > DNumberValidGregorian(year, month, 
+    while dn > DayNumberValidGregorian(year, month, 
                 LastDayOfMonthGregorian(year, month))
         month += 1
     end
 
-    day = dn - DNumberValidGregorian(year, month, 1) + 1
+    day = dn - DayNumberValidGregorian(year, month, 1) + 1
     return (CE, year, month, day)
 end

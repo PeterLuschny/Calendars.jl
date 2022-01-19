@@ -7,14 +7,14 @@
 using Dates
 
 # Interactively query the dates for all calendars in the REPL.
-function idate() 
+function IDate() 
 
     msg = "You should have entered a numeric value, bye ..."
     nov = " is not a valid date! Try again ..."
     csv = "The calendar specifier was not valid, using CE."
 
     now = Dates.yearmonthday(Dates.now())
-    CalendarDates(("CE", now), true)
+    CalendarDates("CE", now, true)
     println()
 
     while true
@@ -80,8 +80,8 @@ function idate()
                 println(e)
                 return
             end
-            #println("The ", OrdinalDate(y, m, d, cs), 
-            #        "-th day of the $cs-year.")
+            println("The ", DayOfYear(date), 
+                    "-th day of the $cs-year.")
         end
         println()
     end

@@ -27,13 +27,13 @@ For example, 2022-07-12 represents the 12th of July 2022.
 
 The main function provided is:
 
-    ConvertDate(date, A, B, show=false). 
+    ConvertDate(date, calendar, show=false). 
 
-It converts a date represented by the calendar 'A' to the representation of the date in the calendar 'B'.
+It converts a calendar date to the representation of the date in the calendar 'calendar'.
 
-* The date is an integer triple (year, month, day). The parts of the date can be given as a triple or individually one after the other.
+* The calendar date (CDate) is a tuple (calendar, year, month, day). The parts of the date can be given as a tuple or individually.
 
-* 'A' and 'B' is one of the calendars "Gregorian", "Hebrew", "Islamic", "Julian", or "IsoDate".
+* 'calendar' is one of "Gregorian", "Hebrew", "Islamic", "Julian", or "IsoDate".
 
 Alternatively you can use the acronyms "CE", "AM", "AH", "AD", or "ID" explained in the table above.
 
@@ -42,13 +42,13 @@ Alternatively you can use the acronyms "CE", "AM", "AH", "AD", or "ID" explained
 For example:
 
 ```julia
-julia> ConvertDate((1756, 1, 27), "Gregorian", "Hebrew") 
+julia> ConvertDate(("Gregorian", 1756, 1, 27), "Hebrew") 
 ```
 
 or written alternatively
 
 ```julia
-julia> ConvertDate(1756, 1, 27, "CE", "AM")
+julia> ConvertDate("CE", 1756, 1, 27, "AM")
 ```
 
 computes from the Gregorian date (1756, 1, 27) the Hebrew date (5516, 11, 25). If 'show' is 'true' the line
@@ -59,12 +59,12 @@ is printed.
 
 A second function returns a table of the dates of all supported calendars.
 
-    CalendarDates(date, calendar, show=false).
+    CalendarDates(date, show=false).
 
 The parameters follow the same conventions as those of ConvertDate. For example:
 
 ```julia
-julia> CalendarDates(1756, 1, 27, "Gregorian", true) 
+julia> CalendarDates("Gregorian", 1756, 1, 27, true) 
 ```
 
 computes a table, which is a tuple of five dates plus the day number. If 'show' is 'true' the table below will be printed.
