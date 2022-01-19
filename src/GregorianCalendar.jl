@@ -8,7 +8,7 @@ const EpochGregorian = 1
 divisible(a, b) = rem(a, b) == 0
 
 function isLeapYearGregorian(year::Int64)
-    (divisible(year, 4) && divisible(year, 100)) || divisible(year, 400) 
+    (divisible(year, 4) && ! divisible(year, 100)) || divisible(year, 400) 
 end
 
 # Return the last day of the month for the Gregorian calendar.
@@ -21,10 +21,13 @@ end
 # Is the date a valid Gregorian date?
 function isValidDateGregorian(cd::CDate)
     cal, year, month, day = cd
-    CName(cal) != CE && return false
+    if CName(cal) != CE 
+        @warn(Warning(cd))
+        return false
+    end
     ldm = LastDayOfMonthGregorian(year, month)
     val = (year >= 1) && (month in 1:12) && (day in 1:ldm) 
-    !val && @warn(Warning(CE))
+    !val && @warn(Warning(cd))
     return val
 end
 

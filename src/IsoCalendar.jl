@@ -18,10 +18,13 @@ end
 # Is the date a valid Iso date?
 function isValidDateIso(cd::CDate)
     cal, year, week, day = cd
-    CName(cal) != ID && return false
+    if CName(cal) != ID 
+        @warn(Warning(cd))
+        return false
+    end
     lwy = LastWeekOfYearIso(year)
     val = (year >= 1) && (week in 1:lwy) && (day in 1:7) 
-    !val && @warn(Warning(ID))
+    !val && @warn(Warning(cd))
     return val
 end
 

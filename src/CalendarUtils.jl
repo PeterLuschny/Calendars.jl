@@ -40,6 +40,40 @@ CalendarSpecifiers = Dict{String, String}(
     "00" => "INVALID     "
 )
 
+
+"""
+
+A CDate (short for Calender Date) is defined as 
+
+```julia
+CDate = Tuple{String, Int64, Int64, Int64}
+```
+
+    A tuple 'date' of type 'CDate' is unpacked by convention as  
+    (calendar, year, month, day) = date, where 'calendar' is 
+    "Gregorian", "Hebrew", "Islamic", "Julian", or "IsoDate". 
+    Alternatively the acronyms "CE", "AM", "AH", "AD" and 
+    "ID" can be used.  
+
+```julia
+CDateStr(cd::CDate) 
+```
+
+The function CDateStr converts a date of type CDate into a 
+string representation, where the numeric part follows the
+recommendation of ISO 8601 and is prefixed by one of the 
+acronyms for the calendar names indicated above. 
+
+Examples for CDates and their string representation are:
+
+```julia
+("Gregorian", 2022,  1, 19)  -> "CE 2022-01-19"
+("Julian",    2022,  1,  6)  -> "AD 2022-01-06"
+("Hebrew",    5782, 11, 17)  -> "AM 5782-11-17"
+("Islamic",   1443,  6, 15)  -> "AH 1443-06-15"
+("IsoDate",   2022,  3,  3)  -> "ID 2022-03-03"
+``` 
+"""
 const CDate = Tuple{String, Int64, Int64, Int64}
 
 function DateStr(year, month, day)
@@ -77,4 +111,4 @@ function PrintDateTable(D)
     end
 end
 
-Warning(d) = "Date is prior to epoch " * string(d)
+Warning(d) = string(d) * " is not a valid date!"  

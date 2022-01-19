@@ -18,10 +18,13 @@ end
 # Is the date a valid Julian date?
 function isValidDateJulian(cd::CDate)
     cal, year, month, day = cd
-    CName(cal) != AD && return false
+    if CName(cal) != AD 
+        @warn(Warning(cd))
+        return false
+    end
     ldm = LastDayOfMonthJulian(year, month)
     val = (year >= 1) && (month in 1:12) && (day in 1:ldm) 
-    !val && @warn(Warning(AD))
+    !val && @warn(Warning(cd))
     return val
 end
 

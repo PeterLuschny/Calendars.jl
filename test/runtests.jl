@@ -294,12 +294,74 @@ function TestDuration()
 end
 
 function TestDayOfYear()
+    DOY = [
+        ((CE, 1000,02,28),  59), 
+        ((CE, 1000,02,29),   0), 
+        ((CE, 1111,11,11), 315),
+        ((CE, 1756,01,27),  27),
+        ((CE, 1900,02,28),  59), 
+        ((CE, 1900,02,29),   0), 
+        ((CE, 1901,02,28),  59), 
+        ((CE, 1901,02,29),   0), 
+        ((CE, 1949,11,29), 333),
+        ((CE, 1990,10,20), 293),
+        ((CE, 2000,02,28),  59), 
+        ((CE, 2000,02,29),  60), 
+        ((CE, 2020,02,28),  59), 
+        ((CE, 2020,02,29),  60), 
+        ((CE, 2020,07,30), 212), 
+        ((CE, 2020,08,20), 233), 
+        ((CE, 2021,09,07), 250),  
+        ((CE, 2022,01,01),   1),
+        ((CE, 2022,09,26), 269),
+        ((CE, 2023,07,19), 200),
+        ((CE, 2040,02,28),  59), 
+        ((CE, 2040,02,29),  60), 
+        ((CE, 2040,09,08), 252), 
+        ((CE, 2222,02,22),  53),
+        ((CE, 3141,05,09), 129)
+    ]
+
+    println("\n====================\n")
+    for x in DOY
+        date, num = x
+        doy = DayOfYear(date)
+        print(CDateStr(date), " ::", lpad(num, 4, " "), lpad(doy, 4, " "))
+        println(" ", doy == num)
+    end
+end
+
+function ShowDayOfYear()
+    println("\n====================\n")
+
+    date = (2022, 1, 1)
+    for c in [CE, AD, AM, AH]  
+        println(CDateStr(c, date), " ::", lpad(DayOfYear(c, date),  4, " "))
+    end
+    println()
+    date = (1756,  1, 27)
+    for c in [CE, AD, AM, AH]  
+        println(CDateStr(c, date), " ::", lpad(DayOfYear(c, date),  4, " "))
+    end
+    println()
+    date = (1949, 11, 29)
+    for c in [CE, AD, AM, AH]  
+        println(CDateStr(c, date), " ::", lpad(DayOfYear(c, date),  4, " "))
+    end
+    println()
+    date = (1990, 10, 20)  
+    for c in [CE, AD, AM, AH]  
+        println(CDateStr(c, date), " ::", lpad(DayOfYear(c, date),  4, " "))
+    end
+end
+
+function TestToday()
     println("Today in all calendars:\n")
     now = Dates.yearmonthday(Dates.now())
     date = ("CE", now[1], now[2], now[3])
     CalendarDates(date, true)
-    # println("Today is the ", DayOfYear(date), 
-    # "-th day of the year ", date[2], " in the Gregorian calendar.")
+    doy = DayOfYear(date)
+    println("This is the $doy-th day of a CE-year.")
 end
 
 function TestAll()
@@ -313,33 +375,15 @@ function TestAll()
     TestDateTables();    println()
     TestCalenderDates(); println()
     TestDuration();      println()
-    TestDayOfYear();
+    TestDayOfYear();     println()
+    ShowDayOfYear();     println()
+    TestToday()
 end
 
 TestAll()
 
-#=
-function TestDayOfYear()
-    date = (2022, 1, 1)
-    for c in [CE, AD, AM, AH, ID]  
-        println(CDate(c, date), " ::", lpad(DayOfYear(date, c),  4, " "))
-    end
-    date = (1756,  1, 27)
-    for c in [CE, AD, AM, AH, ID]  
-        println(CDate(c, date), " ::", lpad(DayOfYear(date, c),  4, " "))
-    end
-    date = (1949, 11, 29)
-    for c in [CE, AD, AM, AH, ID]  
-        println(CDate(c, date), " ::", lpad(DayOfYear(date, c),  4, " "))
-    end
-    date = (1990, 10, 20)  
-    for c in [CE, AD, AM, AH, ID]  
-        println(CDate(c, date), " ::", lpad(DayOfYear(date, c),  4, " "))
-    end
-end
 
-TestDayOfYear(); println()
-=#
+
 
 
 

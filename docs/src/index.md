@@ -1,6 +1,9 @@
 # Functions
 
 ```@docs
+CDate
+``` 
+```@docs
 DayNumberFromDate
 ```
 ```@docs
