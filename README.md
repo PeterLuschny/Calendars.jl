@@ -1,4 +1,4 @@
-<img src="https://github.com/PeterLuschny/Calendars.jl/blob/main/docs/src/CalendarCalculator.jpg">
+![Calendar Calculator](docs/src/CalendarCalculator.jpg)
 
 .
 
