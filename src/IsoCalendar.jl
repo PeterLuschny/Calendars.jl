@@ -1,6 +1,8 @@
 # This is part of Calendars.jl. See the copyright note there.
 # ========================= ISO dates =======================
 
+const ValidYearsIso = 1:9999
+
 # The day number of the day x on or before the day with number dn.
 # x = 0 means Sunday, x = 1 means Monday, and so on.
 XdayOnOrBefore(dn, x) = dn - rem(dn - x, 7)
@@ -23,7 +25,7 @@ function isValidDateIso(cd::CDate)
         return false
     end
     lwy = LastWeekOfYearIso(year)
-    val = (year in 1:MaxYear) && (week in 1:lwy) && (day in 1:7) 
+    val = (year in ValidYearsIso) && (week in 1:lwy) && (day in 1:7) 
     !val && @warn(Warning(cd))
     return val
 end

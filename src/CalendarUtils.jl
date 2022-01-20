@@ -47,8 +47,6 @@ const InvalidDuration = DPart(-1)
 const InvalidDate = (XX, DPart(0), DPart(0), DPart(0))
 const InvalidDateString = "0000-00-00"
 
-const MaxYear = DPart(9999)
-
 """
 
 A CDate (short for Calender Date) is defined as 

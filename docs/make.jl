@@ -14,8 +14,8 @@ makedocs(
     ]
 )
 
-deploydocs(
-    repo = "github.com/PeterLuschny/Calendars.jl.git";
-    push_preview = true
-)
+#deploydocs(
+#    repo = "github.com/PeterLuschny/Calendars.jl.git";
+#    push_preview = true
+#)
 

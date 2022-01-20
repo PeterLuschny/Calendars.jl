@@ -5,6 +5,7 @@
 # to day number 227015 (Friday, July 16, 622 CE - Julian).
 # Days before the start of the Islamic calendar.
 const EpochIslamic = 227014 
+const ValidYearsIslamic = 1:9666
 
 # True if year is an Islamic leap year.
 function isLeapYearIslamic(year::DPart)
@@ -32,7 +33,7 @@ function isValidDateIslamic(cd::CDate)
     end
     lmy = LastMonthOfYearIslamic(year)
     ldm = LastDayOfMonthIslamic(year, month)
-    val = (year in 1:MaxYear) && (month in 1:lmy) && (day in 1:ldm) 
+    val = (year in ValidYearsIslamic) && (month in 1:lmy) && (day in 1:ldm) 
     !val && @warn(Warning(cd))
     return val
 end

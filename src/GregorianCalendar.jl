@@ -3,6 +3,7 @@
 
 # Day number of the start of the Gregorian calendar.
 const EpochGregorian = 1
+const ValidYearsGregorian = 1:9999
 
 # Is a divisible by b?
 divisible(a, b) = rem(a, b) == 0
@@ -26,7 +27,7 @@ function isValidDateGregorian(cd::CDate)
         return false
     end
     ldm = LastDayOfMonthGregorian(year, month)
-    val = (year in 1:MaxYear) && (month in 1:12) && (day in 1:ldm) 
+    val = (year in ValidYearsGregorian) && (month in 1:12) && (day in 1:ldm) 
     !val && @warn(Warning(cd))
     return val
 end

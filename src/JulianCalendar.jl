@@ -3,6 +3,7 @@
 
 # Day number of the start of the Julian calendar.
 const EpochJulian = -2
+const ValidYearsJulian = 1:9999
 
 function isLeapYearJulian(year::DPart)
     rem(year, 4) == 0
@@ -23,7 +24,7 @@ function isValidDateJulian(cd::CDate)
         return false
     end
     ldm = LastDayOfMonthJulian(year, month)
-    val = (year in 1:MaxYear) && (month in 1:12) && (day in 1:ldm) 
+    val = (year in ValidYearsJulian) && (month in 1:12) && (day in 1:ldm) 
     !val && @warn(Warning(cd))
     return val
 end

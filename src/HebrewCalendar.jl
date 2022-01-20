@@ -6,6 +6,7 @@
 # is equivalent to Monday, 7 October 3761 BCE in the 
 # proleptic Julian calendar (from Wikipedia).
 const EpochHebrew = -1373429 
+const ValidYearsHebrew = 3761:13759
 
 # True if Heshvan is long in Hebrew year.
 function isLongHeshvan(year::DPart)
@@ -57,7 +58,7 @@ function isValidDateHebrew(cd::CDate)
     end
     lmy = LastMonthOfYearHebrew(year)
     ldm = LastDayOfMonthHebrew(year, month)
-    val = (year >= 1) && (month in 1:lmy) && (day in 1:ldm) 
+    val = (year in ValidYearsHebrew) && (month in 1:lmy) && (day in 1:ldm) 
     !val && @warn(Warning(cd))
     return val
 end
