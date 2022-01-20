@@ -7,12 +7,12 @@ const EpochGregorian = 1
 # Is a divisible by b?
 divisible(a, b) = rem(a, b) == 0
 
-function isLeapYearGregorian(year::Int64)
+function isLeapYearGregorian(year::DPart)
     (divisible(year, 4) && ! divisible(year, 100)) || divisible(year, 400) 
 end
 
 # Return the last day of the month for the Gregorian calendar.
-function LastDayOfMonthGregorian(year::Int64, month::Int64) 
+function LastDayOfMonthGregorian(year::DPart, month::DPart) 
     leap = isLeapYearGregorian(year)
     month == 2 && return leap ? 29 : 28
     month in [4, 6, 9, 11] ? 30 : 31
@@ -26,13 +26,13 @@ function isValidDateGregorian(cd::CDate)
         return false
     end
     ldm = LastDayOfMonthGregorian(year, month)
-    val = (year >= 1) && (month in 1:12) && (day in 1:ldm) 
+    val = (year in 1:MaxYear) && (month in 1:12) && (day in 1:ldm) 
     !val && @warn(Warning(cd))
     return val
 end
 
 # Return the days this year so far.
-function DayOfYearGregorian(year::Int64, month::Int64, day::Int64) 
+function DayOfYearGregorian(year::DPart, month::DPart, day::DPart) 
     for m in (month - 1):-1:1  # days in prior months this year
         day += LastDayOfMonthGregorian(year, m)
     end
@@ -40,7 +40,7 @@ function DayOfYearGregorian(year::Int64, month::Int64, day::Int64)
 end
 
 # Computes the day number from a valid Gregorian date.
-function DayNumberValidGregorian(year::Int64, month::Int64, day::Int64) 
+function DayNumberValidGregorian(year::DPart, month::DPart, day::DPart) 
     day = DayOfYearGregorian(year, month, day) 
 
     return (day                # days this year
@@ -60,7 +60,7 @@ function DayNumberGregorian(cd::CDate)
 end
 
 # Computes the day number from a date which might not be a valid Gregorian date.
-function DayNumberGregorian(year::Int64, month::Int64, day::Int64)
+function DayNumberGregorian(year::DPart, month::DPart, day::DPart)
     if isValidDateGregorian((CE, year, month, day)) 
         return DayNumberValidGregorian(year, month, day) 
     end
@@ -68,7 +68,7 @@ function DayNumberGregorian(year::Int64, month::Int64, day::Int64)
 end
 
 # Computes the Gregorian date from a day number.
-function DateGregorian(dn::Int64) 
+function DateGregorian(dn::DPart) 
     if dn < EpochGregorian  # Date is pre-Gregorian
        @warn(Warning(CE))
        return InvalidDate
@@ -89,5 +89,5 @@ function DateGregorian(dn::Int64)
     end
 
     day = dn - DayNumberValidGregorian(year, month, 1) + 1
-    return (CE, year, month, day)
+    return (CE, year, month, day)::CDate
 end

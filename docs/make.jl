@@ -8,13 +8,14 @@ makedocs(
     checkdocs = :none,
     doctest = false,
     pages = [
+        "Functions" => "index.md",
         "Introduction" => "Calendars.md",
-        "Functions" => "index.md"
+        "References" => "References.md"
     ]
 )
 
-#deploydocs(
-#    repo = "github.com/PeterLuschny/Calendars.jl.git",
-#    target = "build"
-#)
+deploydocs(
+    repo = "github.com/PeterLuschny/Calendars.jl.git";
+    push_preview = true
+)
 

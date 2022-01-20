@@ -44,7 +44,7 @@ julia> DayNumberFromDate("CE", 1756, 1, 27)
 ```
 
 This returns the day number 641027. If 'show' is 'true'
-the line "CE 1756-01-27 -> DN 641027" is printed.
+the line "CE 1756-01-27 -> RD 641027" is printed.
 
 If an error occurs 0 (representing the invalid day 
 number) is returned.
@@ -61,6 +61,8 @@ function DayNumberFromDate(d::CDate, show=false)
         dn = DayNumberIslamic(d)
     elseif calendar == ID
         dn = DayNumberIso(d)
+    elseif calendar == RD
+        dn = d[4]    
     else
         @warn("Unknown calendar: $calendar")
         return InvalidDayNumber
@@ -72,17 +74,17 @@ function DayNumberFromDate(d::CDate, show=false)
     return dn 
 end
 
-DayNumberFromDate(calendar::String, year::Int64, month::Int64, day::Int64, 
+DayNumberFromDate(calendar::String, year::DPart, month::DPart, day::DPart, 
 show=false) = DayNumberFromDate((calendar, year, month, day), show)
 
-DayNumberFromDate(calendar::String, d::Tuple{Int64, Int64, Int64}, 
+DayNumberFromDate(calendar::String, d::Tuple{DPart, DPart, DPart}, 
 show=false) = DayNumberFromDate((calendar, d[1], d[2], d[3]), show)
 
 
 """
 
 ```julia
-DateFromDayNumber(calendar::String, dn::Int64, show::Bool)
+DateFromDayNumber(calendar::String, dn::DPart, show::Bool)
 ```
 
 Return the calendar date from a day number.
@@ -102,12 +104,17 @@ julia> DateFromDayNumber("CE", 641027)
 ```
 
 This returns the date ("CE", 1756, 1, 27). If 'show' is 
-'true' the line "DN 0641027 -> CE 1756-01-27" is printed.
+'true' the line "RD 0641027 -> CE 1756-01-27" is printed.
 
 If an error occurs ("00", 0, 0, 0) (representing the 
 invalid date) is returned.
 """
-function DateFromDayNumber(calendar::String, dn::Int64, show=false)
+function DateFromDayNumber(calendar::String, dn::DPart, show=false)
+    if dn <= 0
+        @warn("Day number must be > 0: $calendar $dn")
+        return InvalidDate
+    end
+
     # Use a symbol for the calendar name.
     cal = CName(calendar)
     if cal == CE
@@ -181,7 +188,7 @@ end
 ConvertDate(calendar::String, year::Int, month::Int, day::Int, to::String, 
 show=false) = ConvertDate((calendar, year, month, day), to, show)
 
-ConvertDate(calendar::String, d::Tuple{Int64, Int64, Int64}, to::String, 
+ConvertDate(calendar::String, d::Tuple{DPart, DPart, DPart}, to::String, 
 show=false) = ConvertDate((calendar, d[1], d[2], d[3]), to, show)
 
 
@@ -215,7 +222,7 @@ the table below will be printed.
     Hebrew        AM 5516-11-25
     Islamic       AH 1169-04-24
     IsoDate       ID 1756-05-02
-    DayNumber     DN 641027
+    DayNumber     RD 641027
 ```
 """
 function CalendarDates(date::CDate, show=false)
@@ -227,16 +234,16 @@ function CalendarDates(date::CDate, show=false)
         DateFromDayNumber(AM, dn),
         DateFromDayNumber(AH, dn),
         DateFromDayNumber(ID, dn),
-        (DN, 0, 0, dn)
+        (RD, 0, 0, dn)
     )
     show && PrintDateTable(Table)
     return Table
 end
 
-CalendarDates(calendar::String, year::Int64, month::Int64, day::Int64, 
+CalendarDates(calendar::String, year::DPart, month::DPart, day::DPart, 
 show=false) = CalendarDates((calendar, year, month, day), show)
 
-CalendarDates(calendar::String, d::Tuple{Int64, Int64, Int64}, 
+CalendarDates(calendar::String, d::Tuple{DPart, DPart, DPart}, 
 show=false) = CalendarDates((calendar, d[1], d[2], d[3]), show) 
 
 
@@ -274,6 +281,8 @@ function isValidDate(d::CDate)
         val = isValidDateIslamic(d)
     elseif calendar == ID
         val = isValidDateIso(d)
+    elseif calendar == RD
+        val = d[4] > 0   
     else
         @warn("Unknown calendar: $calendar")
         return false
@@ -281,10 +290,10 @@ function isValidDate(d::CDate)
     return val
 end
 
-isValidDate(calendar::String, year::Int64, month::Int64, 
-day::Int64) = isValidDate((calendar, year, month, day))
+isValidDate(calendar::String, year::DPart, month::DPart, 
+day::DPart) = isValidDate((calendar, year, month, day))
 
-isValidDate(calendar::String, d::Tuple{Int64, Int64, Int64}) = 
+isValidDate(calendar::String, d::Tuple{DPart, DPart, DPart}) = 
 isValidDate((calendar, d[1], d[2], d[3]))
 
 """
@@ -339,10 +348,10 @@ function DayOfYear(date::CDate)
     return val
 end
 
-DayOfYear(calendar::String, year::Int64, month::Int64, day::Int64) = 
+DayOfYear(calendar::String, year::DPart, month::DPart, day::DPart) = 
 DayOfYear((calendar, year, month, day)) 
 
-DayOfYear(calendar::String, d::Tuple{Int64, Int64, Int64}) = 
+DayOfYear(calendar::String, d::Tuple{DPart, DPart, DPart}) = 
 DayOfYear((calendar, d[1], d[2], d[3])) 
 
 
@@ -383,7 +392,7 @@ function Duration(a::CDate, b::CDate, show=false)
         if show
             ad = CDateStr(a)
             bd = CDateStr(b)
-            show && println(ad, " <- -> ", bd, " -> Duration ", dur)
+            show && println(ad, " <-> ", bd, " -> Duration ", dur)
         end
         return dur 
     end

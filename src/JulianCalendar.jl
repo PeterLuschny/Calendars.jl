@@ -4,12 +4,12 @@
 # Day number of the start of the Julian calendar.
 const EpochJulian = -2
 
-function isLeapYearJulian(year::Int64)
+function isLeapYearJulian(year::DPart)
     rem(year, 4) == 0
 end
 
 # Return the last day of the month for the Julian calendar.
-function LastDayOfMonthJulian(year::Int64, month::Int64)
+function LastDayOfMonthJulian(year::DPart, month::DPart)
     leap = isLeapYearJulian(year)
     month == 2 && return leap ? 29 : 28
     month in [4, 6, 9, 11] ? 30 : 31
@@ -23,13 +23,13 @@ function isValidDateJulian(cd::CDate)
         return false
     end
     ldm = LastDayOfMonthJulian(year, month)
-    val = (year >= 1) && (month in 1:12) && (day in 1:ldm) 
+    val = (year in 1:MaxYear) && (month in 1:12) && (day in 1:ldm) 
     !val && @warn(Warning(cd))
     return val
 end
 
 # Return the days this year so far.
-function DayOfYearJulian(year::Int64, month::Int64, day::Int64) 
+function DayOfYearJulian(year::DPart, month::DPart, day::DPart) 
     for m in (month - 1):-1:1  # days in prior months this year
         day += LastDayOfMonthJulian(year, m)
     end
@@ -37,7 +37,7 @@ function DayOfYearJulian(year::Int64, month::Int64, day::Int64)
 end
 
 # Returns the day number from a valid Julian date.
-function DayNumberValidJulian(year::Int64, month::Int64, day::Int64)
+function DayNumberValidJulian(year::DPart, month::DPart, day::DPart)
     day = DayOfYearJulian(year, month, day) 
 
     return (EpochJulian      # days elapsed before absolute date 1
@@ -46,7 +46,6 @@ function DayNumberValidJulian(year::Int64, month::Int64, day::Int64)
         + day                # days this year
     )
 end
-
 
 # Computes the day number from a date which might not be a valid Julian date.
 function DayNumberJulian(cd::CDate) 
@@ -58,7 +57,7 @@ function DayNumberJulian(cd::CDate)
 end
 
 # Computes the day number from a date which might not be a valid Julian date.
-function DayNumberJulian(year::Int64, month::Int64, day::Int64) 
+function DayNumberJulian(year::DPart, month::DPart, day::DPart) 
     if isValidDateJulian((AD, year, month, day)) 
         return DayNumberValidJulian(year, month, day)
     end
@@ -66,7 +65,7 @@ function DayNumberJulian(year::Int64, month::Int64, day::Int64)
 end
 
 # Computes the Julian date from the day number.
-function DateJulian(dn::Int64)
+function DateJulian(dn::DPart)
     if dn < EpochJulian    # Date is pre-Julian
        @warn(Warning(AD))
        return InvalidDate
@@ -87,5 +86,5 @@ function DateJulian(dn::Int64)
     end
 
     day = dn - DayNumberValidJulian(year, month, 1) + 1
-    return (AD, year, month, day)
+    return (AD, year, month, day)::CDate
 end

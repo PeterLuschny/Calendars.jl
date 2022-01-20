@@ -8,21 +8,21 @@
 const EpochHebrew = -1373429 
 
 # True if Heshvan is long in Hebrew year.
-function isLongHeshvan(year::Int64)
+function isLongHeshvan(year::DPart)
     rem(DaysInYearHebrew(year), 10) == 5
 end
 
 # True if Kislev is short in Hebrew year.
-function isShortKislev(year::Int64)
+function isShortKislev(year::DPart)
     rem(DaysInYearHebrew(year), 10) == 3
 end
 
 # True if year is an Hebrew leap year
-function isLeapYearHebrew(year::Int64)
+function isLeapYearHebrew(year::DPart)
     rem(7 * year + 1, 19) < 7
 end
 
-function isLongMonth(year::Int64, month::Int64)
+function isLongMonth(year::DPart, month::DPart)
     (   month == 2
     ||  month == 4
     ||  month == 6
@@ -34,17 +34,17 @@ function isLongMonth(year::Int64, month::Int64)
 end
 
 # Last day of month in Hebrew year.
-function LastDayOfMonthHebrew(year::Int64, month::Int64)
+function LastDayOfMonthHebrew(year::DPart, month::DPart)
     isLongMonth(year, month) ? 29 : 30
 end
 
 # Last month of Hebrew year.
-function LastMonthOfYearHebrew(year::Int64)
+function LastMonthOfYearHebrew(year::DPart)
     isLeapYearHebrew(year) ? 13 : 12
 end
 
 # Number of days in Hebrew year.
-function DaysInYearHebrew(year::Int64)
+function DaysInYearHebrew(year::DPart)
     RoshHaShanah(year + 1) - RoshHaShanah(year)
 end
 
@@ -64,7 +64,7 @@ end
 
 # Number of days elapsed from the Sunday prior to the start of the
 # Hebrew calendar to the mean conjunction of Tishri of Hebrew year.
-function RoshHaShanah(year::Int64)
+function RoshHaShanah(year::DPart)
     
     MonthsElapsed = ( 235 * div(year - 1, 19)  # Months in complete cycles so far.
                      + 12 * rem(year - 1, 19)  # Regular months in this cycle.
@@ -103,7 +103,7 @@ function RoshHaShanah(year::Int64)
 end
 
 # Return the days this year so far.
-function DayOfYearHebrew(year::Int64, month::Int64, day::Int64) 
+function DayOfYearHebrew(year::DPart, month::DPart, day::DPart) 
     DaysInYear = day 
     if month < 7   # Before Tishri, so add days in prior months
 
@@ -127,7 +127,7 @@ function DayOfYearHebrew(year::Int64, month::Int64, day::Int64)
 end
 
 # Computes the day number from a valid Hebrew date.
-function DayNumberValidHebrew(year::Int64, month::Int64, day::Int64) 
+function DayNumberValidHebrew(year::DPart, month::DPart, day::DPart) 
     DayInYear = DayOfYearHebrew(year, month, day)
     return DayInYear + EpochHebrew + RoshHaShanah(year)
 end
@@ -136,7 +136,7 @@ end
 DayNumberValidHebrew(d::CDate) = DayNumberValidHebrew(d[2], d[3], d[4])
 
 # Computes the day number from a date which might not be a valid Hebrew date.
-function DayNumberHebrew(year::Int64, month::Int64, day::Int64) 
+function DayNumberHebrew(year::DPart, month::DPart, day::DPart) 
     if isValidDateHebrew((AM, year, month, day)) 
         return DayNumberValidHebrew(year, month, day)
     end
@@ -153,7 +153,7 @@ function DayNumberHebrew(cd::CDate)
 end
 
 # Computes the Hebrew date from an DayNumber.
-function DateHebrew(dn::Int64)
+function DateHebrew(dn::DPart)
     if dn < EpochHebrew  # Date is pre-Hebrew
        @warn(Warning(AM))
        return InvalidDate
@@ -175,5 +175,5 @@ function DateHebrew(dn::Int64)
     # Calculate the day by subtraction.
     day = dn - DayNumberValidHebrew(year, month, 1) + 1
 
-    return (AM, year, month, day)
+    return (AM, year, month, day)::CDate
 end

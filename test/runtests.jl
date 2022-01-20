@@ -2,7 +2,7 @@ using Calendars
 using Test, Dates
 
 # Symbols for calendar names
-DN = :"DN"  # Day Number
+RD = :"RD"  # Day Number
 CE = :"CE"  # Current Epoch
 AD = :"AD"  # Julian
 AM = :"AM"  # Anno Mundi
@@ -22,6 +22,7 @@ function TestDateGregorian()
         ("CE",        2022, 9, 26)::CDate  
         ] 
 
+    @testset "DateGregorian" begin
     for date in SomeDateGregorian
         # dn = DayNumberGregorian(date)
         # gdate = DateGregorian(dn) 
@@ -30,13 +31,14 @@ function TestDateGregorian()
         @test gdate == ("CE", date[2], date[3], date[4])
         println(CDateStr(date), " -> ", CDateStr(dn), " -> ", CDateStr(gdate))
     end
+    end
 end
 
 #=
-CE 0001-01-01 -> DN      1 -> CE 0001-01-01
-CE 1756-01-27 -> DN 641027 -> CE 1756-01-27
-CE 2022-01-01 -> DN 738156 -> CE 2022-01-01
-CE 2022-09-26 -> DN 738424 -> CE 2022-09-26
+CE 0001-01-01 -> RD      1 -> CE 0001-01-01
+CE 1756-01-27 -> RD 641027 -> CE 1756-01-27
+CE 2022-01-01 -> RD 738156 -> CE 2022-01-01
+CE 2022-09-26 -> RD 738424 -> CE 2022-09-26
 =#
 
 # Note that you can use "Julian" as the calendar name
@@ -51,6 +53,7 @@ function TestDateJulian()
         ("AD",     2022,  9, 13)::CDate
         ] 
 
+    @testset "DateJulian" begin
     for date in SomeDateJulian
         #dn = DayNumberJulian(date)
         #jdate = DateJulia(dn) 
@@ -59,13 +62,14 @@ function TestDateJulian()
         @test jdate == ("AD", date[2], date[3], date[4]) 
         println(CDateStr(date), " -> ", CDateStr(dn), " -> ", CDateStr(jdate))
     end
+    end
 end
 
 #=
-AD 0001-01-03 -> DN      1 -> AD 0001-01-03
-AD 1756-01-16 -> DN 641027 -> AD 1756-01-16
-AD 2021-12-19 -> DN 738156 -> AD 2021-12-19
-AD 2022-09-13 -> DN 738424 -> AD 2022-09-13
+AD 0001-01-03 -> RD      1 -> AD 0001-01-03
+AD 1756-01-16 -> RD 641027 -> AD 1756-01-16
+AD 2021-12-19 -> RD 738156 -> AD 2021-12-19
+AD 2022-09-13 -> RD 738424 -> AD 2022-09-13
 =#
 
 # See the comments above!
@@ -78,6 +82,7 @@ function TestDateHebrew()
         ("AM",     5783,  7,  1)::CDate
         ]
 
+    @testset "DateHebrew" begin
     for date in SomeDateHebrew
         # dn = DayNumberHebrew(date)
         # hdate = DateHebrew(dn) 
@@ -86,14 +91,15 @@ function TestDateHebrew()
         @test hdate == ("AM", date[2], date[3], date[4])
         println(CDateStr(date), " -> ", CDateStr(dn), " -> ", CDateStr(hdate))
     end
+    end
 end
 
 #=
-AM 5516-11-25 -> DN 641027 -> AM 5516-11-25
-AM 5782-07-01 -> DN 738040 -> AM 5782-07-01
-AM 5782-10-27 -> DN 738155 -> AM 5782-10-27
-AM 5782-06-29 -> DN 738423 -> AM 5782-06-29
-AM 5783-07-01 -> DN 738424 -> AM 5783-07-01
+AM 5516-11-25 -> RD 641027 -> AM 5516-11-25
+AM 5782-07-01 -> RD 738040 -> AM 5782-07-01
+AM 5782-10-27 -> RD 738155 -> AM 5782-10-27
+AM 5782-06-29 -> RD 738423 -> AM 5782-06-29
+AM 5783-07-01 -> RD 738424 -> AM 5783-07-01
 =#
 
 # See the comments above!
@@ -105,6 +111,7 @@ function TestDateIslamic()
         ("AH",      2022, 9, 26)::CDate 
         ] 
 
+    @testset "DateIslamic" begin
     for date in SomeDateIslamic
         # dn = DayNumberIslamic(date)
         # idate = DateIslamic(dn) 
@@ -113,13 +120,14 @@ function TestDateIslamic()
         @test idate == ("AH", date[2], date[3], date[4])
         println(CDateStr(date), " -> ", CDateStr(dn), " -> ", CDateStr(idate))
     end
+    end
 end
 
 #=
-AH 0001-01-01 -> DN 227015 -> AH 0001-01-01
-AH 1756-01-27 -> DN 848954 -> AH 1756-01-27
-AH 2022-01-01 -> DN 943190 -> AH 2022-01-01
-AH 2022-09-26 -> DN 943451 -> AH 2022-09-26
+AH 0001-01-01 -> RD 227015 -> AH 0001-01-01
+AH 1756-01-27 -> RD 848954 -> AH 1756-01-27
+AH 2022-01-01 -> RD 943190 -> AH 2022-01-01
+AH 2022-09-26 -> RD 943451 -> AH 2022-09-26
 =# 
 
 # See the comments above!
@@ -131,6 +139,7 @@ function TestDateIso()
         ("ID",      2022, 39, 1)::CDate 
         ] 
 
+    @testset "DateIso" begin
     for date in SomeDateIso
         # dn = DayNumberIso(date)
         # idate = IsoDate(dn) 
@@ -139,17 +148,19 @@ function TestDateIso()
         @test idate == ("ID", date[2], date[3], date[4])
         println(CDateStr(date), " -> ", CDateStr(dn), " -> ", CDateStr(idate))
     end
+    end
 end
 
 #=
-ID 0001-01-01 -> DN 0000001 -> ID 0001-01-01
-ID 1756-05-02 -> DN 0641027 -> ID 1756-05-02
-ID 2021-52-06 -> DN 0738156 -> ID 2021-52-06
-ID 2022-39-01 -> DN 0738424 -> ID 2022-39-01
+ID 0001-01-01 -> RD 0000001 -> ID 0001-01-01
+ID 1756-05-02 -> RD 0641027 -> ID 1756-05-02
+ID 2021-52-06 -> RD 0738156 -> ID 2021-52-06
+ID 2022-39-01 -> RD 0738424 -> ID 2022-39-01
 =#
 
 function TestConversions()
     
+    @testset "Conversions" begin
     @test (AM, 9543, 7,24) == ConvertDate(("Gregorian", 5782, 10, 28), "Hebrew") 
     @test (AH, 5319, 8,25) == ConvertDate(("Gregorian", 5782, 10, 28), "Islamic") 
     @test (AM, 5516,11,25) == ConvertDate(("Gregorian", 1756,  1, 27), "Hebrew") 
@@ -180,117 +191,104 @@ function TestConversions()
     @test (CE, 7025,11,29) == ConvertDate(("AH", 6600, 11, 21), "CE") 
     @test (AM, 9992,12,27) == ConvertDate(("AH", 5782, 10, 28), "AM") 
 
-    println("\nThe following conversions test warnings, so worry only if you do not see them.\n")
+    end
+
+    println("\nThe following 3 conversions test warnings, so worry only if you do not see them.\n")
     ConvertDate(("Hebrew", 2022,  1,  1), "Gregorian") 
     ConvertDate(("Hebrew", 5782, 10, 28), "Georgian") 
     ConvertDate(("Homebrew", 2022, 1, 1), "Gregorian") 
 end
 
 #=
-DN 2111768 -> CE 5782-10-28 -> AM 9543-07-24
-DN 2111768 -> CE 5782-10-28 -> AH 5319-08-25
-DN  641027 -> CE 1756-01-27 -> AM 5516-11-25
-DN  227015 -> CE 0622-07-19 -> AH 0001-01-01
+RD 2111768 -> CE 5782-10-28 -> AM 9543-07-24
+RD 2111768 -> CE 5782-10-28 -> AH 5319-08-25
+RD  641027 -> CE 1756-01-27 -> AM 5516-11-25
+RD  227015 -> CE 0622-07-19 -> AH 0001-01-01
 
-DN  738156 -> AM 5782-10-28 -> AH 1443-05-27
-DN 2111768 -> AM 9543-07-24 -> CE 5782-10-28
-DN 1821874 -> AM 8749-11-03 -> AH 4501-08-03
+RD  738156 -> AM 5782-10-28 -> AH 1443-05-27
+RD 2111768 -> AM 9543-07-24 -> CE 5782-10-28
+RD 1821874 -> AM 8749-11-03 -> AH 4501-08-03
 
-DN 1192184 -> AH 2724-08-23 -> AM 7025-11-23
-DN 2565796 -> AH 6600-11-21 -> CE 7025-11-29
-DN 2275902 -> AH 5782-10-28 -> AM 9992-12-27
+RD 1192184 -> AH 2724-08-23 -> AM 7025-11-23
+RD 2565796 -> AH 6600-11-21 -> CE 7025-11-29
+RD 2275902 -> AH 5782-10-28 -> AM 9992-12-27
 =#
 
 function TestDateTables()
-TestDates = [
-((DN,     0,0,1),(CE,1,1,1),     (AD,1,1,3),     (ID,1,1,1),     (AM,3761,10,18), (AH,   0,0, 0))::DateTable,
-((DN,0,0,405733),(CE,1111,11,11),(AD,1111,11,4), (ID,1111,45,6), (AM,4872,9,2),   (AH, 505,4,29))::DateTable,
-((DN,0,0,811256),(CE,2222,2,22), (AD,2222,2,7),  (ID,2222,8,5),  (AM,5982,12,10), (AH,1649,9,10))::DateTable,
-((DN,0,0,641027),(CE,1756,1,27), (AD,1756,1,16), (ID,1756,5,2),  (AM,5516,11,25), (AH,1169,4,24))::DateTable,
-((DN,0,0,738156),(CE,2022,1,1),  (AD,2021,12,19),(ID,2021,52,6), (AM,5782,10,28), (AH,1443,5,27))::DateTable,
-((DN,0,0,738424),(CE,2022,9,26), (AD,2022,9,13), (ID,2022,39,1), (AM,5783,7,1),   (AH,1444,2,29))::DateTable
-]
 
+# The case (AH, 0, 0, 0) is not valid and excluded in the test.
+TestDates = [
+((RD,     0,0,1),(CE,1,1,1),     (AD,1,1,3),     (ID,1,1,1),     (AM,3761,10,18), (AH,   0,0, 0))::DateTable,
+((RD,0,0,405733),(CE,1111,11,11),(AD,1111,11,4), (ID,1111,45,6), (AM,4872,9,2),   (AH, 505,4,29))::DateTable,
+((RD,0,0,811256),(CE,2222,2,22), (AD,2222,2,7),  (ID,2222,8,5),  (AM,5982,12,10), (AH,1649,9,10))::DateTable,
+((RD,0,0,641027),(CE,1756,1,27), (AD,1756,1,16), (ID,1756,5,2),  (AM,5516,11,25), (AH,1169,4,24))::DateTable,
+((RD,0,0,738156),(CE,2022,1,1),  (AD,2021,12,19),(ID,2021,52,6), (AM,5782,10,28), (AH,1443,5,27))::DateTable,
+((RD,0,0,738424),(CE,2022,9,26), (AD,2022,9,13), (ID,2022,39,1), (AM,5783,7,1),   (AH,1444,2,29))::DateTable,
+((RD,0,0,1146990),(CE, 3141,5,9),(AD,3141,4,17), (ID,3141,19,5), (AM,6901,2,9),   (AH,2597,2,10))::DateTable
+]
+    @testset "DayNumbers" begin
     for D in TestDates
         println()
         PrintDateTable(D)
+        num = D[1][4]
+        
+        for d in D[2:end]
+            dn = DayNumberFromDate(d)
+            if dn > 0
+                @test dn == num
+            end
+        end
+    end
     end
 end
 
 #=
-DayNumber    DN 0000001
+DayNumber    RD 0000001
 CurrentEpoch CE 0001-01-01
 Julian       AD 0001-01-03
 IsoDate      ID 0001-01-01
 Hebrew       AM 3761-10-18
 Islamic      AH 0000-00-00
 
-DayNumber    DN 0405733
+DayNumber    RD 0405733
 CurrentEpoch CE 1111-11-11
 Julian       AD 1111-11-04
 IsoDate      ID 1111-45-06
 Hebrew       AM 4872-09-02
 Islamic      AH 0505-04-29
 
-DayNumber    DN 0811256
+DayNumber    RD 0811256
 CurrentEpoch CE 2222-02-22
 Julian       AD 2222-02-07
 IsoDate      ID 2222-08-05
 Hebrew       AM 5982-12-10
 Islamic      AH 1649-09-10
 
-DayNumber    DN 0641027
+DayNumber    RD 0641027
 CurrentEpoch CE 1756-01-27
 Julian       AD 1756-01-16
 IsoDate      ID 1756-05-02
 Hebrew       AM 5516-11-25
 Islamic      AH 1169-04-24
+
+DayNumber    RD 1146990
+CurrentEpoch CE 3141-05-09
+Julian       AD 3141-04-17
+IsoDate      ID 3141-19-05
+Hebrew       AM 6901-02-09
+Islamic      AH 2597-02-10
 =#
 
-function TestCalenderDates()
-    println("---")
-    CalendarDates((CE, 1111,11,11), true); println()
-    CalendarDates((AD, 1111,11, 4), true); println()
-    CalendarDates((ID, 1111,45, 6), true); println()
-    CalendarDates((AM, 4872, 9, 2), true); println()
-    CalendarDates((AH, 0505, 4,29), true); println()
-    println("---")
-    CalendarDates((CE, 2222, 2,22), true); println()
-    CalendarDates((AD, 2222, 2, 7), true); println()
-    CalendarDates((ID, 2222, 8, 5), true); println()
-    CalendarDates((AM, 5982,12,10), true); println()
-    CalendarDates((AH, 1649, 9,10), true); println()
-    println("---")
-    CalendarDates((CE, 1756, 1,27), true); println()
-    CalendarDates((AD, 1756, 1,16), true); println()
-    CalendarDates((ID, 1756, 5, 2), true); println()
-    CalendarDates((AM, 5516,11,25), true); println()
-    CalendarDates((AH, 1169, 4,24), true); println()
-    println("---")
-    CalendarDates((CE, 3141, 5, 9), true); println()
-    CalendarDates((AD, 3141, 4,17), true); println()
-    CalendarDates((ID, 3141,19, 5), true); println()
-    CalendarDates((AM, 6901, 2, 9), true); println()
-    CalendarDates((AH, 2597, 2,10), true); println()
-end
-
 function TestDuration()
-    Duration((CE, 2022, 1, 1), (ID, 2022, 1, 1), true) 
-    Duration((ID, 2022, 1, 1), (CE, 2022, 1, 1), true) 
-    Duration((CE, 2022, 1, 1), (CE, 2022, 1, 1), true) 
-    Duration((ID, 2022, 1, 1), (CE, 2022, 1, 3), true) 
-
-    # DayOfLife is an OrdinalDate, not a Duration!
-    function DayOfLife(birthdate::CDate) 
-        if isValidDate(birthdate) 
-            y, m, d = Dates.yearmonthday(Dates.now())
-            return Duration(birthdate, (CE, y, m, d)) + 1
-        end
-        @warn("Invalid Date: $birthdate")
-        return InvalidDuration
+    @testset "Duration" begin
+    @test 2 == Duration((CE, 2022, 1, 1), (ID, 2022, 1, 1), true) 
+    @test 2 == Duration((ID, 2022, 1, 1), (CE, 2022, 1, 1), true) 
+    @test 0 == Duration((CE, 2022, 1, 1), (CE, 2022, 1, 1), true) 
+    @test 0 == Duration((ID, 2022, 1, 1), (CE, 2022, 1, 3), true) 
+    # Nota bene, not 365! Duration is a paradise for off-by-one errors.
+    @test 364 == Duration((CE, 2022, 1, 1), (CE, 2022, 12, 31), true) 
+    @test 365 == Duration((CE, 2022, 1, 1), (CE, 2023,  1,  1), true) 
     end
-
-    println("Mozart would be ", DayOfLife((CE, 1756, 1, 27)), " days old today.")
 end
 
 function TestDayOfYear()
@@ -323,16 +321,20 @@ function TestDayOfYear()
     ]
 
     println("\n====================\n")
+
+    @testset "DayOfYear" begin
     for x in DOY
         date, num = x
         doy = DayOfYear(date)
         print(CDateStr(date), " ::", lpad(num, 4, " "), lpad(doy, 4, " "))
         println(" ", doy == num)
+        @test doy == num
+    end
     end
 end
 
 function ShowDayOfYear()
-    println("\n====================\n")
+    println("\n======== NEEDS CONFIRMED TEST DATA! ============\n")
 
     date = (2022, 1, 1)
     for c in [CE, AD, AM, AH]  
@@ -355,13 +357,24 @@ function ShowDayOfYear()
     end
 end
 
+# DayOfLife is an OrdinalDate, not a Duration!
+function DayOfLife(birthdate::CDate) 
+    if isValidDate(birthdate) 
+        y, m, d = Dates.yearmonthday(Dates.now())
+        return Duration(birthdate, (CE, y, m, d)) + 1
+    end
+    @warn("Invalid Date: $birthdate")
+    return InvalidDuration
+end
+
 function TestToday()
-    println("Today in all calendars:\n")
+    println("\nMozart would be ", DayOfLife((CE, 1756, 1, 27)), " days old today.")
+    println("\nToday on all calendars:\n")
     now = Dates.yearmonthday(Dates.now())
     date = ("CE", now[1], now[2], now[3])
     CalendarDates(date, true)
     doy = DayOfYear(date)
-    println("This is the $doy-th day of a CE-year.")
+    println("\nThis is the $doy-th day of a CE-year.")
 end
 
 function TestAll()
@@ -373,10 +386,9 @@ function TestAll()
  
     TestConversions();   println()
     TestDateTables();    println()
-    TestCalenderDates(); println()
     TestDuration();      println()
     TestDayOfYear();     println()
-    ShowDayOfYear();     println()
+    # ShowDayOfYear();     println()
     TestToday()
 end
 

@@ -33,9 +33,7 @@ It converts a calendar date to the representation of the date in the calendar 'c
 
 * The calendar date (CDate) is a tuple (calendar, year, month, day). The parts of the date can be given as a tuple or individually.
 
-* 'calendar' is one of "Gregorian", "Hebrew", "Islamic", "Julian", or "IsoDate".
-
-Alternatively you can use the acronyms "CE", "AM", "AH", "AD", or "ID" explained in the table above.
+* 'calendar' is one of "Gregorian", "Hebrew", "Islamic", "Julian", or "IsoDate". Alternatively you can use the acronyms "CE", "AM", "AH", "AD", or "ID" explained in the table above.
 
 * If the optional parameter 'show' is set to 'true', both dates are printed. 'show' is 'false' by default.
 
@@ -75,7 +73,7 @@ computes a table, which is a tuple of five dates plus the day number. If 'show' 
     Hebrew        AM 5516-11-25
     Islamic       AH 1169-04-24
     IsoDate       ID 1756-05-02
-    DayNumber     DN 641027
+    DayNumber     RD 641027
 ``` 
 
 The package provides additional functions; read the documentation for this.
