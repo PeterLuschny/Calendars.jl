@@ -1,5 +1,5 @@
+![Joseph Justus Scaliger, De emendatione temporum (1583), (Bayerischen Staatsbibliothek, public domain)](DeEmendationeTemporum.png)
 
-[Rata Die (RD)](https://en.wikipedia.org/wiki/Rata_Die)
 
 [Calendrical Calculations](https://en.wikipedia.org/wiki/Calendrical_Calculations)
 
@@ -17,7 +17,15 @@
 
 [Proleptic Julian calendar](https://en.wikipedia.org/wiki/Proleptic_Julian_calendar)
 
+[On the use of Julian dates](https://www.iers.org/IERS/EN/Science/Recommendations/resolutionB1.html)
+
 [Julian day Calculation](https://en.wikipedia.org/wiki/Julian_day#Calculation)
+
+[Julian date](https://de.wikipedia.org/wiki/Julianisches_Datum)
+
+[Rata Die (RD)](https://en.wikipedia.org/wiki/Rata_Die)
+
+[Modified Julian Date](https://web.archive.org/web/20130214020649/http://tycho.usno.navy.mil/mjd.html)
 
 [Ordinal date](https://en.wikipedia.org/wiki/Ordinal_date)
 
@@ -28,3 +36,5 @@
 [Python datetime src](https://github.com/python/cpython/blob/main/Lib/datetime.py)
 
 [Python datetime api](https://docs.python.org/3/library/datetime.html#date-objects)
+
+[ke!san Online Calculator](https://keisan.casio.com/exec/system/1227779487)

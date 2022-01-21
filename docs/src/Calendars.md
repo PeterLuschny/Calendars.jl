@@ -30,8 +30,7 @@ We use the following acronyms for the names of calendars:
 
 For instance, the date of Mozart's birth is `1756-01-27`. The day number associated with this date is `641027` if we assume that the date is a Gregorian date. The Hebrew date of Mozart's birth is `5516-11-25`, and the associated day number is the same as the one associated with the Gregorian date.
 
-Using our conventions we can write Mozart's birthday 
-alternatively as
+Using our conventions we can write Mozart's birthday alternatively as
 
 ```
     - Current Epoch  CE 1756-01-27
@@ -41,6 +40,22 @@ alternatively as
     - ISO Date       ID 1756-05-02    
     - Day Number     RD 641027
 ```
+
+## Duration 
+
+Given two dates d1 and d2 assume without loss of generality d1 <= d2 in the temporal order.
+
+```julia
+Period(d1, d2) = {day | DayNumber(d1) <= DayNumber(day) < DayNumber(d2)}
+``` 
+
+This means that a _period_ is a half-open interval in the calendar, where the start date d1 is inclusive but the end date d2 is exclusive. Thus Period(d1, d2) represents the set of _ellapsed days_ since d1, limited by date d2. The formal definition of _duration_ is:
+
+```julia
+Duration(d1, d2) = Cardinality(Period(d1, d2))
+```
+
+Thus duration is a measure and symmetric in the variables. The setup makes it possible to consider time periods even when the start and end dates are given in different calendars.
 
 ## Limitations
 

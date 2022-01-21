@@ -68,12 +68,12 @@ julia> CalendarDates("Gregorian", 1756, 1, 27, true)
 computes a table, which is a tuple of five dates plus the day number. If 'show' is 'true' the table below will be printed.
 
 ```julia
-    CurrentEpoch  CE 1756-01-27
-    Julian        AD 1756-01-16
-    Hebrew        AM 5516-11-25
-    Islamic       AH 1169-04-24
-    IsoDate       ID 1756-05-02
-    DayNumber     RD 641027
+CurrentEpoch  CE 1756-01-27
+Julian        AD 1756-01-16
+Hebrew        AM 5516-11-25
+Islamic       AH 1169-04-24
+IsoDate       ID 1756-05-02
+DayNumber     RD 641027
 ``` 
 
 The package provides additional functions; read the documentation for this.

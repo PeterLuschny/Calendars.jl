@@ -13,13 +13,14 @@ module Calendars
 
 export DayNumberFromDate, DateFromDayNumber, ConvertDate, CalendarDates 
 export CDate, CDateStr, DateStr, DateTable, PrintDateTable, isValidDate
-export Duration, DayOfYear, IDate
+export Duration, DayOfYear, IDate, RDToJulianNumber, JulianNumberToRD
 
 include("CalendarUtils.jl")
 include("GregorianCalendar.jl")
+include("JulianCalendar.jl")
+include("HistoricalCalendar.jl")
 include("HebrewCalendar.jl")
 include("IslamicCalendar.jl")
-include("JulianCalendar.jl")
 include("IsoCalendar.jl")
 include("REPLCalendar.jl")
 
@@ -55,6 +56,8 @@ function DayNumberFromDate(d::CDate, show=false)
         dn = DayNumberGregorian(d)
     elseif calendar == AD
         dn = DayNumberJulian(d)
+    elseif calendar == HC
+        dn = DayNumberHistorical(d)    
     elseif calendar == AM
         dn = DayNumberHebrew(d)
     elseif calendar == AH
@@ -121,6 +124,8 @@ function DateFromDayNumber(calendar::String, dn::DPart, show=false)
         date = DateGregorian(dn)
     elseif cal == AD
         date = DateJulian(dn)
+    elseif cal == HC
+        date = DateHistorical(dn)    
     elseif cal == AM
         date = DateHebrew(dn)
     elseif cal == AH
@@ -213,12 +218,13 @@ Alternatively you can also write
 julia> CalendarDates("CE", 1756, 1, 27, true) 
 ```
 
-This computes a 'DateTable', which is a tuple of five
+This computes a 'DateTable', which is a tuple of six
 calendar dates plus the day number. If 'show' is 'true'
 the table below will be printed.
 ```julia
     CurrentEpoch  CE 1756-01-27
     Julian        AD 1756-01-16
+    Historical    HC 1756-01-27
     Hebrew        AM 5516-11-25
     Islamic       AH 1169-04-24
     IsoDate       ID 1756-05-02
@@ -231,6 +237,7 @@ function CalendarDates(date::CDate, show=false)
     Table = (
         DateFromDayNumber(CE, dn),
         DateFromDayNumber(AD, dn),
+        DateFromDayNumber(HC, dn),
         DateFromDayNumber(AM, dn),
         DateFromDayNumber(AH, dn),
         DateFromDayNumber(ID, dn),
@@ -275,6 +282,8 @@ function isValidDate(d::CDate)
         val = isValidDateGregorian(d)
     elseif calendar == AD
         val = isValidDateJulian(d)
+    elseif calendar == HC
+        val = isValidDateGregorian(d)    
     elseif calendar == AM
         val = isValidDateHebrew(d)
     elseif calendar == AH
@@ -325,7 +334,7 @@ is returned.
 """
 function DayOfYear(date::CDate)
     if ! isValidDate(date)
-        @warn("$date is not a valid date!")
+        @warn(Warning(date))
         return InvalidDayOfYear
     end
 
@@ -335,6 +344,8 @@ function DayOfYear(date::CDate)
         val = DayOfYearGregorian(year, month, day)
     elseif cname == AD
         val = DayOfYearJulian(year, month, day)
+    elseif cname == HC
+        val = DayOfYearHistorical(year, month, day)    
     elseif cname == AM
         val = DayOfYearHebrew(year, month, day)
     elseif cname == AH
@@ -356,25 +367,18 @@ DayOfYear((calendar, d[1], d[2], d[3]))
 
 
 """
-Given two dates d1 = (c1, y1, m1, d1) and d2 = (c2, y2, m2, d2),
-assume without loss of generality d1 <= d2 in the temporal order.
 
 ```julia
-Period(d1, d2) = {day | DayNumber(d1) <= DayNumber(day) < DayNumber(d2)}
+Duration(a::CDate, b::CDate, show=false)
 ``` 
 
-This means that a _period_ is a half-open interval in the calendar,
-where the start date d1 is inclusive but the end date d2 is exclusive. 
-Thus Period(d1, d2) represents the set of _ellapsed days_ since d1, 
-limited by date d2. The definition of _duration_ now is:
+The duration gives the number of days between two dates, counting 
+the first date but not the second. So it describes a right half-open
+time interval. The start and end dates can be given in different 
+calendars.
 
-```julia
-Duration(d1, d2) = Cardinality(Period(d1, d2))
-```
-
-Thus duration is a measure and symmetric in the variables.
-The setup makes it possible to consider time periods even when
-the start and end dates are given in different calendars.
+If the optional parameter 'show' is set to 'true', both dates are 
+printed. 'show' is 'false' by default.
 
 ```julia
 julia> Duration(("CE", 2022, 1, 1), ("ID", 2022, 1, 1), true)

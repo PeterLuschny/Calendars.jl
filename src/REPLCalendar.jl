@@ -80,8 +80,7 @@ function IDate()
                 println(e)
                 return
             end
-            println("The ", DayOfYear(date), 
-                    "-th day of the $cs-year.")
+            println("The ", DayOfYear(date), "-th day of the $cs-year.")
         end
         println()
     end
