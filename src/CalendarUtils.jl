@@ -2,9 +2,9 @@
 # ======================= CalendarUtils =====================
 
 # Symbols for calendar names
-CE = :"CE"  # Current Epoch
-AD = :"AD"  # Julian
-HC = :"HC"  # Historical Calendar
+CE = :"CE"  # Common Era
+RC = :"RC"  # Julian (Roman Calendar)
+EC = :"EC"  # European Calendar
 AM = :"AM"  # Anno Mundi
 AH = :"AH"  # Anno Hegirae
 ID = :"ID"  # ISO Date
@@ -13,24 +13,24 @@ XX = :"00"  # Unknown
 
 # Map calendar specifiers or character codes to tokens.
 CalendarSpecifiers = Dict{String, String}(
-    "CE" => "CurrentEpoch",
-    "AD" => "Julian      ",
-    "HC" => "Historical  ",
-    "AM" => "Hebrew      ",
-    "AH" => "Islamic     ",
-    "ID" => "IsoDate     ",
-    "RD" => "DayNumber   ",
-    "XX" => "INVALID     "
+    "CE" => "Common   ",
+    "RC" => "Julian   ",
+    "EC" => "European ",
+    "AM" => "Hebrew   ",
+    "AH" => "Islamic  ",
+    "ID" => "IsoDate  ",
+    "RD" => "DayNumber",
+    "00" => "INVALID  "
 )
 
 # Return symbolic name representing a calendar. 
 function CName(calendar::String) # CName = CalendarName 
-    (calendar == "CurrentEpoch" || calendar == "CE")  && return CE
-    (calendar == "Common"     )                       && return CE
+    (calendar == "Common"     || calendar == "CE")    && return CE
+    (calendar == "CurrentEpoch")                      && return CE
     (calendar == "Gregorian"  )                       && return CE
-    (calendar == "Julian"     || calendar == "AD")    && return AD
-    (calendar == "Historical" || calendar == "HC")    && return HC
-    (calendar == "Christian"  )                       && return HC
+    (calendar == "Julian"     || calendar == "RC")    && return RC
+    (calendar == "Christian"  || calendar == "AD")    && return RC
+    (calendar == "European"   || calendar == "EC")    && return EC
     (calendar == "Hebrew"     || calendar == "AM")    && return AM
     (calendar == "Jewish"     )                       && return AM
     (calendar == "Islamic"    || calendar == "AH")    && return AH
@@ -90,8 +90,8 @@ CDate = Tuple{String, DPart, DPart, DPart}
 
     A tuple 'date' of type 'CDate' is unpacked by convention as  
     (calendar, year, month, day) = date, where 'calendar' is 
-    "Gregorian", "Julian", "Historical", Hebrew", "Islamic", 
-    or "IsoDate". Alternatively the acronyms "CE", "AD", "HC",
+    "Common", "Julian", "European", Hebrew", "Islamic", 
+    or "IsoDate". Alternatively the acronyms "CE", "RC", "EC",
     "AM", "AH", and "ID" can be used. 'DPart' (date part) is 
     a typename and is defined as Int64.
 
@@ -107,12 +107,12 @@ acronyms for the calendar names indicated above.
 Examples for CDates and their string representation are:
 
 ```julia
-("Gregorian",  2022,  1, 19)  -> "CE 2022-01-19"
-("Julian",     2022,  1,  6)  -> "AD 2022-01-06"
-("Historical", 2022,  1,  6)  -> "HC 2022-01-19"
-("Hebrew",     5782, 11, 17)  -> "AM 5782-11-17"
-("Islamic",    1443,  6, 15)  -> "AH 1443-06-15"
-("IsoDate",    2022,  3,  3)  -> "ID 2022-03-03"
+("Common",   2022,  1, 19)  -> "CE 2022-01-19"
+("Julian",   2022,  1,  6)  -> "RC 2022-01-06"
+("European", 2022,  1,  6)  -> "EC 2022-01-19"
+("Hebrew",   5782, 11, 17)  -> "AM 5782-11-17"
+("Islamic",  1443,  6, 15)  -> "AH 1443-06-15"
+("IsoDate",  2022,  3,  3)  -> "ID 2022-03-03"
 ``` 
 """
 const CDate = Tuple{String, DPart, DPart, DPart}
@@ -134,7 +134,7 @@ DateStr(d::CDate) = DateStr(d[2], d[3], d[4])
 function CDateStr(cd::CDate)
     cal, year, month, day = cd
     if cal == RD 
-        s = lpad(day, 7, "0")
+        s = lpad(day, 7, " ")
     else
         s = DateStr(year, month, day)
     end
@@ -145,6 +145,7 @@ CDateStr(cal::String, d::Tuple{DPart, DPart, DPart}) =
 CDateStr((cal, d[1], d[2], d[3]))
 
 function PrintDateTable(D::DateTable)
+    println(D)
     for d in D
         println(CalendarSpecifiers[d[1]], " ", CDateStr(d))
     end

@@ -18,7 +18,7 @@ export Duration, DayOfYear, IDate, RDToJulianNumber, JulianNumberToRD
 include("CalendarUtils.jl")
 include("GregorianCalendar.jl")
 include("JulianCalendar.jl")
-include("HistoricalCalendar.jl")
+include("EuropeanCalendar.jl")
 include("HebrewCalendar.jl")
 include("IslamicCalendar.jl")
 include("IsoCalendar.jl")
@@ -54,10 +54,10 @@ function DayNumberFromDate(d::CDate, show=false)
     calendar = CName(d[1])
     if calendar == CE 
         dn = DayNumberGregorian(d)
-    elseif calendar == AD
+    elseif calendar == RC
         dn = DayNumberJulian(d)
-    elseif calendar == HC
-        dn = DayNumberHistorical(d)    
+    elseif calendar == EC
+        dn = DayNumberEuropean(d)    
     elseif calendar == AM
         dn = DayNumberHebrew(d)
     elseif calendar == AH
@@ -122,10 +122,10 @@ function DateFromDayNumber(calendar::String, dn::DPart, show=false)
     cal = CName(calendar)
     if cal == CE
         date = DateGregorian(dn)
-    elseif cal == AD
+    elseif cal == RC
         date = DateJulian(dn)
-    elseif cal == HC
-        date = DateHistorical(dn)    
+    elseif cal == EC
+        date = DateEuropean(dn)    
     elseif cal == AM
         date = DateHebrew(dn)
     elseif cal == AH
@@ -222,13 +222,13 @@ This computes a 'DateTable', which is a tuple of six
 calendar dates plus the day number. If 'show' is 'true'
 the table below will be printed.
 ```julia
-    CurrentEpoch  CE 1756-01-27
-    Julian        AD 1756-01-16
-    Historical    HC 1756-01-27
-    Hebrew        AM 5516-11-25
-    Islamic       AH 1169-04-24
-    IsoDate       ID 1756-05-02
-    DayNumber     RD 641027
+    CommonEra  CE 1756-01-27
+    Julian     RC 1756-01-16
+    European   EC 1756-01-27
+    Hebrew     AM 5516-11-25
+    Islamic    AH 1169-04-24
+    IsoDate    ID 1756-05-02
+    DayNumber  RD 641027
 ```
 """
 function CalendarDates(date::CDate, show=false)
@@ -236,8 +236,8 @@ function CalendarDates(date::CDate, show=false)
     dn = DayNumberFromDate(date)
     Table = (
         DateFromDayNumber(CE, dn),
-        DateFromDayNumber(AD, dn),
-        DateFromDayNumber(HC, dn),
+        DateFromDayNumber(RC, dn),
+        DateFromDayNumber(EC, dn),
         DateFromDayNumber(AM, dn),
         DateFromDayNumber(AH, dn),
         DateFromDayNumber(ID, dn),
@@ -280,10 +280,10 @@ function isValidDate(d::CDate)
     calendar = CName(d[1])
     if calendar == CE
         val = isValidDateGregorian(d)
-    elseif calendar == AD
+    elseif calendar == RC
         val = isValidDateJulian(d)
-    elseif calendar == HC
-        val = isValidDateGregorian(d)    
+    elseif calendar == EC
+        val = isValidDateEuropean(d)    
     elseif calendar == AM
         val = isValidDateHebrew(d)
     elseif calendar == AH
@@ -342,10 +342,10 @@ function DayOfYear(date::CDate)
     cname = CName(calendar)
     if cname == CE
         val = DayOfYearGregorian(year, month, day)
-    elseif cname == AD
+    elseif cname == RC
         val = DayOfYearJulian(year, month, day)
-    elseif cname == HC
-        val = DayOfYearHistorical(year, month, day)    
+    elseif cname == EC
+        val = DayOfYearEuropean(year, month, day)    
     elseif cname == AM
         val = DayOfYearHebrew(year, month, day)
     elseif cname == AH

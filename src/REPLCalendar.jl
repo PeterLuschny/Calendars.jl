@@ -19,12 +19,13 @@ function IDate()
 
     while true
         println("Enter a calendar specifier:")
-        println("    CE => CurrentEpoch")
-        println("    AD => Julian      ")
-        println("    ID => IsoDate     ")
-        println("    AM => Hebrew      ")
-        println("    AH => Islamic     ")
-        println("or Ctrl+C to quit.    ")
+        println("    CE => Common  ")
+        println("    RC => Julian  ")
+        println("    EC => European")
+        println("    AM => Hebrew  ")
+        println("    AH => Islamic ")
+        println("    ID => IsoDate ")
+        println("or Ctrl+C to quit.")
         println()
 
         ct = try
@@ -33,7 +34,7 @@ function IDate()
             println("... bye")
             return
         end
-        if ct in ["CE", "AD", "ID", "AM", "AH"]
+        if ct in ["CE", "RC", "EC", "AM", "AH", "ID"]
             cs = ct
         else
             cs = "CE"

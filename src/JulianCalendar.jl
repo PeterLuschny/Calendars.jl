@@ -19,7 +19,7 @@ end
 # Is the date a valid Julian date?
 function isValidDateJulian(cd::CDate)
     cal, year, month, day = cd
-    if CName(cal) != AD 
+    if CName(cal) != RC 
         @warn(Warning(cd))
         return false
     end
@@ -51,7 +51,7 @@ end
 # Computes the day number from a date which might not be a valid Julian date.
 function DayNumberJulian(cd::CDate) 
     cal, year, week, day = cd
-    if isValidDateJulian((AD, year, week, day)) 
+    if isValidDateJulian((RC, year, week, day)) 
         return DayNumberValidJulian(year, week, day)
     end
     return InvalidDayNumber
@@ -59,7 +59,7 @@ end
 
 # Computes the day number from a date which might not be a valid Julian date.
 function DayNumberJulian(year::DPart, month::DPart, day::DPart) 
-    if isValidDateJulian((AD, year, month, day)) 
+    if isValidDateJulian((RC, year, month, day)) 
         return DayNumberValidJulian(year, month, day)
     end
     return InvalidDayNumber
@@ -68,7 +68,7 @@ end
 # Computes the Julian date from the day number.
 function DateJulian(dn::DPart)
     if dn < EpochJulian    # Date is pre-Julian
-       @warn(Warning(AD))
+       @warn(Warning(RC))
        return InvalidDate
     end
 
@@ -87,5 +87,5 @@ function DateJulian(dn::DPart)
     end
 
     day = dn - DayNumberValidJulian(year, month, 1) + 1
-    return (AD, year, month, day)::CDate
+    return (RC, year, month, day)::CDate
 end

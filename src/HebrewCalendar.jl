@@ -24,14 +24,11 @@ function isLeapYearHebrew(year::DPart)
 end
 
 function isLongMonth(year::DPart, month::DPart)
-    (   month == 2
-    ||  month == 4
-    ||  month == 6
-    || (month == 8 && ! isLongHeshvan(year))
-    || (month == 9 && isShortKislev(year))
-    ||  month == 10
+    (   month in [2, 4, 6, 10, 13]
+    || (month == 8  && ! isLongHeshvan(year))
+    || (month == 9  && isShortKislev(year))
     || (month == 12 && ! isLeapYearHebrew(year))
-    ||  month == 13 )
+    )
 end
 
 # Last day of month in Hebrew year.
@@ -46,7 +43,7 @@ end
 
 # Number of days in Hebrew year.
 function DaysInYearHebrew(year::DPart)
-    RoshHaShanah(year + 1) - RoshHaShanah(year)
+    Conjunction(year + 1) - Conjunction(year)
 end
 
 # Is the date a valid Hebrew date?
@@ -65,7 +62,7 @@ end
 
 # Number of days elapsed from the Sunday prior to the start of the
 # Hebrew calendar to the mean conjunction of Tishri of Hebrew year.
-function RoshHaShanah(year::DPart)
+function Conjunction(year::DPart)
     
     MonthsElapsed = ( 235 * div(year - 1, 19)  # Months in complete cycles so far.
                      + 12 * rem(year - 1, 19)  # Regular months in this cycle.
@@ -130,7 +127,7 @@ end
 # Computes the day number from a valid Hebrew date.
 function DayNumberValidHebrew(year::DPart, month::DPart, day::DPart) 
     DayInYear = DayOfYearHebrew(year, month, day)
-    return DayInYear + EpochHebrew + RoshHaShanah(year)
+    return DayInYear + EpochHebrew + Conjunction(year)
 end
 
 # Computes the day number of a valid Hebrew date.

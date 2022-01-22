@@ -1,13 +1,16 @@
 ![Joseph Justus Scaliger, De emendatione temporum (1583), (Bayerischen Staatsbibliothek, public domain)](DeEmendationeTemporum.png)
 
-
 [Calendrical Calculations](https://en.wikipedia.org/wiki/Calendrical_Calculations)
 
 [Reingold calendars](https://reingold.co/calendars.shtml)
 
+[History calendars](https://en.wikipedia.org/wiki/History_of_calendars)
+
+[List of calendars](https://en.wikipedia.org/wiki/List_of_calendars)
+
 [Explanatory supplement](https://web.archive.org/web/20120210184836/http://charon.nmsu.edu/~lhuber/leaphist.html)
 
-[Islamic calendar](https://en.wikipedia.org/wiki/Islamic_calendar)
+[Common Era](https://en.wikipedia.org/wiki/Common_Era)
 
 [Gregorian calendar](https://en.wikipedia.org/wiki/Gregorian_calendar)
 
@@ -29,6 +32,8 @@
 
 [Ordinal date](https://en.wikipedia.org/wiki/Ordinal_date)
 
+[Islamic calendar](https://en.wikipedia.org/wiki/Islamic_calendar)
+
 [ISO week date](https://en.wikipedia.org/wiki/ISO_week_date)
 
 [Iso calendar](https://webspace.science.uu.nl/~gent0113/calendar/isocalendar.htm)
@@ -38,3 +43,5 @@
 [Python datetime api](https://docs.python.org/3/library/datetime.html#date-objects)
 
 [ke!san Online Calculator](https://keisan.casio.com/exec/system/1227779487)
+
+[Calendar Converter for Near East Historians](https://www.muqawwim.com/)
