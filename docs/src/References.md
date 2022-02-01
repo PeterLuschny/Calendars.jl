@@ -26,7 +26,7 @@
 
 [Julian date](https://de.wikipedia.org/wiki/Julianisches_Datum)
 
-[Rata Die (RD)](https://en.wikipedia.org/wiki/Rata_Die)
+[Rata Die (DN)](https://en.wikipedia.org/wiki/Rata_Die)
 
 [Modified Julian Date](https://web.archive.org/web/20130214020649/http://tycho.usno.navy.mil/mjd.html)
 
@@ -45,3 +45,5 @@
 [ke!san Online Calculator](https://keisan.casio.com/exec/system/1227779487)
 
 [Calendar Converter for Near East Historians](https://www.muqawwim.com/)
+
+[Calendar Converter](https://www.calendar-converter.com/jewishhebrew/)

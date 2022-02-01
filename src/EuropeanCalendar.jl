@@ -6,18 +6,18 @@
 
 
 # Is the date a valid European date?
-function isValidDateEuropean(cd::CDate)
+function isValidDateEuropean(cd::CDate, warn=true)
     cal, year, month, day = cd
     if CName(cal) != EC 
-        @warn(Warning(cd))
+        warn && @warn(Warning(cd))
         return false
     end
 
     dn = DayNumberGregorian(year, month, day)
     if dn < GregorysBreak
-        return isValidDateJulian((RC, year, month, day))
+        return isValidDateJulian((JD, year, month, day), warn)
     end
-    return isValidDateGregorian((CE, year, month, day))
+    return isValidDateGregorian((CE, year, month, day), warn)
 end
 
 # Computes the day number from a date.
@@ -30,7 +30,7 @@ function DayNumberEuropean(year::DPart, month::DPart, day::DPart)
     return dn
 end
 
-# Computes the day number from a date.
+# Computes the day number from a valid date.
 function DayNumberEuropean(cd::CDate)
     cal, year, month, day = cd
     return DayNumberEuropean(year, month, day) 

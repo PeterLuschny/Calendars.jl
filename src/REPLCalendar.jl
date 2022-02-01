@@ -19,9 +19,9 @@ function IDate()
 
     while true
         println("Enter a calendar specifier:")
-        println("    CE => Common  ")
-        println("    RC => Julian  ")
         println("    EC => European")
+        println("    CE => Common  ")
+        println("    JD => Julian  ")
         println("    AM => Hebrew  ")
         println("    AH => Islamic ")
         println("    ID => IsoDate ")
@@ -34,7 +34,7 @@ function IDate()
             println("... bye")
             return
         end
-        if ct in ["CE", "RC", "EC", "AM", "AH", "ID"]
+        if ct in ["EC", "CE", "JD", "AM", "AH", "ID"]
             cs = ct
         else
             cs = "CE"

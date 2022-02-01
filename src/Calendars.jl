@@ -11,11 +11,18 @@
 
 module Calendars
 
-export DayNumberFromDate, DateFromDayNumber, ConvertDate, CalendarDates 
-export CDate, CDateStr, DateStr, DateTable, PrintDateTable, isValidDate
-export Duration, DayOfYear, IDate, RDToJulianNumber, JulianNumberToRD
+export DayNumberFromDate, DateFromDayNumber, ConvertDate
+export CalendarDates, CDate, CDateStr, DateStr, DateTable
+export isValidDate, Duration, DayOfYear, FixNumToJulianNum
+export JulianNumToFixNum, EuroNumToJulianNum, JulianNumToEuroNum
+export PrintDateLine, PrintDateTable, PrintEuropeanMonth 
+export SaveEuropeanMonth, IDate
 
+# Export only functions from CalendarUtils and from this file.
 include("CalendarUtils.jl")
+
+# Consider the following included files as 'intern', and
+# do not export their functions directly.
 include("GregorianCalendar.jl")
 include("JulianCalendar.jl")
 include("EuropeanCalendar.jl")
@@ -44,28 +51,31 @@ Alternatively you can also write
 julia> DayNumberFromDate("CE", 1756, 1, 27) 
 ```
 
-This returns the day number 641027. If 'show' is 'true'
-the line "CE 1756-01-27 -> RD 641027" is printed.
+This returns the fix day number 641027. If 'show' is 'true'
+the line "CE-1756-01-27 -> DN#641027" is printed.
 
 If an error occurs 0 (representing the invalid day 
 number) is returned.
 """
 function DayNumberFromDate(d::CDate, show=false)
+    # Don't process invalid dates
+    ! isValidDate(d) && return 0
+    
     calendar = CName(d[1])
     if calendar == CE 
         dn = DayNumberGregorian(d)
-    elseif calendar == RC
+    elseif calendar == JD
         dn = DayNumberJulian(d)
     elseif calendar == EC
-        dn = DayNumberEuropean(d)    
+        dn = DayNumberEuropean(d)
     elseif calendar == AM
         dn = DayNumberHebrew(d)
     elseif calendar == AH
         dn = DayNumberIslamic(d)
     elseif calendar == ID
         dn = DayNumberIso(d)
-    elseif calendar == RD
-        dn = d[4]    
+    elseif calendar == DN
+        dn = d[4]
     else
         @warn("Unknown calendar: $calendar")
         return InvalidDayNumber
@@ -107,31 +117,32 @@ julia> DateFromDayNumber("CE", 641027)
 ```
 
 This returns the date ("CE", 1756, 1, 27). If 'show' is 
-'true' the line "RD 0641027 -> CE 1756-01-27" is printed.
+'true' the line "DN#0641027 -> CE-1756-01-27" is printed.
 
 If an error occurs ("00", 0, 0, 0) (representing the 
 invalid date) is returned.
 """
 function DateFromDayNumber(calendar::String, dn::DPart, show=false)
-    if dn <= 0
-        @warn("Day number must be > 0: $calendar $dn")
-        return InvalidDate
-    end
-
     # Use a symbol for the calendar name.
     cal = CName(calendar)
     if cal == CE
         date = DateGregorian(dn)
-    elseif cal == RC
+    elseif cal == JD
         date = DateJulian(dn)
     elseif cal == EC
-        date = DateEuropean(dn)    
+        date = DateEuropean(dn)
     elseif cal == AM
         date = DateHebrew(dn)
     elseif cal == AH
         date = DateIslamic(dn) 
     elseif cal == ID
         date = DateIso(dn) 
+    elseif cal == DN
+        date = (DN, 0, 0, dn)
+    elseif cal == EN 
+        date = (EN, 0, 0, FixNumToEuroNum(dn))
+    elseif cal == JN 
+        date = (JN, 0, 0, FixNumToJulianNum(dn))
     else
         @warn("Unknown calendar: $calendar")
         return InvalidDate
@@ -170,7 +181,7 @@ Hebrew date ("AM", 5516, 11, 25). If 'show' is 'true' the
 following line is printed:
 
 ```julia
-    "CE 1756-01-27 -> AM 5516-11-25"
+    "CE-1756-01-27 -> AM-5516-11-25"
 ```
 
 If an error occurs ("00", 0, 0, 0) (representing the invalid 
@@ -180,7 +191,10 @@ function ConvertDate(date::CDate, to::String, show=false)
     cal, year, month, day = date
     inc = CName(cal) 
     toc = CName(to)
-    (inc == XX || toc == XX) && return InvalidDate
+    if inc == XX || toc == XX
+        @warn("Unknown calendar: $cal")
+        return InvalidDate
+    end 
     d = (inc, year, month, day)
     ! isValidDate(d) && return InvalidDate
     dn = DayNumberFromDate(d)
@@ -222,26 +236,26 @@ This computes a 'DateTable', which is a tuple of six
 calendar dates plus the day number. If 'show' is 'true'
 the table below will be printed.
 ```julia
-    CommonEra  CE 1756-01-27
-    Julian     RC 1756-01-16
-    European   EC 1756-01-27
-    Hebrew     AM 5516-11-25
-    Islamic    AH 1169-04-24
-    IsoDate    ID 1756-05-02
-    DayNumber  RD 641027
+    European  EC-1756-01-27
+    Common    CE-1756-01-27
+    Julian    JD-1756-01-16
+    Hebrew    AM-5516-11-25
+    Islamic   AH-1169-04-24
+    IsoDate   ID-1756-05-02
+    EuroNum   EN#0641027
 ```
 """
 function CalendarDates(date::CDate, show=false)
 
     dn = DayNumberFromDate(date)
     Table = (
-        DateFromDayNumber(CE, dn),
-        DateFromDayNumber(RC, dn),
         DateFromDayNumber(EC, dn),
+        DateFromDayNumber(CE, dn),
+        DateFromDayNumber(JD, dn),
         DateFromDayNumber(AM, dn),
         DateFromDayNumber(AH, dn),
         DateFromDayNumber(ID, dn),
-        (RD, 0, 0, dn)
+        DateFromDayNumber(EN, dn)
     )
     show && PrintDateTable(Table)
     return Table
@@ -257,7 +271,7 @@ show=false) = CalendarDates((calendar, d[1], d[2], d[3]), show)
 """
 
 ```julia
-isValidDate(date::CDate)::Bool
+isValidDate(date::CDate, warn=true)::Bool
 ```
 
 Query if the given date is a valid calendar date for the 
@@ -276,22 +290,24 @@ julia> isValidDate("CE", 1756, 1, 27)
 In this example the query affirms that 1756-01-27 is a 
 valid Gregorian date.
 """
-function isValidDate(d::CDate)  
+function isValidDate(d::CDate, warn=true)  
     calendar = CName(d[1])
     if calendar == CE
-        val = isValidDateGregorian(d)
-    elseif calendar == RC
-        val = isValidDateJulian(d)
+        val = isValidDateGregorian(d, warn)
+    elseif calendar == JD
+        val = isValidDateJulian(d, warn)
     elseif calendar == EC
-        val = isValidDateEuropean(d)    
+        val = isValidDateEuropean(d, warn)
     elseif calendar == AM
-        val = isValidDateHebrew(d)
+        val = isValidDateHebrew(d, warn)
     elseif calendar == AH
-        val = isValidDateIslamic(d)
+        val = isValidDateIslamic(d, warn)
     elseif calendar == ID
-        val = isValidDateIso(d)
-    elseif calendar == RD
-        val = d[4] > 0   
+        val = isValidDateIso(d, warn)
+    elseif calendar == DN
+        val = d[4] > 0
+    elseif calendar == EN
+        val = d[4] > 0
     else
         @warn("Unknown calendar: $calendar")
         return false
@@ -315,18 +331,17 @@ Return the ordinal of the day in the given calendar. Also known
 as the 'ordinal date'. 
 
 ```julia
-julia> DayOfYear(("CE", 1756, 1, 27)) 
+julia> DayOfYear(("EC", 1756, 1, 27)) 
 ```
 
 Alternatively you can write
 
 ```julia
-julia> DayOfYear("Gregorian", 1756,  1, 27) 
-julia> DayOfYear("Hebrew",    5516, 11, 25) 
+julia> DayOfYear("European", 1756,  1, 27) 
 ```
 
-From the output we see that CE 1756-01-27 is the 27-th day 
-of the year 1756 in the Gregorian calendar. The same day
+From the output we see that EC-1756-01-27 is the 27-th day 
+of the year 1756 in the European calendar. The same day
 is in the Hebrew calendar the 144-th day of the year.
 
 If an error occurs 0 (representing the invalid day of the year)
@@ -342,10 +357,10 @@ function DayOfYear(date::CDate)
     cname = CName(calendar)
     if cname == CE
         val = DayOfYearGregorian(year, month, day)
-    elseif cname == RC
+    elseif cname == JD
         val = DayOfYearJulian(year, month, day)
     elseif cname == EC
-        val = DayOfYearEuropean(year, month, day)    
+        val = DayOfYearEuropean(year, month, day)
     elseif cname == AM
         val = DayOfYearHebrew(year, month, day)
     elseif cname == AH
@@ -356,7 +371,7 @@ function DayOfYear(date::CDate)
         @warn("Unknown calendar: $calendar")
         return InvalidDayOfYear
     end
-    return val
+    return val + 1
 end
 
 DayOfYear(calendar::String, year::DPart, month::DPart, day::DPart) = 
@@ -385,7 +400,7 @@ julia> Duration(("CE", 2022, 1, 1), ("ID", 2022, 1, 1), true)
 ``` 
 Perhaps to the surprise of some, these dates are two days apart.
 
-    CE 2022-01-01 -- ID 2022-01-01 -> Duration 2
+    CE-2022-01-01 -- ID-2022-01-01 -> Duration 2
 """
 function Duration(a::CDate, b::CDate, show=false)
     if isValidDate(a) && isValidDate(b)
@@ -403,5 +418,11 @@ function Duration(a::CDate, b::CDate, show=false)
     @warn("Invalid Date: $a $b")
     return InvalidDuration
 end
+
+# TODO
+#function GetYearStart(calendar::String, year::DPart) return ("00", 0, 0, 0) end
+#function GetYearEnd(calendar::String, year::DPart) return ("00", 0, 0, 0) end
+#function GetWeeksInYear(calendar::String, year::Dpart) return 0 end
+#function GetWeekOfYear(date::CDate) return 0 end
 
 end # module

@@ -3,12 +3,14 @@ using Test, Dates
 
 # Symbols for calendar names
 CE = :"CE"  # Common Era
-RC = :"RC"  # Julian
 EC = :"EC"  # European Calendar
+JD = :"JD"  # Julian (Roman Calendar)
 AM = :"AM"  # Anno Mundi
 AH = :"AH"  # Anno Hegirae
 ID = :"ID"  # ISO Date
-RD = :"RD"  # Day Number
+EN = :"EN"  # Euro Number
+JN = :"JN"  # Julian Number
+DN = :"DN"  # FixDay Number
 XX = :"00"  # Unknown 
 
 # Note that you can use "Gregorian" as the calendar name
@@ -36,22 +38,22 @@ function TestDateGregorian()
 end
 
 #=
-CE 0001-01-01 -> RD      1 -> CE 0001-01-01
-CE 1756-01-27 -> RD 641027 -> CE 1756-01-27
-CE 2022-01-01 -> RD 738156 -> CE 2022-01-01
-CE 2022-09-26 -> RD 738424 -> CE 2022-09-26
+CE 0001-01-01 -> DN      1 -> CE 0001-01-01
+CE 1756-01-27 -> DN 641027 -> CE 1756-01-27
+CE 2022-01-01 -> DN 738156 -> CE 2022-01-01
+CE 2022-09-26 -> DN 738424 -> CE 2022-09-26
 =#
 
 # Note that you can use "Julian" as the calendar name
 # when calling the function, but the System always returns
 # the CDate in standard form, where the Julian calendar 
-# has the acronym "RC" (Roman Calendar).
+# has the acronym "JD" (Roman Calendar).
 function TestDateJulian()
     SomeDateJulian = [ 
         ("Julian",    1,  1,  3)::CDate,
         ("Julian", 1756,  1, 16)::CDate,
-        ("RC",     2021, 12, 19)::CDate,
-        ("RC",     2022,  9, 13)::CDate
+        ("JD",     2021, 12, 19)::CDate,
+        ("JD",     2022,  9, 13)::CDate
         ] 
 
     @testset "DateJulian" begin
@@ -60,17 +62,17 @@ function TestDateJulian()
         #jdate = DateJulia(dn) 
         dn = DayNumberFromDate(date)
         jdate = DateFromDayNumber("Julian", dn)
-        @test jdate == ("RC", date[2], date[3], date[4]) 
+        @test jdate == ("JD", date[2], date[3], date[4]) 
         println(CDateStr(date), " -> ", CDateStr(dn), " -> ", CDateStr(jdate))
     end
     end
 end
 
 #=
-RC 0001-01-03 -> RD      1 -> RC 0001-01-03
-RC 1756-01-16 -> RD 641027 -> RC 1756-01-16
-RC 2021-12-19 -> RD 738156 -> RC 2021-12-19
-RC 2022-09-13 -> RD 738424 -> RC 2022-09-13
+JD 0001-01-03 -> DN      1 -> JD 0001-01-03
+JD 1756-01-16 -> DN 641027 -> JD 1756-01-16
+JD 2021-12-19 -> DN 738156 -> JD 2021-12-19
+JD 2022-09-13 -> DN 738424 -> JD 2022-09-13
 =#
 
 # See the comments above!
@@ -96,11 +98,11 @@ function TestDateHebrew()
 end
 
 #=
-AM 5516-11-25 -> RD 641027 -> AM 5516-11-25
-AM 5782-07-01 -> RD 738040 -> AM 5782-07-01
-AM 5782-10-27 -> RD 738155 -> AM 5782-10-27
-AM 5782-06-29 -> RD 738423 -> AM 5782-06-29
-AM 5783-07-01 -> RD 738424 -> AM 5783-07-01
+AM 5516-11-25 -> DN 641027 -> AM 5516-11-25
+AM 5782-07-01 -> DN 738040 -> AM 5782-07-01
+AM 5782-10-27 -> DN 738155 -> AM 5782-10-27
+AM 5782-06-29 -> DN 738423 -> AM 5782-06-29
+AM 5783-07-01 -> DN 738424 -> AM 5783-07-01
 =#
 
 # See the comments above!
@@ -125,10 +127,10 @@ function TestDateIslamic()
 end
 
 #=
-AH 0001-01-01 -> RD 227015 -> AH 0001-01-01
-AH 1756-01-27 -> RD 848954 -> AH 1756-01-27
-AH 2022-01-01 -> RD 943190 -> AH 2022-01-01
-AH 2022-09-26 -> RD 943451 -> AH 2022-09-26
+AH 0001-01-01 -> DN 227015 -> AH 0001-01-01
+AH 1756-01-27 -> DN 848954 -> AH 1756-01-27
+AH 2022-01-01 -> DN 943190 -> AH 2022-01-01
+AH 2022-09-26 -> DN 943451 -> AH 2022-09-26
 =# 
 
 # See the comments above!
@@ -153,10 +155,10 @@ function TestDateIso()
 end
 
 #=
-ID 0001-01-01 -> RD 0000001 -> ID 0001-01-01
-ID 1756-05-02 -> RD 0641027 -> ID 1756-05-02
-ID 2021-52-06 -> RD 0738156 -> ID 2021-52-06
-ID 2022-39-01 -> RD 0738424 -> ID 2022-39-01
+ID 0001-01-01 -> DN 0000001 -> ID 0001-01-01
+ID 1756-05-02 -> DN 0641027 -> ID 1756-05-02
+ID 2021-52-06 -> DN 0738156 -> ID 2021-52-06
+ID 2022-39-01 -> DN 0738424 -> ID 2022-39-01
 =#
 
 function TestConversions()
@@ -195,37 +197,138 @@ function TestConversions()
     end
 
     println("\nThe following 3 conversions test warnings, so worry only if you do not see them.\n")
-    ConvertDate(("Hebrew", 2022,  1,  1), "Gregorian") 
-    ConvertDate(("Hebrew", 5782, 10, 28), "Georgian") 
-    ConvertDate(("Homebrew", 2022, 1, 1), "Gregorian") 
+    println("This Hebrew date is before the Julian epoch.")
+    ConvertDate(("Hebrew", 2022,  1,  1), "Gregorian") |> println
+    ConvertDate(("Hebrew", 5782, 10, 28), "Georgian")  |> println
+    ConvertDate(("Homebrew", 2022, 1, 1), "Gregorian") |> println
 end
 
 #=
-RD 2111768 -> CE 5782-10-28 -> AM 9543-07-24
-RD 2111768 -> CE 5782-10-28 -> AH 5319-08-25
-RD  641027 -> CE 1756-01-27 -> AM 5516-11-25
-RD  227015 -> CE 0622-07-19 -> AH 0001-01-01
+DN 2111768 -> CE 5782-10-28 -> AM 9543-07-24
+DN 2111768 -> CE 5782-10-28 -> AH 5319-08-25
+DN  641027 -> CE 1756-01-27 -> AM 5516-11-25
+DN  227015 -> CE 0622-07-19 -> AH 0001-01-01
 
-RD  738156 -> AM 5782-10-28 -> AH 1443-05-27
-RD 2111768 -> AM 9543-07-24 -> CE 5782-10-28
-RD 1821874 -> AM 8749-11-03 -> AH 4501-08-03
+DN  738156 -> AM 5782-10-28 -> AH 1443-05-27
+DN 2111768 -> AM 9543-07-24 -> CE 5782-10-28
+DN 1821874 -> AM 8749-11-03 -> AH 4501-08-03
 
-RD 1192184 -> AH 2724-08-23 -> AM 7025-11-23
-RD 2565796 -> AH 6600-11-21 -> CE 7025-11-29
-RD 2275902 -> AH 5782-10-28 -> AM 9992-12-27
+DN 1192184 -> AH 2724-08-23 -> AM 7025-11-23
+DN 2565796 -> AH 6600-11-21 -> CE 7025-11-29
+DN 2275902 -> AH 5782-10-28 -> AM 9992-12-27
 =#
+
+#PrintEuropeanMonth(1, 1)
+#PrintEuropeanMonth(1452, 4)
+#PrintEuropeanMonth(1582, 10)
+#PrintEuropeanMonth(2022, 1)
+#PrintEuropeanMonth(9999, 12)
+
+#println("==")
+#println("EC "); PrintDateLine((EC, 1452, 4, 15))
+#println("JD "); PrintDateLine((JD, 1452, 4, 15))
+#println("CE "); PrintDateLine((CE, 1452, 4, 15))
+
+#function PrintIntervall(date::CDate, len)
+#
+#    dn = DayNumberFromDate(date)
+#    println("Starting ", CDateStr(date), " ", dn)
+#
+#    for day in 1:len
+#
+#        jn = FixNumToJulianNumber(dn)
+#        println( "| ",
+#            CDateStr(DateFromDayNumber(date[1], dn)), " | ",
+#            CDateStr((DN, 0, 0, dn)),  " | ",
+#            CDateStr((JN, 0, 0, jn)),
+#            " |" )
+#        dn += 1
+#    end
+#end
+
+#= 
+Starting CE 0001-12-27 
+| CE 0001-12-27 | DN     361 | JN 1721785 |
+| CE 0001-12-28 | DN     362 | JN 1721786 |
+| CE 0001-12-29 | DN     363 | JN 1721787 |
+| CE 0001-12-30 | DN     364 | JN 1721788 |
+| CE 0001-12-31 | DN     365 | JN 1721789 |
+| CE 0002-01-01 | DN     366 | JN 1721790 |
+
+| ID 0001-52-04 | DN     361 | JN 1721785 |
+| ID 0001-52-05 | DN     362 | JN 1721786 |
+| ID 0001-52-06 | DN     363 | JN 1721787 |
+| ID 0001-52-07 | DN     364 | JN 1721788 |
+| ID 0002-01-01 | DN     365 | JN 1721789 |
+| ID 0002-01-02 | DN     366 | JN 1721790 |
+
+Starting CE 0002-12-27 
+| CE 0002-12-27 | DN     726 | JN 1722150 |
+| CE 0002-12-28 | DN     727 | JN 1722151 |
+| CE 0002-12-29 | DN     728 | JN 1722152 |
+| CE 0002-12-30 | DN     729 | JN 1722153 |
+| CE 0002-12-31 | DN     730 | JN 1722154 |
+| CE 0003-01-01 | DN     731 | JN 1722155 |
+
+| ID 0002-52-05 | DN     726 | JN 1722150 |
+| ID 0002-52-06 | DN     727 | JN 1722151 |
+| ID 0002-52-07 | DN     728 | JN 1722152 |
+| ID 0003-01-01 | DN     729 | JN 1722153 |
+| ID 0003-01-02 | DN     730 | JN 1722154 |
+| ID 0003-01-03 | DN     731 | JN 1722155 |
+
+PrintIntervall((CE, 1, 12, 27), 6)
+PrintIntervall((ID, 1, 52,  4), 6)
+
+PrintIntervall((CE, 2, 12, 27), 6)
+PrintIntervall((ID, 2, 52,  5), 6)
+=#
+
+function TestIso()
+
+    ISO = [
+        ((CE, 1977,01,01 ), (ID, 1976,53,6 )),
+        ((CE, 1977,01,02 ), (ID, 1976,53,7 )),
+        ((CE, 1977,12,31 ), (ID, 1977,52,6 )),
+        ((CE, 1978,01,01 ), (ID, 1977,52,7 )),
+        ((CE, 1978,01,02 ), (ID, 1978,01,1 )),
+        ((CE, 1978,12,31 ), (ID, 1978,52,7 )),
+        ((CE, 1979,01,01 ), (ID, 1979,01,1 )),
+        ((CE, 1979,12,30 ), (ID, 1979,52,7 )),
+        ((CE, 1979,12,31 ), (ID, 1980,01,1 )),
+        ((CE, 1980,01,01 ), (ID, 1980,01,2 )),
+        ((CE, 1980,12,28 ), (ID, 1980,52,7 )),
+        ((CE, 1980,12,29 ), (ID, 1981,01,1 )),
+        ((CE, 1980,12,30 ), (ID, 1981,01,2 )),
+        ((CE, 1980,12,31 ), (ID, 1981,01,3 )),
+        ((CE, 1981,01,01 ), (ID, 1981,01,4 )),
+        ((CE, 1981,12,31 ), (ID, 1981,53,4 )),
+        ((CE, 1982,01,01 ), (ID, 1981,53,5 )),
+        ((CE, 1982,01,02 ), (ID, 1981,53,6 )),
+        ((CE, 1982,01,03 ), (ID, 1981,53,7 ))
+    ]
+
+    @testset "ISODates" begin
+    for iso in ISO
+        a = DayNumberFromDate(iso[1])
+        b = DayNumberFromDate(iso[2])
+        @test a == b
+        println(a, " = ", b)
+    end
+    end
+end
 
 function TestDateTables()
 
 # The case (AH, 0, 0, 0) is not valid and excluded in the test.
 TestDates = [
-((RD,     0,0,1),(CE,1,1,1),     (RC,1,1,3),     (EC,1,1,3),    (ID,1,1,1),    (AM,3761,10,18),(AH,   0,0, 0))::DateTable,
-((RD,0,0,405733),(CE,1111,11,11),(RC,1111,11,4), (EC,1111,11,4),(ID,1111,45,6),(AM,4872,9,2),  (AH, 505,4,29))::DateTable,
-((RD,0,0,811256),(CE,2222,2,22), (RC,2222,2,7),  (EC,2222,2,22),(ID,2222,8,5), (AM,5982,12,10),(AH,1649,9,10))::DateTable,
-((RD,0,0,641027),(CE,1756,1,27), (RC,1756,1,16), (EC,1756,1,27),(ID,1756,5,2), (AM,5516,11,25),(AH,1169,4,24))::DateTable,
-((RD,0,0,738156),(CE,2022,1,1),  (RC,2021,12,19),(EC,2022,1,1), (ID,2021,52,6),(AM,5782,10,28),(AH,1443,5,27))::DateTable,
-((RD,0,0,738424),(CE,2022,9,26), (RC,2022,9,13), (EC,2022,9,26),(ID,2022,39,1),(AM,5783,7,1),  (AH,1444,2,29))::DateTable,
-((RD,0,0,1146990),(CE, 3141,5,9),(RC,3141,4,17), (EC,3141,5,9), (ID,3141,19,5),(AM,6901,2,9),  (AH,2597,2,10))::DateTable
+#((DN,0,0,1),     (CE,0,12,30),   (JD,1,1,1),     (EC,1,1,1),    (ID,0,52,6), (AM,3761,10,16),(AH,-639,1,-221))::DateTable,
+((DN,0,0,405733),(CE,1111,11,11),(JD,1111,11,4), (EC,1111,11,4),(ID,1111,45,6),(AM,4872,9,2),  (AH, 505,4,29))::DateTable,
+((DN,0,0,811256),(CE,2222,2,22), (JD,2222,2,7),  (EC,2222,2,22),(ID,2222,8,5), (AM,5982,12,10),(AH,1649,9,10))::DateTable,
+((DN,0,0,641027),(CE,1756,1,27), (JD,1756,1,16), (EC,1756,1,27),(ID,1756,5,2), (AM,5516,11,25),(AH,1169,4,24))::DateTable,
+((DN,0,0,738156),(CE,2022,1,1),  (JD,2021,12,19),(EC,2022,1,1), (ID,2021,52,6),(AM,5782,10,28),(AH,1443,5,27))::DateTable,
+((DN,0,0,738424),(CE,2022,9,26), (JD,2022,9,13), (EC,2022,9,26),(ID,2022,39,1),(AM,5783,7,1),  (AH,1444,2,29))::DateTable,
+((DN,0,0,1146990),(CE, 3141,5,9),(JD,3141,4,17), (EC,3141,5,9), (ID,3141,19,5),(AM,6901,2,9),  (AH,2597,2,10))::DateTable
 ]
     @testset "DayNumbers" begin
     for D in TestDates
@@ -244,37 +347,37 @@ TestDates = [
 end
 
 #=
-DayNumber    RD 0000001
+DayNumber    DN 0000001
 CommonEra    CE 0001-01-01
-Julian       RC 0001-01-03
+Julian       JD 0001-01-03
 IsoDate      ID 0001-01-01
 Hebrew       AM 3761-10-18
 Islamic      AH 0000-00-00
 
-DayNumber    RD 0405733
+DayNumber    DN 0405733
 CommonEra    CE 1111-11-11
-Julian       RC 1111-11-04
+Julian       JD 1111-11-04
 IsoDate      ID 1111-45-06
 Hebrew       AM 4872-09-02
 Islamic      AH 0505-04-29
 
-DayNumber    RD 0811256
+DayNumber    DN 0811256
 CommonEra    CE 2222-02-22
-Julian       RC 2222-02-07
+Julian       JD 2222-02-07
 IsoDate      ID 2222-08-05
 Hebrew       AM 5982-12-10
 Islamic      AH 1649-09-10
 
-DayNumber    RD 0641027
+DayNumber    DN 0641027
 CommonEra    CE 1756-01-27
-Julian       RC 1756-01-16
+Julian       JD 1756-01-16
 IsoDate      ID 1756-05-02
 Hebrew       AM 5516-11-25
 Islamic      AH 1169-04-24
 
-DayNumber    RD 1146990
+DayNumber    DN 1146990
 CommonEra    CE 3141-05-09
-Julian       RC 3141-04-17
+Julian       JD 3141-04-17
 IsoDate      ID 3141-19-05
 Hebrew       AM 6901-02-09
 Islamic      AH 2597-02-10
@@ -335,61 +438,54 @@ function TestDayOfYear()
 end
 
 function ShowDayOfYear()
-    println("\n======== NEEDS CONFIRMED TEST DATA! ============\n")
 
-    date = (2022, 1, 1)
-    for c in [CE, RC, EC, AM, AH]  
-        println(CDateStr(c, date), " ::", lpad(DayOfYear(c, date),  4, " "))
+    Dates = [ (22, 1, 1), (756, 1, 27), (949, 11, 29), (990, 10, 20), 
+    (2022, 1, 1), (1756, 1, 27), (1949, 11, 29), (1990, 10, 20)]  
+
+    @testset "DayOfYear2" begin
+    for date in Dates
+        ce = DayOfYear(CE, date)
+        jd = DayOfYear(JD, date)
+        ec = DayOfYear(EC, date)
+        @test ce == jd
+        @test ec == jd
+        println(CDateStr(EC, date), " ::", lpad(DayOfYear(EC, date),  4, " "))
     end
-    println()
-    date = (1756,  1, 27)
-    for c in [CE, RC, EC, AM, AH] 
-        println(CDateStr(c, date), " ::", lpad(DayOfYear(c, date),  4, " "))
-    end
-    println()
-    date = (1949, 11, 29)
-    for c in [CE, RC, EC, AM, AH] 
-        println(CDateStr(c, date), " ::", lpad(DayOfYear(c, date),  4, " "))
-    end
-    println()
-    date = (1990, 10, 20)  
-    for c in [CE, RC, EC, AM, AH] 
-        println(CDateStr(c, date), " ::", lpad(DayOfYear(c, date),  4, " "))
     end
 end
 
 #=
-CE 0800-12-25 -> RD 0292188
-292188 2013612 -386388
-2013612 292188 292188
+EC-0800-12-25 -> DN-292192
+292192 2013616 -386384
+2013616 292192 292192
 
-CE 0843-08-10 -> RD 0307756
-307756 2029180 -370820
-2029180 307756 307756
+EC-0843-08-10 -> DN-307760
+307760 2029184 -370816
+2029184 307760 307760
 
-CE 1204-04-12 -> RD 0439489
-439489 2160913 -239087
-2160913 439489 439489
+EC-1204-04-12 -> DN-439496
+439496 2160920 -239080
+2160920 439496 439496
 
-CE 1452-04-15 -> RD 0530072
-530072 2251496 -148504
-2251496 530072 530072
+EC-1452-04-15 -> DN-530081
+530081 2251505 -148495
+2251505 530081 530081
 
-CE 1666-09-02 -> RD 0608374
+EC-1666-09-02 -> DN-608374
 608374 2329798 -70202
 2329798 608374 608374
 
-CE 1789-07-14 -> RD 0653249
+EC-1789-07-14 -> DN-653249
 653249 2374673 -25327
 2374673 653249 653249
 
-CE 1906-04-28 -> RD 0695904
+EC-1906-04-28 -> DN-695904
 695904 2417328 17328
 2417328 695904 695904
 =#
 
 function TestJulianDayNumbers()
-
+  
     test = [  # Note that we use EC, not CE dates!
     ((EC,800,12,25)::CDate, 292192, 2013616, -386384),  # Coronation of Carolus Magnus
     ((EC, 843,8,10)::CDate, 307760, 2029184, -370816),  # Treaty of Verdun
@@ -403,13 +499,13 @@ function TestJulianDayNumbers()
     for t in test
         println()
         rd   = DayNumberFromDate(t[1], true)
-        jdn  = RDToJulianNumber(rd) 
-        jdnm = RDToJulianNumber(rd, true) 
+        jdn  = FixNumToJulianNum(rd) 
+        jdnm = FixNumToJulianNum(rd, true) 
         @test jdn  == t[3]
         @test jdnm == t[4]
         println(rd, " ", jdn, " ", jdnm)
-        rdn  = JulianNumberToRD(jdn) 
-        rdnm = JulianNumberToRD(jdnm, true) 
+        rdn  = JulianNumToFixNum(jdn) 
+        rdnm = JulianNumToFixNum(jdnm, true) 
         @test rdn  == t[2]
         @test rdnm == t[2]
         println(jdn, " ", rdn, " ", rdnm)
@@ -417,16 +513,12 @@ function TestJulianDayNumbers()
     end
 end
 
-# Dates for Rosh Hashana
-RoshHashana = [
-    ((CE, 2020, 09, 19), (AM, 5781, 07, 01)),
-    ((CE, 2021, 09, 07), (AM, 5782, 07, 01)),
-    ((CE, 2022, 09, 26), (AM, 5783, 07, 01)),
-    ((CE, 2023, 09, 16), (AM, 5784, 07, 01)),
-    ((CE, 2024, 10, 03), (AM, 5785, 07, 01)),
-    ((CE, 2025, 09, 23), (AM, 5786, 07, 01)),
-    ((CE, 2026, 09, 12), (AM, 5787, 07, 01)),
-    ((CE, 2027, 10, 02), (AM, 5788, 07, 01))]
+function TestSaveCalendars()
+    SaveEuropeanMonth(1, 1)
+    SaveEuropeanMonth(1111, 11)
+    SaveEuropeanMonth(1582, 10)
+    SaveEuropeanMonth(9999, 12)
+end
 
 # DayOfLife is an OrdinalDate, not a Duration!
 function DayOfLife(birthdate::CDate) 
@@ -439,29 +531,30 @@ function DayOfLife(birthdate::CDate)
 end
 
 function TestToday()
-    println("\nMozart would be ", DayOfLife((CE, 1756, 1, 27)), " days old today.")
+    println("\nMozart would be ", DayOfLife((EC, 1756, 1, 27)), " days old today.")
     println("\nToday on all calendars:\n")
     now = Dates.yearmonthday(Dates.now())
-    date = ("CE", now[1], now[2], now[3])
+    date = ("EC", now[1], now[2], now[3])
     CalendarDates(date, true)
     doy = DayOfYear(date)
-    println("\nThis is the $doy-th day of a CE-year.")
+    println("\nThis is the $doy-th day of a EC-year.")
 end
 
 function TestAll()
-    TestDateGregorian(); println()
+    TestDateGregorian(); println() 
     TestDateJulian();    println()
     TestDateHebrew();    println()
     TestDateIslamic();   println()
     TestDateIso();       println()
- 
+    TestIso();           println()
     TestConversions();   println()
     TestDateTables();    println()
     TestDuration();      println()
-    TestJulianDayNumbers()
+    TestJulianDayNumbers(); println()
     TestDayOfYear();     println()
-    # ShowDayOfYear();   println()
+    ShowDayOfYear();     println()
     TestToday()
+    # TestSaveCalendars()
 end
 
 TestAll()
