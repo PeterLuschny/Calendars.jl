@@ -14,7 +14,7 @@ end
 # AH-1111-11-11 = JD-1700-04-19 ~ DN#620667
 # AH-6666-12-29 = JD-7089-11-28 ~ DN#2589222
 const EpochIslamic = 227015 
-const ValidYearsIslamic = (1, 9666) # by arbitrary convention
+const ValidYearsIslamic = (1, 9666) # by convention
 
 # True if year is an Islamic leap year.
 function isLeapYearIslamic(year::DPart)

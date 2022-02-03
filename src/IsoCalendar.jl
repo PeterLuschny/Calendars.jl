@@ -11,7 +11,7 @@ end
 # ID-1111-45-04 = CE-1111-11-11 ~ DN#0405733
 # ID-9999-52-05 = CE-9999-12-31 ~ DN#3652059
 const EpochIso = 1
-const ValidYearsIso = (0, 9999) # by arbitrary convention
+const ValidYearsIso = (0, 9999) # by convention
 
 # Day of week in ISO is represented by an integer from 1 through 7, 
 # beginning with Monday and ending with Sunday, which is
@@ -21,6 +21,7 @@ function DayOfWeekIso(dn::DPart)
     return day == 0 ? 7 : day
 end
 
+# True if year is an Iso leap year.
 function isLeapYearIso(year::DPart)
     f(y) = rem(y + div(y, 4) - div(y, 100) + div(y, 400), 7) 
     f(year) == 4 || f(year - 1) == 3
@@ -60,6 +61,7 @@ end
 
 XdayOnOrBefore(dn, x) = dn - rem(dn - x, weeklen)
 
+# Return the number of days in prior years.
 function DaysInPriorYears(year::DPart)
     # dn = DayNumberGregorian(year, 1, 4)
     # Let's make it self-contained!

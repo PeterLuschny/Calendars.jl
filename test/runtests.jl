@@ -518,6 +518,8 @@ function TestSaveCalendars()
     SaveEuropeanMonth(1111, 11)
     SaveEuropeanMonth(1582, 10)
     SaveEuropeanMonth(9999, 12)
+    PrintIsoWeek(1582, 41)
+    PrintIsoWeek(2525, 25)
 end
 
 # DayOfLife is an OrdinalDate, not a Duration!

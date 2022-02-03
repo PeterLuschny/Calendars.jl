@@ -16,7 +16,7 @@ export CalendarDates, CDate, CDateStr, DateStr, DateTable
 export isValidDate, Duration, DayOfYear, FixNumToJulianNum
 export JulianNumToFixNum, EuroNumToJulianNum, JulianNumToEuroNum
 export PrintDateLine, PrintDateTable, PrintEuropeanMonth 
-export SaveEuropeanMonth, IDate
+export SaveEuropeanMonth, WeekDay, PrintIsoWeek, IDate
 
 # Export only functions from CalendarUtils and from this file.
 include("CalendarUtils.jl")
@@ -29,7 +29,7 @@ include("EuropeanCalendar.jl")
 include("HebrewCalendar.jl")
 include("IslamicCalendar.jl")
 include("IsoCalendar.jl")
-include("REPLCalendar.jl")
+include("InteractiveCalendar.jl")
 
 """
 
@@ -245,7 +245,7 @@ the table below will be printed.
     EuroNum   EN#0641027
 ```
 """
-function CalendarDates(date::CDate, show=false)
+function CalendarDates(date::CDate, show=false)::DateTable
 
     dn = DayNumberFromDate(date)
     Table = (
@@ -255,7 +255,7 @@ function CalendarDates(date::CDate, show=false)
         DateFromDayNumber(AM, dn),
         DateFromDayNumber(AH, dn),
         DateFromDayNumber(ID, dn),
-        DateFromDayNumber(EN, dn)
+        DateFromDayNumber(EN, dn),
     )
     show && PrintDateTable(Table)
     return Table

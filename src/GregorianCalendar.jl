@@ -11,11 +11,12 @@ end
 # CE-1111-11-11 ~ DN#0405733
 # CE-9999-12-31 ~ DN#3652059
 const EpochGregorian = 1 
-const ValidYearsGregorian = (0, 9999) # by arbitrary convention
+const ValidYearsGregorian = (0, 9999) # by convention
 
 # Is a divisible by b?
 divisible(a, b) = rem(a, b) == 0
 
+# True if year is a Gregorian leap year.
 function isLeapYearGregorian(year::DPart)::Bool
     (divisible(year, 4) && ! divisible(year, 100)) || divisible(year, 400) 
 end

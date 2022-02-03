@@ -1,3 +1,8 @@
+## Index
+
+```@index
+```
+
 # Functions
 
 ```@docs
@@ -23,4 +28,25 @@ DayOfYear
 ``` 
 ```@docs
 Duration
+```
+```@docs
+EuroNumToJulianNum
+```
+```@docs
+JulianNumToEuroNum 
+```
+```@docs
+PrintDateLine
+```
+```@docs
+PrintEuropeanMonth
+```
+```@docs
+SaveEuropeanMonth
+```
+```@docs
+PrintIsoWeek
+``` 
+```@docs
+IDate
 ```

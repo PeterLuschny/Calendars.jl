@@ -12,8 +12,9 @@ end
 # JD-1111-11-11 = CE-1111-11-18  ~ DN#0405740
 # JD-9999-12-31 = CE-10000-03-13 ~ DN#3652132
 const EpochJulian = -1 
-const ValidYearsJulian = (1, 9999) # by arbitrary convention
+const ValidYearsJulian = (1, 9999) # by convention
 
+# True if year is a Julian leap year.
 function isLeapYearJulian(year::DPart)
     rem(year, 4) == 0
 end

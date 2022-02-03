@@ -15,7 +15,7 @@ end
 # AM-4872-09-09  = JD-1111-11-11  ~ DN#0405740
 # AM-13760-11-13 = JD-9999-12-31  ~ DN#33652132
 const EpochHebrew = -1373427 
-const ValidYearsHebrew = (3761, 13759) # by arbitrary convention
+const ValidYearsHebrew = (3761, 13759) # by convention
 
 # True if Heshvan is long in Hebrew year.
 function isLongHeshvan(year::DPart)
