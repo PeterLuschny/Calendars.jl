@@ -83,12 +83,13 @@ function CName(calendar::String, warn=false)
     (calendar == "ISODate"     )                    && return ID
     (calendar == "EuroNum"    || calendar == "EN")  && return EN
     (calendar == "JulianNum"  || calendar == "JN")  && return JN
-    (calendar == "DayNumber"  || calendar == "DN")  && return DN
+    (calendar == "FixNum"     || calendar == "RD")  && return DN
+    (calendar == "DayNum"     || calendar == "DN")  && return DN
     warn && @warn("Unknown calendar: $calendar")
     return XX
 end
 
-const DPart = Int64
+const DPart = Int 
 const InvalidDayNumber = DPart(0)
 const InvalidDayOfYear = DPart(0)
 const InvalidDuration = DPart(-1)
@@ -123,7 +124,10 @@ function JulianNumToFixNum(jdn::DPart, mod=false)
 end
 
 # Convert a fix day number to an European day number.
-FixNumToEuroNum(rtn::DPart) = rtn + 2
+FixNumToEuroNum(fn::DPart) = fn + 2
+
+# Convert an European day number to a fix day number.
+EuroNumToFixNum(en::DPart) = en - 2
 
 """
 Convert a Julian day number to an European day number.
@@ -157,17 +161,18 @@ A CDate (short for Calender Date) is defined as
 CDate = Tuple{String, DPart, DPart, DPart}
 ```
 
-    A tuple 'date' of type 'CDate' is unpacked by convention as (calendar, year, month, day) = date, where calendar' is "Common", "Julian", "European", Hebrew", "Islamic", or "IsoDate". 
-    
+    A tuple 'date' of type 'CDate' is unpacked by convention as (calendar, year, month, day) = 
+    date, where calendar' is "Common", "Julian", "European", Hebrew", "Islamic", or "IsoDate". 
     Alternatively the acronyms "CE", "EC", "JD", "AM", "AH", and "ID" can be used. 
-    
-    'DPart' (date part) is a typename for Int64.
+    'DPart' (date part) is a typename for Int.
 
 ```julia
 CDateStr(cd::CDate) 
 ```
 
-The function CDateStr converts a date of type CDate to a string representation, where the numeric part follows the recommendation of ISO 8601 and is prefixed by one of the acronyms for the calendar names indicated above. 
+The function CDateStr converts a date of type CDate to a string representation, where the 
+numeric part follows the recommendation of ISO 8601 and is prefixed by one of the acronyms 
+for the calendar names indicated above. 
 
 Examples for CDates and their string representation are:
 
@@ -241,7 +246,9 @@ end
 
 """
 
+```julia
 PrintDateLine(date::CDate, io=stdout)
+```
 
 Given a `date` print a line with all representations of this date to `io`.
 
@@ -269,7 +276,9 @@ markup = "|    :---:      |     :---:     |    :---:      |     :---:     |    :
 
 """
 
+```julia
 PrintEuropeanMonth(year::DPart, month::DPart, io=stdout)
+```
 
 Print a calendar for the given European month as a markdown table to `io`.
 
@@ -298,10 +307,12 @@ datadir = realpath(joinpath(dirname(@__FILE__)))
 
 """
 
+```julia
 SaveEuropeanMonth(year::DPart, month::DPart, dirname:String)
+```
 
-Save the calendar of the given European month as a markdown table to a file in the directory `dirname`.
-If no directory is given the file is written to the execution directory.
+Save the calendar of the given European month as a markdown table to a file in the directory
+`dirname`. If no directory is given the file is written to the execution directory.
 
 ```julia
 julia> SaveEuropeanMonth(2022, 2)
@@ -331,7 +342,9 @@ wmarkup = "|    ---:   |    :---:   |   :---:    |   :---:    |"
 
 """
 
+```julia
 PrintIsoWeek(year::DPart, week::DPart, io=stdout)
+```
 
 Print a calendar for the given Iso week as a markdown table to `io`.
 

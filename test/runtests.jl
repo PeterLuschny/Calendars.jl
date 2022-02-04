@@ -498,18 +498,19 @@ function TestJulianDayNumbers()
     @testset "JulianDayNumbers" begin
     for t in test
         println()
-        rd   = DayNumberFromDate(t[1], true)
-        jdn  = FixNumToJulianNum(rd) 
-        jdnm = FixNumToJulianNum(rd, true) 
+        rdn  = DayNumberFromDate(t[1], true)
+        jdn  = ConvertOrdinalDate(rdn, DN, JN)
         @test jdn  == t[3]
-        @test jdnm == t[4]
-        println(rd, " ", jdn, " ", jdnm)
-        rdn  = JulianNumToFixNum(jdn) 
-        rdnm = JulianNumToFixNum(jdnm, true) 
+        println(rdn, " ", jdn, " ")
+        rdn  = ConvertOrdinalDate(jdn, JN, DN)
         @test rdn  == t[2]
-        @test rdnm == t[2]
-        println(jdn, " ", rdn, " ", rdnm)
+        println(jdn, " ", rdn)
     end
+
+    en = ConvertOrdinalDate(2440422, "JN", "EN") 
+    jn = ConvertOrdinalDate(719000,  "EN", "JN") 
+    @test en  == 719000
+    @test jn  == 2440422
     end
 end
 

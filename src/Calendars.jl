@@ -13,12 +13,12 @@ module Calendars
 
 export DayNumberFromDate, DateFromDayNumber, ConvertDate
 export CalendarDates, CDate, CDateStr, DateStr, DateTable
-export isValidDate, Duration, DayOfYear, FixNumToJulianNum
-export JulianNumToFixNum, EuroNumToJulianNum, JulianNumToEuroNum
+export isValidDate, Duration, DayOfYear, ConvertOrdinalDate
 export PrintDateLine, PrintDateTable, PrintEuropeanMonth 
 export SaveEuropeanMonth, WeekDay, PrintIsoWeek, IDate
 
-# Export only functions from CalendarUtils and from this file.
+# Export only functions from CalendarUtils and from this file,
+# which basically is a wrapper around a collection of calendars.
 include("CalendarUtils.jl")
 
 # Consider the following included files as 'intern', and
@@ -38,8 +38,8 @@ DayNumberFromDate(date::Cdate, show::Bool)
 ```
 
 Return the day number correspondig to the calendar date.
-If the optional parameter 'show' is set to 'true', date 
-and number are printed. 'show' is 'false' by default.
+If the optional parameter `show` is set to 'true', date 
+and number are printed. `show` is 'false' by default.
 
 ```julia
 julia> DayNumberFromDate(("Gregorian", 1756, 1, 27)) 
@@ -51,7 +51,7 @@ Alternatively you can also write
 julia> DayNumberFromDate("CE", 1756, 1, 27) 
 ```
 
-This returns the fix day number 641027. If 'show' is 'true'
+This returns the fix day number 641027. If `show` is 'true'
 the line "CE-1756-01-27 -> DN#641027" is printed.
 
 If an error occurs 0 (representing the invalid day 
@@ -102,9 +102,9 @@ DateFromDayNumber(calendar::String, dn::DPart, show::Bool)
 
 Return the calendar date from a day number.
 
-The day number 'dn' must be an integer >= 1. If the optional 
-parameter 'show' is set to 'true', date and number are printed.
-'show' is 'false' by default.
+The day number `dn` must be an integer >= 1. If the optional 
+parameter `show` is set to 'true', date and number are printed.
+`show` is 'false' by default.
 
 ```julia
 julia> DateFromDayNumber("Gregorian", 641027) 
@@ -116,7 +116,7 @@ Alternatively you can also write
 julia> DateFromDayNumber("CE", 641027) 
 ```
 
-This returns the date ("CE", 1756, 1, 27). If 'show' is 
+This returns the date ("CE", 1756, 1, 27). If `show` is 
 'true' the line "DN#0641027 -> CE-1756-01-27" is printed.
 
 If an error occurs ("00", 0, 0, 0) (representing the 
@@ -160,11 +160,11 @@ end
 ConvertDate(date::CDate, to::String, show::Bool)
 ```
 
-Convert the given date to a date in the calendar 'to'.
-'to' is the name of a calendar where admissible names
+Convert the given date to a date in the calendar `to`.
+`to` is the name of a calendar where admissible names
 are listed in the CDate docstring. If the optional 
-parameter 'show' is set to 'true', both dates are printed. 
-'show' is 'false' by default.
+parameter `show` is set to 'true', both dates are printed. 
+`show` is 'false' by default.
 
 ```julia
 julia> ConvertDate(("Gregorian", 1756, 1, 27), "Hebrew") 
@@ -177,7 +177,7 @@ julia> ConvertDate("CE", 1756, 1, 27, "AM")
 ```
 
 This converts the Gregorian date ("CE", 1756, 1, 27) to the 
-Hebrew date ("AM", 5516, 11, 25). If 'show' is 'true' the 
+Hebrew date ("AM", 5516, 11, 25). If `show` is 'true' the 
 following line is printed:
 
 ```julia
@@ -218,8 +218,8 @@ CalendarDates(date::CDate, show::Bool)
 ```
 
 Return a table of the dates of all supported calendars 
-corresponding to 'date'. If the optional parameter 'show' 
-is set to 'true', the date table is printed. 'show' is 
+corresponding to `date`. If the optional parameter `show` 
+is set to 'true', the date table is printed. `show` is 
 'false' by default.
 
 ```julia
@@ -232,8 +232,8 @@ Alternatively you can also write
 julia> CalendarDates("CE", 1756, 1, 27, true) 
 ```
 
-This computes a 'DateTable', which is a tuple of six
-calendar dates plus the day number. If 'show' is 'true'
+This computes a `DateTable`, which is a tuple of six
+calendar dates plus the day number. If `show` is 'true'
 the table below will be printed.
 ```julia
     European  EC-1756-01-27
@@ -274,8 +274,7 @@ show=false) = CalendarDates((calendar, d[1], d[2], d[3]), show)
 isValidDate(date::CDate, warn=true)::Bool
 ```
 
-Query if the given date is a valid calendar date for the 
-given calendar.
+Query if the given `date`` is a valid calendar date.
 
 ```julia
 julia> isValidDate(("Gregorian", 1756, 1, 27)) 
@@ -328,7 +327,7 @@ DayOfYear(date::CDate)
 ```
 
 Return the ordinal of the day in the given calendar. Also known 
-as the 'ordinal date'. 
+as the 'ordinal date' relative to the epoch of the calendar. 
 
 ```julia
 julia> DayOfYear(("EC", 1756, 1, 27)) 
@@ -387,13 +386,13 @@ DayOfYear((calendar, d[1], d[2], d[3]))
 Duration(a::CDate, b::CDate, show=false)
 ``` 
 
-The duration gives the number of days between two dates, counting 
-the first date but not the second. So it describes a right half-open
-time interval. The start and end dates can be given in different 
-calendars.
+The duration gives the number of days between the two dates `a` and `b`, 
+counting the first date but not the second. So it describes a right 
+half-open time interval. The start and end dates can be given in 
+different calendars.
 
-If the optional parameter 'show' is set to 'true', both dates are 
-printed. 'show' is 'false' by default.
+If the optional parameter `show` is set to 'true', both dates are 
+printed. `show` is 'false' by default.
 
 ```julia
 julia> Duration(("CE", 2022, 1, 1), ("ID", 2022, 1, 1), true)
@@ -417,6 +416,50 @@ function Duration(a::CDate, b::CDate, show=false)
     end
     @warn("Invalid Date: $a $b")
     return InvalidDuration
+end
+
+"""
+```julia
+ConvertOrdinalDate(dnum::DPart, from::String, to::String)
+```
+
+`dnum` is an ordinal date, i.e. an integer counting the ellapsed days 
+since the beginning of some calendrial epoch.
+
+`from` and `to` are ordinal date names. Admissible ordinal date names 
+are "EuroNum", "JulianNum", "DayNum" respectively their acronyms "EN", JN", "DN".
+
+Examples:
+Convert a Julian day number to an European day number.
+```julia
+julia> ConvertOrdinalDate(2440422, "JN", "EN") 
+```
+The European day number of the first crewed moon landing is EN#719000.
+
+Convert an European day number to an Julian day number.
+```julia
+julia> ConvertOrdinalDate(719000, "EN", "JN") 
+```
+The Julian day number of the first crewed moon landing is JN#2440422.
+"""
+function ConvertOrdinalDate(dnum::DPart, from::String, to::String)
+    
+    if from == EN && to == JN
+        return EuroNumToJulianNum(dnum)
+    elseif from == JN && to == EN
+        return JulianNumToEuroNum(dnum) 
+    elseif from == EN && to == DN
+        return EuroNumToFixNum(dnum)
+    elseif from == DN && to == EN
+        return FixNumToEuroNum(dnum)
+    elseif from == DN && to == JN
+        return FixNumToJulianNum(dnum) 
+    elseif from == JN && to == DN
+        return JulianNumToFixNum(dnum) 
+    else
+        @warn("Unknown ordinal date name: ", from, " ", to)
+        return InvalidDayNumber
+    end
 end
 
 # TODO

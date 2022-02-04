@@ -18,6 +18,9 @@ DateFromDayNumber
 ConvertDate
 ```
 ```@docs
+ConvertOrdinalDate
+```
+```@docs
 CalendarDates
 ```
 ```@docs
@@ -28,12 +31,6 @@ DayOfYear
 ``` 
 ```@docs
 Duration
-```
-```@docs
-EuroNumToJulianNum
-```
-```@docs
-JulianNumToEuroNum 
 ```
 ```@docs
 PrintDateLine
