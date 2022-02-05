@@ -27,21 +27,19 @@ function TestDateGregorian()
 
     @testset "DateGregorian" begin
     for date in SomeDateGregorian
-        # dn = DayNumberGregorian(date)
-        # gdate = DateGregorian(dn) 
         dn = DayNumberFromDate(date)
         gdate = DateFromDayNumber("Gregorian", dn)
         @test gdate == ("CE", date[2], date[3], date[4])
-        println(CDateStr(date), " -> ", CDateStr(dn), " -> ", CDateStr(gdate))
+        println(CDateStr(date), " -> ", CDateStr(EN, dn), " -> ", CDateStr(gdate))
     end
     end
 end
 
 #=
-CE 0001-01-01 -> DN      1 -> CE 0001-01-01
-CE 1756-01-27 -> DN 641027 -> CE 1756-01-27
-CE 2022-01-01 -> DN 738156 -> CE 2022-01-01
-CE 2022-09-26 -> DN 738424 -> CE 2022-09-26
+CE-0001-01-01 -> EN#0000003 -> CE-0001-01-01
+CE-1756-01-27 -> EN#0641029 -> CE-1756-01-27
+CE-2022-01-01 -> EN#0738158 -> CE-2022-01-01
+CE-2022-09-26 -> EN#0738426 -> CE-2022-09-26
 =#
 
 # Note that you can use "Julian" as the calendar name
@@ -58,21 +56,19 @@ function TestDateJulian()
 
     @testset "DateJulian" begin
     for date in SomeDateJulian
-        #dn = DayNumberJulian(date)
-        #jdate = DateJulia(dn) 
         dn = DayNumberFromDate(date)
         jdate = DateFromDayNumber("Julian", dn)
         @test jdate == ("JD", date[2], date[3], date[4]) 
-        println(CDateStr(date), " -> ", CDateStr(dn), " -> ", CDateStr(jdate))
+        println(CDateStr(date), " -> ", CDateStr(EN, dn), " -> ", CDateStr(jdate))
     end
     end
 end
 
 #=
-JD 0001-01-03 -> DN      1 -> JD 0001-01-03
-JD 1756-01-16 -> DN 641027 -> JD 1756-01-16
-JD 2021-12-19 -> DN 738156 -> JD 2021-12-19
-JD 2022-09-13 -> DN 738424 -> JD 2022-09-13
+JD-0001-01-03 -> EN#0000003 -> JD-0001-01-03
+JD-1756-01-16 -> EN#0641029 -> JD-1756-01-16
+JD-2021-12-19 -> EN#0738158 -> JD-2021-12-19
+JD-2022-09-13 -> EN#0738426 -> JD-2022-09-13
 =#
 
 # See the comments above!
@@ -87,22 +83,20 @@ function TestDateHebrew()
 
     @testset "DateHebrew" begin
     for date in SomeDateHebrew
-        # dn = DayNumberHebrew(date)
-        # hdate = DateHebrew(dn) 
         dn = DayNumberFromDate(date)
         hdate = DateFromDayNumber("Hebrew", dn)
         @test hdate == ("AM", date[2], date[3], date[4])
-        println(CDateStr(date), " -> ", CDateStr(dn), " -> ", CDateStr(hdate))
+        println(CDateStr(date), " -> ", CDateStr(EN, dn), " -> ", CDateStr(hdate))
     end
     end
 end
 
 #=
-AM 5516-11-25 -> DN 641027 -> AM 5516-11-25
-AM 5782-07-01 -> DN 738040 -> AM 5782-07-01
-AM 5782-10-27 -> DN 738155 -> AM 5782-10-27
-AM 5782-06-29 -> DN 738423 -> AM 5782-06-29
-AM 5783-07-01 -> DN 738424 -> AM 5783-07-01
+AM-5516-11-25 -> EN#0641029 -> AM-5516-11-25
+AM-5782-07-01 -> EN#0738042 -> AM-5782-07-01
+AM-5782-10-27 -> EN#0738157 -> AM-5782-10-27
+AM-5782-06-29 -> EN#0738425 -> AM-5782-06-29
+AM-5783-07-01 -> EN#0738426 -> AM-5783-07-01
 =#
 
 # See the comments above!
@@ -116,21 +110,19 @@ function TestDateIslamic()
 
     @testset "DateIslamic" begin
     for date in SomeDateIslamic
-        # dn = DayNumberIslamic(date)
-        # idate = DateIslamic(dn) 
         dn = DayNumberFromDate(date)
         idate = DateFromDayNumber("Islamic", dn)
         @test idate == ("AH", date[2], date[3], date[4])
-        println(CDateStr(date), " -> ", CDateStr(dn), " -> ", CDateStr(idate))
+        println(CDateStr(date), " -> ", CDateStr(EN, dn), " -> ", CDateStr(idate))
     end
     end
 end
 
 #=
-AH 0001-01-01 -> DN 227015 -> AH 0001-01-01
-AH 1756-01-27 -> DN 848954 -> AH 1756-01-27
-AH 2022-01-01 -> DN 943190 -> AH 2022-01-01
-AH 2022-09-26 -> DN 943451 -> AH 2022-09-26
+AH-0001-01-01 -> EN#0227017 -> AH-0001-01-01
+AH-1756-01-27 -> EN#0848956 -> AH-1756-01-27
+AH-2022-01-01 -> EN#0943192 -> AH-2022-01-01
+AH-2022-09-26 -> EN#0943453 -> AH-2022-09-26
 =# 
 
 # See the comments above!
@@ -144,21 +136,19 @@ function TestDateIso()
 
     @testset "DateIso" begin
     for date in SomeDateIso
-        # dn = DayNumberIso(date)
-        # idate = IsoDate(dn) 
         dn = DayNumberFromDate(date)
         idate = DateFromDayNumber("IsoDate", dn)
         @test idate == ("ID", date[2], date[3], date[4])
-        println(CDateStr(date), " -> ", CDateStr(dn), " -> ", CDateStr(idate))
+        println(CDateStr(date), " -> ", CDateStr(EN, dn), " -> ", CDateStr(idate))
     end
     end
 end
 
 #=
-ID 0001-01-01 -> DN 0000001 -> ID 0001-01-01
-ID 1756-05-02 -> DN 0641027 -> ID 1756-05-02
-ID 2021-52-06 -> DN 0738156 -> ID 2021-52-06
-ID 2022-39-01 -> DN 0738424 -> ID 2022-39-01
+ID-0001-01-01 -> EN#0000003 -> ID-0001-01-01
+ID-1756-05-02 -> EN#0641029 -> ID-1756-05-02
+ID-2021-52-06 -> EN#0738158 -> ID-2021-52-06
+ID-2022-39-01 -> EN#0738426 -> ID-2022-39-01
 =#
 
 function TestConversions()
@@ -320,15 +310,13 @@ end
 
 function TestDateTables()
 
-# The case (AH, 0, 0, 0) is not valid and excluded in the test.
 TestDates = [
-#((DN,0,0,1),     (CE,0,12,30),   (JD,1,1,1),     (EC,1,1,1),    (ID,0,52,6), (AM,3761,10,16),(AH,-639,1,-221))::DateTable,
-((DN,0,0,405733),(CE,1111,11,11),(JD,1111,11,4), (EC,1111,11,4),(ID,1111,45,6),(AM,4872,9,2),  (AH, 505,4,29))::DateTable,
-((DN,0,0,811256),(CE,2222,2,22), (JD,2222,2,7),  (EC,2222,2,22),(ID,2222,8,5), (AM,5982,12,10),(AH,1649,9,10))::DateTable,
-((DN,0,0,641027),(CE,1756,1,27), (JD,1756,1,16), (EC,1756,1,27),(ID,1756,5,2), (AM,5516,11,25),(AH,1169,4,24))::DateTable,
-((DN,0,0,738156),(CE,2022,1,1),  (JD,2021,12,19),(EC,2022,1,1), (ID,2021,52,6),(AM,5782,10,28),(AH,1443,5,27))::DateTable,
-((DN,0,0,738424),(CE,2022,9,26), (JD,2022,9,13), (EC,2022,9,26),(ID,2022,39,1),(AM,5783,7,1),  (AH,1444,2,29))::DateTable,
-((DN,0,0,1146990),(CE, 3141,5,9),(JD,3141,4,17), (EC,3141,5,9), (ID,3141,19,5),(AM,6901,2,9),  (AH,2597,2,10))::DateTable
+((EN,0,0,405735),(CE,1111,11,11),(JD,1111,11,4), (EC,1111,11,4),(ID,1111,45,6),(AM,4872,9,2),  (AH, 505,4,29))::DateTable,
+((EN,0,0,811258),(CE,2222,2,22), (JD,2222,2,7),  (EC,2222,2,22),(ID,2222,8,5), (AM,5982,12,10),(AH,1649,9,10))::DateTable,
+((EN,0,0,641029),(CE,1756,1,27), (JD,1756,1,16), (EC,1756,1,27),(ID,1756,5,2), (AM,5516,11,25),(AH,1169,4,24))::DateTable,
+((EN,0,0,738158),(CE,2022,1,1),  (JD,2021,12,19),(EC,2022,1,1), (ID,2021,52,6),(AM,5782,10,28),(AH,1443,5,27))::DateTable,
+((EN,0,0,738426),(CE,2022,9,26), (JD,2022,9,13), (EC,2022,9,26),(ID,2022,39,1),(AM,5783,7,1),  (AH,1444,2,29))::DateTable,
+((EN,0,0,1146992),(CE, 3141,5,9),(JD,3141,4,17), (EC,3141,5,9), (ID,3141,19,5),(AM,6901,2,9),  (AH,2597,2,10))::DateTable
 ]
     @testset "DayNumbers" begin
     for D in TestDates
@@ -339,7 +327,7 @@ TestDates = [
         for d in D[2:end]
             dn = DayNumberFromDate(d)
             if dn > 0
-                @test dn == num
+                @test dn == num 
             end
         end
     end
@@ -347,40 +335,53 @@ TestDates = [
 end
 
 #=
-DayNumber    DN 0000001
-CommonEra    CE 0001-01-01
-Julian       JD 0001-01-03
-IsoDate      ID 0001-01-01
-Hebrew       AM 3761-10-18
-Islamic      AH 0000-00-00
+EuroNum   EN#0405735
+Common    CE-1111-11-11
+Julian    JD-1111-11-04
+European  EC-1111-11-04
+IsoDate   ID-1111-45-06
+Hebrew    AM-4872-09-02
+Islamic   AH-0505-04-29
 
-DayNumber    DN 0405733
-CommonEra    CE 1111-11-11
-Julian       JD 1111-11-04
-IsoDate      ID 1111-45-06
-Hebrew       AM 4872-09-02
-Islamic      AH 0505-04-29
+EuroNum   EN#0811258
+Common    CE-2222-02-22
+Julian    JD-2222-02-07
+European  EC-2222-02-22
+IsoDate   ID-2222-08-05
+Hebrew    AM-5982-12-10
+Islamic   AH-1649-09-10
 
-DayNumber    DN 0811256
-CommonEra    CE 2222-02-22
-Julian       JD 2222-02-07
-IsoDate      ID 2222-08-05
-Hebrew       AM 5982-12-10
-Islamic      AH 1649-09-10
+EuroNum   EN#0641029
+Common    CE-1756-01-27
+Julian    JD-1756-01-16
+European  EC-1756-01-27
+IsoDate   ID-1756-05-02
+Hebrew    AM-5516-11-25
+Islamic   AH-1169-04-24
 
-DayNumber    DN 0641027
-CommonEra    CE 1756-01-27
-Julian       JD 1756-01-16
-IsoDate      ID 1756-05-02
-Hebrew       AM 5516-11-25
-Islamic      AH 1169-04-24
+EuroNum   EN#0738158
+Common    CE-2022-01-01
+Julian    JD-2021-12-19
+European  EC-2022-01-01
+IsoDate   ID-2021-52-06
+Hebrew    AM-5782-10-28
+Islamic   AH-1443-05-27
 
-DayNumber    DN 1146990
-CommonEra    CE 3141-05-09
-Julian       JD 3141-04-17
-IsoDate      ID 3141-19-05
-Hebrew       AM 6901-02-09
-Islamic      AH 2597-02-10
+EuroNum   EN#0738426
+Common    CE-2022-09-26
+Julian    JD-2022-09-13
+European  EC-2022-09-26
+IsoDate   ID-2022-39-01
+Hebrew    AM-5783-07-01
+Islamic   AH-1444-02-29
+
+EuroNum   EN#1146992
+Common    CE-3141-05-09
+Julian    JD-3141-04-17
+European  EC-3141-05-09
+IsoDate   ID-3141-19-05
+Hebrew    AM-6901-02-09
+Islamic   AH-2597-02-10
 =#
 
 function TestDuration()
@@ -437,6 +438,36 @@ function TestDayOfYear()
     end
 end
 
+#=
+CE-1901-02-29 ::   0   0 true
+CE-1949-11-29 :: 333 333 true
+CE-1990-10-20 :: 293 293 true
+CE-2000-02-28 ::  59  59 true
+CE-2000-02-29 ::  60  60 true
+CE-2020-02-28 ::  59  59 true
+CE-2020-02-29 ::  60  60 true
+CE-2020-07-30 :: 212 212 true
+CE-2020-08-20 :: 233 233 true
+CE-2021-09-07 :: 250 250 true
+CE-2022-01-01 ::   1   1 true
+CE-2022-09-26 :: 269 269 true
+CE-2023-07-19 :: 200 200 true
+CE-2040-02-28 ::  59  59 true
+CE-2040-02-29 ::  60  60 true
+CE-2040-09-08 :: 252 252 true
+CE-2222-02-22 ::  53  53 true
+CE-3141-05-09 :: 129 129 true
+
+EC-0022-01-01 ::   1
+EC-0756-01-27 ::  27
+EC-0949-11-29 :: 333
+EC-0990-10-20 :: 293
+EC-2022-01-01 ::   1
+EC-1756-01-27 ::  27
+EC-1949-11-29 :: 333
+EC-1990-10-20 :: 293
+=#
+
 function ShowDayOfYear()
 
     Dates = [ (22, 1, 1), (756, 1, 27), (949, 11, 29), (990, 10, 20), 
@@ -455,56 +486,56 @@ function ShowDayOfYear()
 end
 
 #=
-EC-0800-12-25 -> DN-292192
-292192 2013616 -386384
-2013616 292192 292192
+EC-0800-12-25 -> EN#0292194
+292194 2013616
+2013616 292194
 
-EC-0843-08-10 -> DN-307760
-307760 2029184 -370816
-2029184 307760 307760
+EC-0843-08-10 -> EN#0307762
+307762 2029184
+2029184 307762
 
-EC-1204-04-12 -> DN-439496
-439496 2160920 -239080
-2160920 439496 439496
+EC-1204-04-12 -> EN#0439498
+439498 2160920
+2160920 439498
 
-EC-1452-04-15 -> DN-530081
-530081 2251505 -148495
-2251505 530081 530081
+EC-1452-04-15 -> EN#0530083
+530083 2251505
+2251505 530083
 
-EC-1666-09-02 -> DN-608374
-608374 2329798 -70202
-2329798 608374 608374
+EC-1666-09-02 -> EN#0608376
+608376 2329798
+2329798 608376
 
-EC-1789-07-14 -> DN-653249
-653249 2374673 -25327
-2374673 653249 653249
+EC-1789-07-14 -> EN#0653251
+653251 2374673
+2374673 653251
 
-EC-1906-04-28 -> DN-695904
-695904 2417328 17328
-2417328 695904 695904
+EC-1906-04-28 -> EN#0695906
+695906 2417328
+2417328 695906
 =#
 
 function TestJulianDayNumbers()
   
-    test = [  # Note that we use EC, not CE dates!
-    ((EC,800,12,25)::CDate, 292192, 2013616, -386384),  # Coronation of Carolus Magnus
-    ((EC, 843,8,10)::CDate, 307760, 2029184, -370816),  # Treaty of Verdun
-    ((EC,1204,4,12)::CDate, 439496, 2160920, -239080),  # Sack of Constantinople
-    ((EC,1452,4,15)::CDate, 530081, 2251505, -148495),  # Birth of Leonardo da Vinci
-    ((EC,1666,9, 2)::CDate, 608374, 2329798, -70202),   # Great Fire of London
-    ((EC,1789,7,14)::CDate, 653249, 2374673, -25327),   # The Storming of the Bastille
-    ((EC,1906,4,28)::CDate, 695904, 2417328, 17328)]    # Birth of Kurt Gödel
+    test = [  #  EC,       EuroNum, JulianNum, ModJulianNum
+    ((EC,800,12,25)::CDate, 292194, 2013616, -386384),  # Coronation of Carolus Magnus
+    ((EC, 843,8,10)::CDate, 307762, 2029184, -370816),  # Treaty of Verdun
+    ((EC,1204,4,12)::CDate, 439498, 2160920, -239080),  # Sack of Constantinople
+    ((EC,1452,4,15)::CDate, 530083, 2251505, -148495),  # Birth of Leonardo da Vinci
+    ((EC,1666,9, 2)::CDate, 608376, 2329798, -70202),   # Great Fire of London
+    ((EC,1789,7,14)::CDate, 653251, 2374673, -25327),   # The Storming of the Bastille
+    ((EC,1906,4,28)::CDate, 695906, 2417328, 17328)]    # Birth of Kurt Gödel
 
     @testset "JulianDayNumbers" begin
     for t in test
         println()
-        rdn  = DayNumberFromDate(t[1], true)
-        jdn  = ConvertOrdinalDate(rdn, DN, JN)
-        @test jdn  == t[3]
-        println(rdn, " ", jdn, " ")
-        rdn  = ConvertOrdinalDate(jdn, JN, DN)
-        @test rdn  == t[2]
-        println(jdn, " ", rdn)
+        edn  = DayNumberFromDate(t[1], true)
+        jdn  = ConvertOrdinalDate(edn, EN, JN)
+        @test jdn  == t[3] 
+        println(edn, " ", jdn, " ")
+        edn  = ConvertOrdinalDate(jdn, JN, EN)
+        @test edn  == t[2] 
+        println(jdn, " ", edn)
     end
 
     en = ConvertOrdinalDate(2440422, "JN", "EN") 
@@ -519,9 +550,35 @@ function TestSaveCalendars()
     SaveEuropeanMonth(1111, 11)
     SaveEuropeanMonth(1582, 10)
     SaveEuropeanMonth(9999, 12)
+    println("Note the jump in the European calendar!")
     PrintIsoWeek(1582, 41)
     PrintIsoWeek(2525, 25)
 end
+
+#=
+# Days of week 41 of the year 1582. 
+# Note the jump in the European calendar!
+|  Weekday  |  European  |   Hebrew   |  Islamic   |
+|    ---:   |    :---:   |   :---:    |   :---:    |
+| Monday    | 1582-10-01 | 5343-07-15 | 0990-09-13 | 
+| Tuesday   | 1582-10-02 | 5343-07-16 | 0990-09-14 |
+| Wednesday | 1582-10-03 | 5343-07-17 | 0990-09-15 |
+| Thursday  | 1582-10-04 | 5343-07-18 | 0990-09-16 |
+| Friday    | 1582-10-15 | 5343-07-19 | 0990-09-17 |
+| Saturday  | 1582-10-16 | 5343-07-20 | 0990-09-18 |
+| Sunday    | 1582-10-17 | 5343-07-21 | 0990-09-19 |
+
+# Days of week 25 of the year 2525.
+|  Weekday  |  European  |   Hebrew   |  Islamic   |
+|    ---:   |    :---:   |   :---:    |   :---:    |
+| Monday    | 2525-06-18 | 6285-03-25 | 1962-04-25 |
+| Tuesday   | 2525-06-19 | 6285-03-26 | 1962-04-26 |
+| Wednesday | 2525-06-20 | 6285-03-27 | 1962-04-27 |
+| Thursday  | 2525-06-21 | 6285-03-28 | 1962-04-28 |
+| Friday    | 2525-06-22 | 6285-03-29 | 1962-04-29 |
+| Saturday  | 2525-06-23 | 6285-03-30 | 1962-05-01 | 
+| Sunday    | 2525-06-24 | 6285-04-01 | 1962-05-02 |
+=#
 
 # DayOfLife is an OrdinalDate, not a Duration!
 function DayOfLife(birthdate::CDate) 
@@ -556,7 +613,7 @@ function TestAll()
     TestJulianDayNumbers(); println()
     TestDayOfYear();     println()
     ShowDayOfYear();     println()
-    TestToday()
+    TestToday();         println()
     # TestSaveCalendars()
 end
 

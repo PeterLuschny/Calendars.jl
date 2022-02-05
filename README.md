@@ -104,7 +104,7 @@ A broader overview give the utility functions `PrintEuropeanMonth(year, month)` 
 julia> PrintEuropeanMonth(1582, 10)
 ```  
 
-It shows the month when Pope Gregory severely interfered with Chronos turning the Zodiac wheel: at his behest, Thursday 4 October 1582 was followed by Friday 15 October 1582. To say that the confusion this caused was minor would be the understatement of the millennium. But this break can only be seen in the European calendar; both the Julian and the Gregorian calendars smoothly cross this break as if nothing had happened. (What Gregory's contemporaries saw differently: they felt cheated of 1/3 of their monthly rent.)
+It shows the month when Pope Gregory severely interfered with Chronos turning the Zodiac wheel: at his behest, Thursday 4 October 1582 was followed by Friday 15 October 1582. To say that the confusion this caused was minor would be the understatement of the millennium. But this break can only be seen in the European calendar; both the Julian and the Gregorian calendars smoothly cross this break as if nothing had happened. (What Gregory's contemporaries saw very differently: they felt cheated of 1/3 of their monthly rent.)
 
 
 | Common        | European      | Julian        | Hebrew        | Islamic       | IsoDate       |
@@ -142,39 +142,49 @@ The last four days of the calendar are
 | CE-9999-12-30 | EC-9999-12-30 | JD-9999-10-18 | AM-13760-08-27 | AH-9666-04-01 | ID-9999-52-04 |
 | CE-9999-12-31 | EC-9999-12-31 | JD-9999-10-19 | AM-13760-08-28 | AH-9666-04-02 | ID-9999-52-05 |
 
-In some cases it is convenient to reduce the size of this table (from which only a section was shown above). That is why we also offer a week-based format. 
+In some cases it is convenient to reduce the size of this table (from which only a section was shown above). That is why we also offer a shorter week-based format. 
 
 ```julia
-julia> PrintIsoWeek(2525, 25)
+julia> PrintIsoWeek(1582, 41)
 ```  
-
-Days of week 25 of the year 2525. 
+Days of week 41 of the year 1582.
 |  Weekday  |  European  |   Hebrew   |  Islamic   |
-|   ---:    |    :---:   |   :---:    |   :---:    |
-| Monday    | 2525-06-18 | 6285-03-25 | 1962-04-25 |
-| Tuesday   | 2525-06-19 | 6285-03-26 | 1962-04-26 |
-| Wednesday | 2525-06-20 | 6285-03-27 | 1962-04-27 |
-| Thursday  | 2525-06-21 | 6285-03-28 | 1962-04-28 |
-| Friday    | 2525-06-22 | 6285-03-29 | 1962-04-29 |
-| Saturday  | 2525-06-23 | 6285-03-30 | 1962-05-01 |
-| Sunday    | 2525-06-24 | 6285-04-01 | 1962-05-02 |
+|    ---:   |    :---:   |   :---:    |   :---:    |
+| Monday    | 1582-10-01 | 5343-07-15 | 0990-09-13 | 
+| Tuesday   | 1582-10-02 | 5343-07-16 | 0990-09-14 |
+| Wednesday | 1582-10-03 | 5343-07-17 | 0990-09-15 |
+| Thursday  | 1582-10-04 | 5343-07-18 | 0990-09-16 |
+| Friday    | 1582-10-15 | 5343-07-19 | 0990-09-17 |
+| Saturday  | 1582-10-16 | 5343-07-20 | 0990-09-18 |
+| Sunday    | 1582-10-17 | 5343-07-21 | 0990-09-19 |
 
 ### Ordinal Dates
 
 The package also implements two ordinal dates:
 
-| Acronym | Ordinal  |
-| :---:   |  :---    | 
-| EN      | European |
-| JN      | Julian   |
+| Acronym |       Ordinal      |
+| :---:   |  :---              | 
+| EN      | European day number|
+| JN      | Julian day number  |
 
 An ordinal date is an integer counting the elapsed days since the epoch of some calendar. For example, the first day of the European calendar (EC-0001-01-01) has the European date number 1 (denoted by EN#1) and the Julian date number 1721423 (denoted by JN#1721423). 
 
-According to our convention, the last day represented by the calendar is EC-9999-12-31, has the Julian date number JN#5373483 and the European date number EN#3652061. Thus the European calendar gives 3652061 days a name. Both counters differ only by an additive constant. The European date number is formally defined as 
+|   European    |  EuroNum   | JulianNum  |
+|     :---:     |   :---:    |   :---:    |
+| EC-0001-01-01 | EN#      1 | JN#1721423 |
+| EC-0001-01-02 | EN#      2 | JN#1721424 |
+| EC-0001-01-03 | EN#      3 | JN#1721425 |
+| ...           | ...        | ...        |
+| EC-9999-12-29 | EN#3652059 | JN#5373481 |
+| EC-9999-12-30 | EN#3652060 | JN#5373482 |
+| EC-9999-12-31 | EN#3652061 | JN#5373483 |
+
+
+According to our convention, the last day represented by the calendar is EC-9999-12-31, has the Julian date number 5373483 and the European date number 3652061. Thus the European calendar gives 3652061 days a name. Both counters differ only by an additive constant. The European date number is formally defined as 
 
 EN(date) = JN(date) − 1721422.
 
-The European date number is similar to the day number [Rata Die] defined by `R`eingold and `D`ershowitz. In fact, `RD` differs only by two days from the European date number since `RD` is based on the proleptic Gregorian calendar and CE-0001-01-01 = EC-0001-01-03. But we think it is more natural to start at JD-0001-01-01 = EC-0001-01-01 and not with a 'proleptic' relation.
+The European date number is similar to the day number [Rata Die](https://en.wikipedia.org/wiki/Rata_Die) defined by `R`eingold and `D`ershowitz. In fact, `RD` differs only by two days from the European date number since `RD` is based on the proleptic Gregorian calendar and CE-0001-01-01 = EC-0001-01-03. But we think it is much more natural to start at the beginning of the Julian calendar, JD-0001-01-01 = EC-0001-01-01, and not with a 'proleptic' relation.
 
 ```julia
 ConvertOrdinalDate(dnum::DPart, from::String, to::String)
@@ -185,7 +195,7 @@ For instance, to convert a Julian day number to a European day number, write
 ```julia
 julia> ConvertOrdinalDate(2440422, "JN", "EN") 
 ```
-It returns EN#719000, the European day number of the first crewed moon landing.
+It returns 719000, the European day number of the first crewed moon landing.
 
 
 The package provides additional functions; read the documentation for this. You might start exploring with a Jupyter [notebook](https://github.com/PeterLuschny/Calendars.jl/blob/main/notebook/Calendars.ipynb).

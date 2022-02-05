@@ -222,7 +222,7 @@ end
 
 CDateStr(cal::String, d::Tuple{DPart, DPart, DPart}) = CDateStr((cal, d[1], d[2], d[3]))
 
-CDateStr(day::DPart) = CDateStr((DN, DPart(0), DPart(0), day))
+CDateStr(cal::String, day::DPart) = CDateStr((cal, DPart(0), DPart(0), day))
 
 function CDateStr(cal::String, year::DPart, month::DPart) 
     y = lpad(year,  4, "0")
