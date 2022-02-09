@@ -86,33 +86,53 @@ function DateJulian(dn::DPart)
     return (JD, year, month, day)::CDate
 end
 
+# Return the day number of the first day in the given Julian year.
+function YearStartJulian(year::DPart)
+    return DayNumberJulian(year, 1, 1)
+end
+
+# Return the day number of the last day in the given Julian year.
+function YearEndJulian(year::DPart) 
+    return DayNumberJulian(year + 1, 1, 1) - 1
+end
+
+# Return the number of months in the given Julian year.
+function MonthsInYearJulian(year::DPart) 
+    return 12 
+end
+
+# Return the number of days in the given Julian year.
+function DaysInYearJulian(year::DPart) 
+    return YearStartJulian(year + 1) - YearStartJulian(year) 
+end
+
 if TEST
 
     for n in 0:3
         local dn = 1 + n
-        println(CDateStr(dn), " -> ", CDateStr(DateJulian(dn)))
+        println(CDateStr(DN, dn), " -> ", CDateStr(DateJulian(dn)))
     end
     for n in 0:3
         local date = (JD, 1, 1, 1 + n)
-        println(CDateStr(date), " -> ", CDateStr(DayNumberJulian(date)))
+        println(CDateStr(date), " -> ", CDateStr(DN, DayNumberJulian(date)))
     end
 
     for n in 0:3
         local dn = 3652129 + n
-        println(CDateStr(dn), " -> ", CDateStr(DateJulian(dn)))
+        println(CDateStr(DN, dn), " -> ", CDateStr(DateJulian(dn)))
     end
     for n in 0:3
         local date = (JD, 9999, 12, 28 + n)
-        println(CDateStr(date), " -> ", CDateStr(DayNumberJulian(date)))
+        println(CDateStr(date), " -> ", CDateStr(DN, DayNumberJulian(date)))
     end
 
     for n in 0:2
         local dn = 405739 + n
-        println(CDateStr(dn), " -> ", CDateStr(DateJulian(dn)))
+        println(CDateStr(DN, dn), " -> ", CDateStr(DateJulian(dn)))
     end
     for n in 0:2
         local date = (JD, 1111, 11, 10 + n)
-        println(CDateStr(date), " -> ", CDateStr(DayNumberJulian(date)))
+        println(CDateStr(date), " -> ", CDateStr(DN, DayNumberJulian(date)))
     end
 
 #=

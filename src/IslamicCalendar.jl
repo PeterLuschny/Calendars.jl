@@ -97,33 +97,53 @@ function DateIslamic(dn::DPart)
     return (AH, year, month, day)::CDate
 end
 
+# Return the day number of the first day in the given Islamic year.
+function YearStartIslamic(year::DPart) 
+    return DayNumberIslamic(year, 1, 1) 
+end
+
+# Return the day number of the last day in the given Islamic year.
+function YearEndIslamic(year::DPart) 
+    return DayNumberIslamic(year + 1, 1, 1) - 1
+end
+
+# Return the number of months in the given Islamic year.
+function MonthsInYearIslamic(year::DPart) 
+    return LastMonthOfYearIslamic(year)
+end
+
+# Return the number of days in the given Islamic year.
+function DaysInYearIslamic(year::DPart) 
+    return YearStartIslamic(year + 1) - YearStartIslamic(year) 
+end
+
 if TEST
 
     for n in 0:3
         local dn = 227015 + n
-        println(CDateStr(dn), " -> ", CDateStr(DateIslamic(dn)))
+        println(CDateStr(DN, dn), " -> ", CDateStr(DateIslamic(dn)))
     end
     for n in 0:3
         local date = (AH, 1, 1, 1 + n)
-        println(CDateStr(date), " -> ", CDateStr(DayNumberIslamic(date)))
+        println(CDateStr(date), " -> ", CDateStr(DN, DayNumberIslamic(date)))
     end
 
     for n in 0:2
         local dn = 2589220 + n
-        println(CDateStr(dn), " -> ", CDateStr(DateIslamic(dn)))
+        println(CDateStr(DN, dn), " -> ", CDateStr(DateIslamic(dn)))
     end
     for n in 0:2
         local date = (AH, 6666, 12, 27 + n)
-        println(CDateStr(date), " -> ", CDateStr(DayNumberIslamic(date)))
+        println(CDateStr(date), " -> ", CDateStr(DN, DayNumberIslamic(date)))
     end
 
     for n in 0:2
         local dn = 620666 + n
-        println(CDateStr(dn), " -> ", CDateStr(DateIslamic(dn)))
+        println(CDateStr(DN, dn), " -> ", CDateStr(DateIslamic(dn)))
     end
     for n in 0:2
         local date = (AH, 1111, 11, 10 + n)
-        println(CDateStr(date), " -> ", CDateStr(DayNumberIslamic(date)))
+        println(CDateStr(date), " -> ", CDateStr(DN, DayNumberIslamic(date)))
     end
 
 #=

@@ -4,7 +4,6 @@
 # The Gregorian calendar is used for dates on and after 
 # CE 1582-10-15, otherwise the Julian calendar is used. 
 
-
 # Is the date a valid European date?
 function isValidDateEuropean(cd::CDate, warn=true)
     cal, year, month, day = cd
@@ -51,4 +50,31 @@ function DayOfYearEuropean(year::DPart, month::DPart, day::DPart)
         return DayOfYearJulian(year, month, day)
     end
     return DayOfYearGregorian(year, month, day)
+end
+
+# Return the day number of the first day in the given European year.
+function YearStartEuropean(year::DPart)
+    if year <= 1582 
+        return YearStartJulian(year)  
+    end
+    return YearStartGregorian(year)  
+end
+
+# Return the day number of the last day in the given European year.
+function YearEndEuropean(year::DPart) 
+    if year < 1582 
+        return YearEndJulian(year)  
+    end
+    return YearEndGregorian(year)  
+end
+
+function MonthsInYearEuropean(year::DPart) 
+    return 12
+end
+
+function DaysInYearEuropean(year::DPart) 
+    if year < 1582 
+        return DaysInYearJulian(year)  
+    end
+    return DaysInYearGregorian(year)  
 end

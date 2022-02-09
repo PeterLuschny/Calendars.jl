@@ -69,11 +69,6 @@ function DayNumberGregorian(year::DPart, month::DPart, day::DPart)
 end
 DayNumberGregorian(d::CDate) = DayNumberGregorian(d[2], d[3], d[4])
 
-# Return the new year of the given Gregorian year.
-function NewYearGregorian(year::DPart)
-    return DayNumberGregorian(year, 1, 1) 
-end
-
 # Return the Gregorian year from the day number.
 function YearGregorian(dn::DPart)
     d = dn - EpochGregorian
@@ -88,7 +83,7 @@ end
 
 function DayOfYearGregorian(dn::DPart, year::DPart) 
     mar = DayNumberGregorian(year, 3, 1)
-    day = dn - NewYearGregorian(year)
+    day = dn - YearStartGregorian(year)
     day += dn < mar ? 0 : (isLeapYearGregorian(year) ? 1 :  2)
     return day
 end
@@ -108,36 +103,56 @@ function DateGregorian(dn::DPart)
     return (CE, year, month, day)::CDate
 end
 
+# Return the day number of the first day in the given Gregorian year.
+function YearStartGregorian(year::DPart)
+    return DayNumberGregorian(year, 1, 1) 
+end
+
+# Return the day number of the last day in the given Gregorian year.
+function YearEndGregorian(year::DPart) 
+    return DayNumberGregorian(year + 1, 1, 1) - 1
+end
+
+# Return the number of months in the given Gregorian year.
+function MonthsInYearGregorian(year::DPart) 
+    return 12
+end
+
+# Return the number of days in the given Gregorian year.
+function DaysInYearGregorian(year::DPart) 
+    return YearStartGregorian(year + 1) - YearStartGregorian(year) 
+end
+
 if TEST
 
-    dn1 = -1; println(CDateStr(dn1), " -> ", CDateStr(DateGregorian(dn1)))
-    dn0 =  0; println(CDateStr(dn0), " -> ", CDateStr(DateGregorian(dn0)))
+    dn1 = -1; println(CDateStr(DN, dn1), " -> ", CDateStr(DateGregorian(dn1)))
+    dn0 =  0; println(CDateStr(DN, dn0), " -> ", CDateStr(DateGregorian(dn0)))
 
     for n in 0:3
         local dn = 1 + n
-        println(CDateStr(dn), " -> ", CDateStr(DateGregorian(dn)))
+        println(CDateStr(DN, dn), " -> ", CDateStr(DateGregorian(dn)))
     end
     for n in 0:3
         local date = (CE, 1, 1, 1 + n)
-        println(CDateStr(date), " -> ", CDateStr(DayNumberGregorian(date)))
+        println(CDateStr(date), " -> ", CDateStr(DN, DayNumberGregorian(date)))
     end
 
     for n in 0:3
         local dn = 3652056 + n
-        println(CDateStr(dn), " -> ", CDateStr(DateGregorian(dn)))
+        println(CDateStr(DN, dn), " -> ", CDateStr(DateGregorian(dn)))
     end
     for n in 0:3
         local date = (CE, 9999, 12, 28 + n)
-        println(CDateStr(date), " -> ", CDateStr(DayNumberGregorian(date)))
+        println(CDateStr(date), " -> ", CDateStr(DN, DayNumberGregorian(date)))
     end
 
     for n in 0:2
         local dn = 405732 + n
-        println(CDateStr(dn), " -> ", CDateStr(DateGregorian(dn)))
+        println(CDateStr(DN, dn), " -> ", CDateStr(DateGregorian(dn)))
     end
     for n in 0:2
         date = (CE, 1111, 11, 10 + n)
-        println(CDateStr(date), " -> ", CDateStr(DayNumberGregorian(date)))
+        println(CDateStr(date), " -> ", CDateStr(DN, DayNumberGregorian(date)))
     end
 
 #=

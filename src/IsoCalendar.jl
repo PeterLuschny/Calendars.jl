@@ -86,11 +86,6 @@ end
 # Computes the day number from a valid ISO date.
 DayNumberIso(d::CDate) = DayNumberIso(d[2], d[3], d[4])
 
-# Return the day number of the ISO-new-year 'year'.
-function NewYearIso(year::DPart)
-    return DayNumberIso(year, 1, 1) 
-end
-
 # Computes the ISO date from a day number.
 function DateIso(dn::DPart)
     ! isValidDateIso(dn) && return InvalidDate
@@ -103,45 +98,64 @@ function DateIso(dn::DPart)
     # Let's make it self-contained!
     year = div(400 * (dn - 4), 146097) + 1
 
-    if dn >= NewYearIso(year + 1)
+    if dn >= YearStartIso(year + 1) 
         year += 1 
     end
-    week = 1 + div(dn - NewYearIso(year), weeklen)
+    week = 1 + div(dn - YearStartIso(year), weeklen)
     day = DayOfWeekIso(dn)
     return (ID, year, week, day)::CDate
 end
 
+# Return the day number of the first day in the given Iso year.
+function YearStartIso(year::DPart) 
+    return DayNumberIso(year, 1, 1)
+end
+
+# Return the day number of the last day in the given Iso year.
+function YearEndIso(year::DPart) 
+    return DayNumberIso(year + 1, 1, 1) - 1
+end
+
+# Return the number of weeks in the given Iso year.
+function WeeksInYearIso(year::DPart) 
+    return LastWeekOfYearIso(year) 
+end
+
+# Return the number of days in the given Iso year.
+function DaysInYearIso(year::DPart) 
+    return YearStartIso(year + 1) - YearStartIso(year)
+end
 
 if TEST
 
-    dn1 = -1; println(CDateStr(dn1), " -> ", CDateStr(DateIso(dn1)))
-    dn0 =  0; println(CDateStr(dn0), " -> ", CDateStr(DateIso(dn0)))
+    dn1 = -1; println(CDateStr(DN, dn1), " -> ", CDateStr(DateIso(dn1)))
+    dn0 =  0; println(CDateStr(DN, dn0), " -> ", CDateStr(DateIso(dn0)))
 
     for n in 0:3
         local dn = 1 + n
-        println(CDateStr(dn), " -> ", CDateStr(DateIso(dn)))
+        println(CDateStr(DN, dn), " -> ", CDateStr(DateIso(dn)))
     end
     for n in 0:3
         local date = (ID, 1, 1, 1 + n)
-        println(CDateStr(date), " -> ", CDateStr(DayNumberIso(date)))
+        println(CDateStr(date), " -> ", CDateStr(DN, DayNumberIso(date)))
     end
 
     for n in 0:3
         local dn = 3652056 + n
-        println(CDateStr(dn), " -> ", CDateStr(DateIso(dn)))
+        println(CDateStr(DN, dn), " -> ", CDateStr(DateIso(dn)))
     end
     for n in 0:3
         local date = (ID, 9999, 52, 2 + n)
-        println(CDateStr(date), " -> ", CDateStr(DayNumberIso(date)))
+        println(CDateStr(date), " -> ", CDateStr(DN, DayNumberIso(date)))
     end
 
     for n in 0:2
         local dn = 405732 + n
-        println(CDateStr(dn), " -> ", CDateStr(DateIso(dn)))
+        println(CDateStr(DN, dn), " -> ", CDateStr(DateIso(dn)))
     end
     for n in 0:2
         local date = (ID, 1111, 45, 5 + n)
-        println(CDateStr(date), " -> ", CDateStr(DayNumberIso(date)))
+        println(CDateStr(date), " -> ", CDateStr(DN, DayNumberIso(date)))
     end
 
 #=

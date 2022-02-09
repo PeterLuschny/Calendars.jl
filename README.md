@@ -148,9 +148,10 @@ In some cases it is convenient to reduce the size of this table (from which only
 julia> PrintIsoWeek(1582, 41)
 ```  
 Days of week 41 of the year 1582.
+
 |  Weekday  |  European  |   Hebrew   |  Islamic   |
-|    ---:   |    :---:   |   :---:    |   :---:    |
-| Monday    | 1582-10-01 | 5343-07-15 | 0990-09-13 | 
+|   :---:   |    :---:   |   :---:    |   :---:    |
+| Monday    | 1582-10-01 | 5343-07-15 | 0990-09-13 |
 | Tuesday   | 1582-10-02 | 5343-07-16 | 0990-09-14 |
 | Wednesday | 1582-10-03 | 5343-07-17 | 0990-09-15 |
 | Thursday  | 1582-10-04 | 5343-07-18 | 0990-09-16 |
@@ -197,6 +198,30 @@ julia> ConvertOrdinalDate(2440422, "JN", "EN")
 ```
 It returns 719000, the European day number of the first crewed moon landing.
 
+A common question is how a calendar fits into another calendar. This question is partially answered by the function `ProfileYearAsEuropean`.
+```julia
+ProfileYearAsEuropean(calendar::String, year::DPart, show=false)
+```
+This function returns a 4-tuple (YearStart, YearEnd, MonthsInYear, DaysInYear) which show how these items are represented in the European calendar. Note that the Jewish New Year (Rosh HaShanah) begins the evening before the date returned. For the ISO-calendar read 'WeeksInYear' instead of 'MonthsInYear'.
+
+Examples:
+```julia
+julia> ProfileYearAsEuropean("EC", 2022, true) 
+julia> ProfileYearAsEuropean("CE", 2022, true) 
+julia> ProfileYearAsEuropean("JD", 2022, true) 
+julia> ProfileYearAsEuropean("AM", 5783, true) 
+julia> ProfileYearAsEuropean("AH", 1444, true) 
+julia> ProfileYearAsEuropean("ID", 2022, true) 
+```
+These commands return:
+```julia
+EC-2022 -> [EC-2022-01-01, EC-2022-12-31], 12, 365
+CE-2022 -> [EC-2022-01-01, EC-2022-12-31], 12, 365
+JD-2022 -> [EC-2022-01-14, EC-2023-01-13], 12, 365
+AM-5783 -> [EC-2022-09-26, EC-2023-09-15], 12, 355
+AH-1444 -> [EC-2022-07-30, EC-2023-07-18], 12, 354
+ID-2022 -> [EC-2022-01-03, EC-2023-01-01], 52, 364
+```
 
 The package provides additional functions; read the documentation for this. You might start exploring with a Jupyter [notebook](https://github.com/PeterLuschny/Calendars.jl/blob/main/notebook/Calendars.ipynb).
 

@@ -13,6 +13,16 @@ JN = :"JN"  # Julian Number
 DN = :"DN"  # FixDay Number
 XX = :"00"  # Unknown 
 
+# Planetary week
+sunday    = 0 
+monday    = 1 
+tuesday   = 2 
+wednesday = 3 
+thursday  = 4 
+friday    = 5 
+saturday  = 6 
+weeklen   = 7
+
 # Note that you can use "Gregorian" as the calendar name
 # when calling the function, but the System always returns
 # the CDate in standard form, where the Gregorian calendar 
@@ -208,70 +218,28 @@ DN 2565796 -> AH 6600-11-21 -> CE 7025-11-29
 DN 2275902 -> AH 5782-10-28 -> AM 9992-12-27
 =#
 
-#PrintEuropeanMonth(1, 1)
-#PrintEuropeanMonth(1452, 4)
-#PrintEuropeanMonth(1582, 10)
-#PrintEuropeanMonth(2022, 1)
-#PrintEuropeanMonth(9999, 12)
+#=
+function PrintIntervall(date::CDate, len)
 
-#println("==")
-#println("EC "); PrintDateLine((EC, 1452, 4, 15))
-#println("JD "); PrintDateLine((JD, 1452, 4, 15))
-#println("CE "); PrintDateLine((CE, 1452, 4, 15))
+    en = DayNumberFromDate(date)
+    println("Starting ", CDateStr(date), " ", en)
 
-#function PrintIntervall(date::CDate, len)
-#
-#    dn = DayNumberFromDate(date)
-#    println("Starting ", CDateStr(date), " ", dn)
-#
-#    for day in 1:len
-#
-#        jn = FixNumToJulianNumber(dn)
-#        println( "| ",
-#            CDateStr(DateFromDayNumber(date[1], dn)), " | ",
-#            CDateStr((DN, 0, 0, dn)),  " | ",
-#            CDateStr((JN, 0, 0, jn)),
-#            " |" )
-#        dn += 1
-#    end
-#end
-
-#= 
-Starting CE 0001-12-27 
-| CE 0001-12-27 | DN     361 | JN 1721785 |
-| CE 0001-12-28 | DN     362 | JN 1721786 |
-| CE 0001-12-29 | DN     363 | JN 1721787 |
-| CE 0001-12-30 | DN     364 | JN 1721788 |
-| CE 0001-12-31 | DN     365 | JN 1721789 |
-| CE 0002-01-01 | DN     366 | JN 1721790 |
-
-| ID 0001-52-04 | DN     361 | JN 1721785 |
-| ID 0001-52-05 | DN     362 | JN 1721786 |
-| ID 0001-52-06 | DN     363 | JN 1721787 |
-| ID 0001-52-07 | DN     364 | JN 1721788 |
-| ID 0002-01-01 | DN     365 | JN 1721789 |
-| ID 0002-01-02 | DN     366 | JN 1721790 |
-
-Starting CE 0002-12-27 
-| CE 0002-12-27 | DN     726 | JN 1722150 |
-| CE 0002-12-28 | DN     727 | JN 1722151 |
-| CE 0002-12-29 | DN     728 | JN 1722152 |
-| CE 0002-12-30 | DN     729 | JN 1722153 |
-| CE 0002-12-31 | DN     730 | JN 1722154 |
-| CE 0003-01-01 | DN     731 | JN 1722155 |
-
-| ID 0002-52-05 | DN     726 | JN 1722150 |
-| ID 0002-52-06 | DN     727 | JN 1722151 |
-| ID 0002-52-07 | DN     728 | JN 1722152 |
-| ID 0003-01-01 | DN     729 | JN 1722153 |
-| ID 0003-01-02 | DN     730 | JN 1722154 |
-| ID 0003-01-03 | DN     731 | JN 1722155 |
+    for day in 1:len
+        jn = ConvertOrdinalDate(en, EN, JN) 
+        println( "| ",
+            CDateStr(DateFromDayNumber(date[1], en)), " | ",
+            CDateStr((EN, 0, 0, en)),  " | ",
+            CDateStr((JN, 0, 0, jn)),
+            " |" )
+        en += 1
+    end
+end
 
 PrintIntervall((CE, 1, 12, 27), 6)
 PrintIntervall((ID, 1, 52,  4), 6)
 
-PrintIntervall((CE, 2, 12, 27), 6)
-PrintIntervall((ID, 2, 52,  5), 6)
+PrintIntervall((EC, 2, 12, 27), 6)
+PrintIntervall((JD, 2, 12, 27), 6)
 =#
 
 function TestIso()
@@ -307,6 +275,28 @@ function TestIso()
     end
     end
 end
+
+#=
+721722 = 721722
+721723 = 721723
+722086 = 722086
+722087 = 722087
+722088 = 722088
+722451 = 722451
+722452 = 722452
+722815 = 722815
+722816 = 722816
+722817 = 722817
+723179 = 723179
+723180 = 723180
+723181 = 723181
+723182 = 723182
+723183 = 723183
+723547 = 723547
+723548 = 723548
+723549 = 723549
+723550 = 723550
+=#
 
 function TestDateTables()
 
@@ -515,7 +505,7 @@ EC-1906-04-28 -> EN#0695906
 2417328 695906
 =#
 
-function TestJulianDayNumbers()
+function TestJulianDayNumbers1()
   
     test = [  #  EC,       EuroNum, JulianNum, ModJulianNum
     ((EC,800,12,25)::CDate, 292194, 2013616, -386384),  # Coronation of Carolus Magnus
@@ -526,7 +516,7 @@ function TestJulianDayNumbers()
     ((EC,1789,7,14)::CDate, 653251, 2374673, -25327),   # The Storming of the Bastille
     ((EC,1906,4,28)::CDate, 695906, 2417328, 17328)]    # Birth of Kurt Gödel
 
-    @testset "JulianDayNumbers" begin
+    @testset "JulianDayNumbers1" begin
     for t in test
         println()
         edn  = DayNumberFromDate(t[1], true)
@@ -600,6 +590,87 @@ function TestToday()
     println("\nThis is the $doy-th day of a EC-year.")
 end
 
+# Test values from Dershowitz & Reingold.
+function TestJulianDayNumbers()
+# RD,      Weekday,  Julian Day,    Gregorian,      ISODate      Islamic  
+RD = [
+[ 25469, wednesday, 1746893.5, ( 70,  9, 24),   (70, 39, 3),  ( -568,  4,  1)],
+[ 49217, sunday,    1770641.5, ( 135, 10,  2),  (135, 39, 7), ( -501,  4,  6)],
+[171307, wednesday, 1892731.5, ( 470,  1,  8),  (470,  2, 3), ( -157, 10, 17)],
+[210155, monday,    1931579.5, ( 576,  5, 20),  (576, 21, 1), (  -47,  6,  3)],
+[253427, saturday,  1974851.5, ( 694, 11, 10),  (694, 45, 6), (   75,  7, 13)],
+[369740, sunday,    2091164.5, (1013,  4, 25), (1013, 16, 7), (  403, 10,  5)],
+[400085, sunday,    2121509.5, (1096,  5, 24), (1096, 21, 7), (  489,  5, 22)],
+[434355, friday,    2155779.5, (1190,  3, 23), (1190, 12, 5), (  586,  2,  7)],
+[452605, saturday,  2174029.5, (1240,  3, 10), (1240, 10, 6), (  637,  8,  7)],
+[470160, friday,    2191584.5, (1288,  4,  2), (1288, 14, 5), (  687,  2, 20)],
+[473837, sunday,    2195261.5, (1298,  4, 27), (1298, 17, 7), (  697,  7,  7)],
+[507850, sunday,    2229274.5, (1391,  6, 12), (1391, 23, 7), (  793,  7,  1)],
+[524156, wednesday, 2245580.5, (1436,  2,  3), (1436,  5, 3), (  839,  7,  6)],
+[544676, saturday,  2266100.5, (1492,  4,  9), (1492, 14, 6), (  897,  6,  1)],
+[567118, saturday,  2288542.5, (1553,  9, 19), (1553, 38, 6), (  960,  9, 30)],
+[569477, saturday,  2290901.5, (1560,  3,  5), (1560,  9, 6), (  967,  5, 27)],
+[601716, wednesday, 2323140.5, (1648,  6, 10), (1648, 24, 3), ( 1058,  5, 18)],
+[613424, sunday,    2334848.5, (1680,  6, 30), (1680, 26, 7), ( 1091,  6,  2)],
+[626596, friday,    2348020.5, (1716,  7, 24), (1716, 30, 5), ( 1128,  8,  4)],
+[645554, sunday,    2366978.5, (1768,  6, 19), (1768, 24, 7), ( 1182,  2,  3)],
+[664224, monday,    2385648.5, (1819,  8,  2), (1819, 31, 1), ( 1234, 10, 10)],
+[671401, wednesday, 2392825.5, (1839,  3, 27), (1839, 13, 3), ( 1255,  1, 11)],
+[694799, sunday,    2416223.5, (1903,  4, 19), (1903, 16, 7), ( 1321,  1, 21)],
+[704424, sunday,    2425848.5, (1929,  8, 25), (1929, 34, 7), ( 1348,  3, 19)],
+[708842, monday,    2430266.5, (1941,  9, 29), (1941, 40, 1), ( 1360,  9,  8)],
+[709409, monday,    2430833.5, (1943,  4, 19), (1943, 16, 1), ( 1362,  4, 13)],
+[709580, thursday,  2431004.5, (1943, 10,  7), (1943, 40, 4), ( 1362, 10,  7)],
+[727274, tuesday,   2448698.5, (1992,  3, 17), (1992, 12, 2), ( 1412,  9, 13)],
+[728714, sunday,    2450138.5, (1996,  2, 25), (1996,  8, 7), ( 1416, 10,  5)],
+[744313, wednesday, 2465737.5, (2038, 11, 10), (2038, 45, 3), ( 1460, 10, 12)],
+[764652, sunday,    2486076.5, (2094,  7, 18), (2094, 28, 7), ( 1518,  3,  5)]
+] 
+
+RDN = [ 25469, 49217, 171307, 210155, 253427, 369740, 400085, 434355, 452605, 470160, 
+    473837, 507850, 524156, 544676, 567118, 569477, 601716, 613424, 626596, 645554, 
+    664224, 671401, 694799, 704424, 708842, 709409, 709580, 727274, 728714, 744313, 764652]
+
+@testset "JulianDayNumbers" begin
+    for rd in RD
+        rdn = rd[1]
+        local jn = ConvertOrdinalDate(rdn + 2, EN, JN)
+        CEdate = DateFromDayNumber(CE, rdn + 2)
+        IDdate = DateFromDayNumber(ID, rdn + 2)
+        @test Int64(rd[3] - 0.5) == jn
+        @test rd[4] == (CEdate[2], CEdate[3], CEdate[4])
+        @test rd[5] == (IDdate[2], IDdate[3], IDdate[4])
+   
+        # We do rnot handle preleptic Ismlam dates.
+        if rdn >= 253427
+            AHdate = DateFromDayNumber(AH, rdn + 2)
+            @test rd[6] == (AHdate[2], AHdate[3], AHdate[4])
+            println(rdn, " ", jn, " -> ", CDateStr(AHdate))
+        end
+        println(rdn, " ", jn, " -> ", CDateStr(CEdate), " / ", CDateStr(IDdate))
+        println(WeekDays[rd[2]], WeekDay(rdn))
+    end
+end
+end
+
+function ShowProfileYear()
+    ProfileYearAsEuropean(EC, 2022, true) 
+    ProfileYearAsEuropean(CE, 2022, true) 
+    ProfileYearAsEuropean(JD, 2022, true) 
+    ProfileYearAsEuropean(AM, 5783, true) 
+    ProfileYearAsEuropean(AH, 1444, true) 
+    ProfileYearAsEuropean(ID, 2022, true) 
+end
+
+#=
+EC-2022 -> [EC-2022-01-01, EC-2022-12-31], 12, 365
+CE-2022 -> [EC-2022-01-01, EC-2022-12-31], 12, 365
+JD-2022 -> [EC-2022-01-14, EC-2023-01-13], 12, 365
+AM-5783 -> [EC-2022-09-26, EC-2023-09-15], 12, 355
+AH-1444 -> [EC-2022-07-30, EC-2023-07-18], 12, 354
+ID-2022 -> [EC-2022-01-03, EC-2023-01-01], 52, 364
+=#
+
 function TestAll()
     TestDateGregorian(); println() 
     TestDateJulian();    println()
@@ -610,9 +681,11 @@ function TestAll()
     TestConversions();   println()
     TestDateTables();    println()
     TestDuration();      println()
+    TestJulianDayNumbers1(); println()
     TestJulianDayNumbers(); println()
     TestDayOfYear();     println()
     ShowDayOfYear();     println()
+    ShowProfileYear();   println()
     TestToday();         println()
     # TestSaveCalendars()
 end

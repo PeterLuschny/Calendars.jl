@@ -2,6 +2,7 @@
 # ======================= CalendarUtils =====================
 
 # Planetary week
+# As defined by Reingold & Dershowitz
 const sunday    = 0 
 const monday    = 1 
 const tuesday   = 2 
@@ -338,7 +339,7 @@ function PrintWeekLine(date::CDate, io=stdout)
 end
 
 wheader = "|  Weekday  |  European  |   Hebrew   |  Islamic   |"
-wmarkup = "|    ---:   |    :---:   |   :---:    |   :---:    |"
+wmarkup = "|   :---:   |    :---:   |   :---:    |   :---:    |"
 
 """
 

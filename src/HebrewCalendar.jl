@@ -51,7 +51,7 @@ function LastMonthOfYearHebrew(year::DPart)
     isLeapYearHebrew(year) ? 13 : 12
 end 
 
-# Number of days in Hebrew year.
+# Return the number of days in the given Hebrew year.
 function DaysInYearHebrew(year::DPart)
     DelayHebrew(year + 1) - DelayHebrew(year)
 end
@@ -168,33 +168,49 @@ function DateHebrew(dn::DPart)
     return (AM, year, month, day)::CDate
 end
 
+# Return the day number of the first day in the given Hebrew year.
+function YearStartHebrew(year::DPart) 
+    return DayNumberHebrew(year, 7, 1)
+end
+
+# Return the day number of the last day in the given Hebrew year.
+function YearEndHebrew(year::DPart) 
+    return YearStartHebrew(year + 1) - 1
+end
+
+# Return the number of months in the given Hebrew year.
+function MonthsInYearHebrew(year::DPart) 
+    return LastMonthOfYearHebrew(year) 
+end
+
+
 if TEST
 
     for n in 0:3
         local dn = -1 + n  # EpochJulian = -1
-        println(CDateStr(dn), " -> ", CDateStr(DateHebrew(dn)))
+        println(CDateStr(DN, dn), " -> ", CDateStr(DateHebrew(dn)))
     end
     for n in 0:3
         local date = (AM, 3761, 10, 16 + n)
-        println(CDateStr(date), " -> ", CDateStr(DayNumberHebrew(date)))
+        println(CDateStr(date), " -> ", CDateStr(DN, DayNumberHebrew(date)))
     end
 
     for n in 0:3
         local dn = 3652128 + n
-        println(CDateStr(dn), " -> ", CDateStr(DateHebrew(dn)))
+        println(CDateStr(DN, dn), " -> ", CDateStr(DateHebrew(dn)))
     end
     for n in 0:3
         local date = (AM, 13760, 11, 9 + n)
-        println(CDateStr(date), " -> ", CDateStr(DayNumberHebrew(date)))
+        println(CDateStr(date), " -> ", CDateStr(DN, DayNumberHebrew(date)))
     end
 
     for n in 0:2
         local dn = 405739 + n
-        println(CDateStr(dn), " -> ", CDateStr(DateHebrew(dn)))
+        println(CDateStr(DN, dn), " -> ", CDateStr(DateHebrew(dn)))
     end
     for n in 0:2
         local date = (AM, 4872, 9, 8 + n)
-        println(CDateStr(date), " -> ", CDateStr(DayNumberHebrew(date)))
+        println(CDateStr(date), " -> ", CDateStr(DN, DayNumberHebrew(date)))
     end
 
 #=

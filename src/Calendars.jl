@@ -15,7 +15,8 @@ export DayNumberFromDate, DateFromDayNumber, ConvertDate
 export CalendarDates, CDate, CDateStr, DateStr, DateTable
 export isValidDate, Duration, DayOfYear, ConvertOrdinalDate
 export PrintDateLine, PrintDateTable, PrintEuropeanMonth 
-export SaveEuropeanMonth, WeekDay, PrintIsoWeek, IDate
+export SaveEuropeanMonth, WeekDay, WeekDays, PrintIsoWeek, IDate
+export ProfileYearAsEuropean
 
 # Export only functions from CalendarUtils and from this file,
 # which basically is a wrapper around a collection of calendars.
@@ -23,7 +24,7 @@ include("CalendarUtils.jl")
 
 # Consider the following included files as 'intern', and
 # do not export their functions directly. Their algorithms
-# follow Dershowitz/Reingold and use RataDay-numbers 
+# follow Dershowitz/Reingold and use RataDie-numbers 
 # whereas here we use EuroDay-numbers. 
 include("GregorianCalendar.jl")
 include("JulianCalendar.jl")
@@ -411,8 +412,9 @@ printed. `show` is 'false' by default.
 julia> Duration(("CE", 2022, 1, 1), ("ID", 2022, 1, 1), true)
 ``` 
 Perhaps to the surprise of some, these dates are two days apart.
-
+```julia
     CE-2022-01-01 <-> ID-2022-01-01 -> Duration 2
+```
 """
 function Duration(a::CDate, b::CDate, show=false)
     if isValidDate(a) && isValidDate(b)
@@ -477,10 +479,88 @@ function ConvertOrdinalDate(num::DPart, from::String, to::String)
     return re
 end
 
-# TODO
-#function GetYearStart(calendar::String, year::DPart) return ("00", 0, 0, 0) end
-#function GetYearEnd(calendar::String, year::DPart) return ("00", 0, 0, 0) end
-#function GetWeeksInYear(calendar::String, year::Dpart) return 0 end
-#function GetWeekOfYear(date::CDate) return 0 end
+
+"""
+```julia
+ProfileYearAsEuropean(calendar::String, year::DPart, show=false)
+```
+Return a 4-tuple (YearStart, YearEnd, MonthsInYear, DaysInYear) as represented in the European calendar. 
+
+Jewish New Year (Rosh HaShanah) begins the evening before the date returned. For the ISO-calendar read 'WeeksInYear' instead of 'MonthsInYear'.
+
+Examples:
+```julia
+julia> ProfileYearAsEuropean("EC", 2022, true) 
+julia> ProfileYearAsEuropean("CE", 2022, true) 
+julia> ProfileYearAsEuropean("JD", 2022, true) 
+julia> ProfileYearAsEuropean("AM", 5783, true) 
+julia> ProfileYearAsEuropean("AH", 1444, true) 
+julia> ProfileYearAsEuropean("ID", 2022, true) 
+```
+These commands return:
+```julia
+EC-2022 -> [EC-2022-01-01, EC-2022-12-31], 12, 365
+CE-2022 -> [EC-2022-01-01, EC-2022-12-31], 12, 365
+JD-2022 -> [EC-2022-01-14, EC-2023-01-13], 12, 365
+AM-5783 -> [EC-2022-09-26, EC-2023-09-15], 12, 355
+AH-1444 -> [EC-2022-07-30, EC-2023-07-18], 12, 354
+ID-2022 -> [EC-2022-01-03, EC-2023-01-01], 52, 364
+```
+"""
+function ProfileYearAsEuropean(calendar::String, year::DPart, show=false)
+
+    cname = CName(calendar)
+    if cname == CE
+        p = (
+            DateFromDayNumber(EC, YearStartGregorian(year) + 2),
+            DateFromDayNumber(EC, YearEndGregorian(year) + 2),
+            MonthsInYearGregorian(year), 
+            DaysInYearGregorian(year)
+        ) 
+    elseif cname == JD
+        p = (
+            DateFromDayNumber(EC, YearStartJulian(year) + 2),
+            DateFromDayNumber(EC, YearEndJulian(year) + 2),
+            MonthsInYearJulian(year), 
+            DaysInYearJulian(year)
+        ) 
+    elseif cname == EC
+        p = (
+            DateFromDayNumber(EC, YearStartEuropean(year) + 2),
+            DateFromDayNumber(EC, YearEndEuropean(year) + 2),
+            MonthsInYearEuropean(year), 
+            DaysInYearEuropean(year)
+        ) 
+    elseif cname == AM
+        p = (
+            DateFromDayNumber(EC, YearStartHebrew(year) + 2),
+            DateFromDayNumber(EC, YearEndHebrew(year) + 2),
+            MonthsInYearHebrew(year), 
+            DaysInYearHebrew(year)
+        ) 
+    elseif cname == AH
+        p = (
+            DateFromDayNumber(EC, YearStartIslamic(year) + 2),
+            DateFromDayNumber(EC, YearEndIslamic(year) + 2),
+            MonthsInYearIslamic(year), 
+            DaysInYearIslamic(year)
+        ) 
+    elseif cname == ID
+        p = (
+            DateFromDayNumber(EC, YearStartIso(year) + 2),
+            DateFromDayNumber(EC, YearEndIso(year) + 2),
+            WeeksInYearIso(year), 
+            DaysInYearIso(year)
+        ) 
+    else
+        @warn("Unknown calendar: $calendar")
+        return (InvalidDate, InvalidDate, 0, 0)
+    end
+    if show
+        println(cname, "-", year, " -> [", CDateStr(p[1]), 
+               ", ", CDateStr(p[2]), "], ", p[3], ", ", p[4])
+    end
+    return p
+end
 
 end # module

@@ -45,5 +45,8 @@ SaveEuropeanMonth
 PrintIsoWeek
 ``` 
 ```@docs
+ProfileYearAsEuropean
+```
+```@docs
 IDate
 ```

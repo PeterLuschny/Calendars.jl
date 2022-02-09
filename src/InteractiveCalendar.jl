@@ -1,8 +1,8 @@
 # This is part of Calendars.jl. See the copyright note there.
-# ======================= REPL calendar =====================
+# =================== Interactive calendar ==================
 
-# This is an undocumented gadget for the Julia REPL.
-# Might be removed in later versions without notice.
+# Interactively compute calendar dates in the REPL. 
+
 
 using Dates
 
