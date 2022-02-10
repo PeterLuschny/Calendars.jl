@@ -55,16 +55,16 @@ XX = :"00"  # Unknown
 
 # Map calendar specifiers to calendar names
 CalendarNames = Dict{String, String}(
-    "EC" => "European ",
-    "CE" => "Common   ",
-    "JD" => "Julian   ",
-    "AM" => "Hebrew   ",
-    "AH" => "Islamic  ",
-    "ID" => "IsoDate  ",
-    "EN" => "EuroNum  ",
-    "JN" => "JulianNum",
-    "DN" => "DayNumber",
-    "00" => "INVALID  "
+    EC => "European ",
+    CE => "Common   ",
+    JD => "Julian   ",
+    AM => "Hebrew   ",
+    AH => "Islamic  ",
+    ID => "IsoDate  ",
+    EN => "EuroNum  ",
+    JN => "JulianNum",
+    DN => "DayNumber",
+    XX => "INVALID  "
 )
 
 # Return symbolic name representing a calendar. 
@@ -162,10 +162,10 @@ A CDate (short for Calender Date) is defined as
 CDate = Tuple{String, DPart, DPart, DPart}
 ```
 
-    A tuple 'date' of type 'CDate' is unpacked by convention as (calendar, year, month, day) = 
-    date, where calendar' is "Common", "Julian", "European", Hebrew", "Islamic", or "IsoDate". 
-    Alternatively the acronyms "CE", "EC", "JD", "AM", "AH", and "ID" can be used. 
-    'DPart' (date part) is a typename for Int.
+    A tuple `date` of type `CDate` is unpacked by convention as (calendar, year, month, day) = 
+    date, where `calendar` is "Common", "Julian", "European", Hebrew", "Islamic", or "IsoDate". 
+    Alternatively the acronyms CE, EC, JD, AM, AH, and ID can be used. 
+    `DPart` (date part) is a typename for Int.
 
 ```julia
 CDateStr(cd::CDate) 
@@ -251,10 +251,10 @@ end
 PrintDateLine(date::CDate, io=stdout)
 ```
 
-Given a `date` print a line with all representations of this date to `io`.
+Given a `date` print a line with all representations of this date to `io`. The parts of the date can also be given separately.
 
 ```julia
-julia> PrintDateLine(("EC", 2022, 2, 2))
+julia> PrintDateLine(EC, 2022, 2, 2)
 ```
 | CE-2022-02-02 | EC-2022-02-02 | JD-2022-01-20 | AM-5782-12-01 | AH-1443-06-29 | ID-2022-05-03 | EN#0738190 | JN#2459612 |
 """
@@ -271,6 +271,8 @@ function PrintDateLine(date::CDate, io=stdout)
         CDateStr(DateFromDayNumber(JN, dn)), " |" 
     )
 end
+
+PrintDateLine(cal, year, month, day, io=stdout) = PrintDateLine((cal, year, month, day), io)
 
 header = "|    Common     |   European    |    Julian     |    Hebrew     |    Islamic    |    IsoDate    |  EuroNum   | JulianNum  |"
 markup = "|    :---:      |     :---:     |    :---:      |     :---:     |    :---:      |     :---:     |   :---:    |   :---:    |"

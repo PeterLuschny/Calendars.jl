@@ -17,6 +17,7 @@ export isValidDate, Duration, DayOfYear, ConvertOrdinalDate
 export PrintDateLine, PrintDateTable, PrintEuropeanMonth 
 export SaveEuropeanMonth, WeekDay, WeekDays, PrintIsoWeek, IDate
 export ProfileYearAsEuropean
+export EC, CE, JD, AM, AH, ID, EN, JN, DN, XX
 
 # Export only functions from CalendarUtils and from this file,
 # which basically is a wrapper around a collection of calendars.
@@ -51,7 +52,7 @@ julia> DayNumberFromDate(("Gregorian", 1756, 1, 27))
 Alternatively you can also write
 
 ```julia
-julia> DayNumberFromDate("CE", 1756, 1, 27) 
+julia> DayNumberFromDate(CE, 1756, 1, 27) 
 ```
 
 This returns the fix day number 641027. If `show` is 'true'
@@ -117,7 +118,7 @@ julia> DateFromDayNumber("Gregorian", 641029)
 Alternatively you can also write
 
 ```julia
-julia> DateFromDayNumber("CE", 641029) 
+julia> DateFromDayNumber(CE, 641029) 
 ```
 
 This returns the date ("CE", 1756, 1, 27). If `show` is 
@@ -178,7 +179,7 @@ julia> ConvertDate(("Gregorian", 1756, 1, 27), "Hebrew")
 Alternatively you can also write
 
 ```julia
-julia> ConvertDate("CE", 1756, 1, 27, "AM") 
+julia> ConvertDate(CE, 1756, 1, 27, AM) 
 ```
 
 This converts the Gregorian date ("CE", 1756, 1, 27) to the 
@@ -234,7 +235,7 @@ julia> CalendarDates(("Gregorian", 1756, 1, 27),  true)
 Alternatively you can also write
 
 ```julia
-julia> CalendarDates("CE", 1756, 1, 27, true) 
+julia> CalendarDates(CE, 1756, 1, 27, true) 
 ```
 
 This computes a `DateTable`, which is a tuple of six
@@ -288,15 +289,15 @@ julia> isValidDate(("Gregorian", 1756, 1, 27))
 Alternatively you can also write
 
 ```julia
-julia> isValidDate("CE", 1756, 1, 27) 
+julia> isValidDate(CE, 1756, 1, 27) 
 ```
 
 This query affirms that 1756-01-27 is a valid Gregorian date. 
 But the next two queries return 'false' and 'true', respectively.
 
 ```julia
-julia> isValidDate("CE", 1900, 2, 29)
-julia> isValidDate("JD", 1900, 2, 29)
+julia> isValidDate(CE, 1900, 2, 29)
+julia> isValidDate(JD, 1900, 2, 29)
 ````
 """
 function isValidDate(d::CDate, warn=true)  
@@ -340,7 +341,7 @@ Return the ordinal of the day in the given calendar. Also known
 as the 'ordinal date' relative to the epoch of the calendar. 
 
 ```julia
-julia> DayOfYear(("EC", 1756, 1, 27)) 
+julia> DayOfYear(EC, 1756, 1, 27) 
 ```
 
 Alternatively you can write
@@ -354,7 +355,7 @@ of the year 1756 in the European calendar. The same day
 is in the Hebrew calendar the 144-th day of the year:
 
 ```julia
- ConvertDate("EC", 1756, 1, 27, "AM") |> DayOfYear
+ ConvertDate(EC, 1756, 1, 27, AM) |> DayOfYear
  ```
 
 If an error occurs 0 (representing the invalid day of the year)
@@ -409,7 +410,7 @@ If the optional parameter `show` is set to 'true', both dates are
 printed. `show` is 'false' by default.
 
 ```julia
-julia> Duration(("CE", 2022, 1, 1), ("ID", 2022, 1, 1), true)
+julia> Duration((CE, 2022, 1, 1), (ID, 2022, 1, 1), true)
 ``` 
 Perhaps to the surprise of some, these dates are two days apart.
 ```julia
@@ -443,18 +444,18 @@ since the beginning of a calendrial epoch.
 
 `from` and `to` are ordinal date names. Currently only
 the ordinal date names "EuroNum" and "JulianNum", respectively
-their acronyms "EN", "JN", are admissible.
+their acronyms EN, JN, are admissible.
 
 Examples:
 Convert a Julian day number to an European day number.
 ```julia
-julia> ConvertOrdinalDate(2440422, "JN", "EN") 
+julia> ConvertOrdinalDate(2440422, JN, EN) 
 ```
 The European day number of the first crewed moon landing is 719000.
 
 Convert an European day number to an Julian day number.
 ```julia
-julia> ConvertOrdinalDate(719000, "EN", "JN") 
+julia> ConvertOrdinalDate(719000, EN, JN) 
 ```
 The Julian day number of the first crewed moon landing is 2440422.
 """
@@ -490,12 +491,12 @@ Jewish New Year (Rosh HaShanah) begins the evening before the date returned. For
 
 Examples:
 ```julia
-julia> ProfileYearAsEuropean("EC", 2022, true) 
-julia> ProfileYearAsEuropean("CE", 2022, true) 
-julia> ProfileYearAsEuropean("JD", 2022, true) 
-julia> ProfileYearAsEuropean("AM", 5783, true) 
-julia> ProfileYearAsEuropean("AH", 1444, true) 
-julia> ProfileYearAsEuropean("ID", 2022, true) 
+julia> ProfileYearAsEuropean(EC, 2022, true) 
+julia> ProfileYearAsEuropean(CE, 2022, true) 
+julia> ProfileYearAsEuropean(JD, 2022, true) 
+julia> ProfileYearAsEuropean(AM, 5783, true) 
+julia> ProfileYearAsEuropean(AH, 1444, true) 
+julia> ProfileYearAsEuropean(ID, 2022, true) 
 ```
 These commands return:
 ```julia

@@ -1,18 +1,6 @@
 using Calendars
 using Test, Dates
 
-# Symbols for calendar names
-CE = :"CE"  # Common Era
-EC = :"EC"  # European Calendar
-JD = :"JD"  # Julian (Roman Calendar)
-AM = :"AM"  # Anno Mundi
-AH = :"AH"  # Anno Hegirae
-ID = :"ID"  # ISO Date
-EN = :"EN"  # Euro Number
-JN = :"JN"  # Julian Number
-DN = :"DN"  # FixDay Number
-XX = :"00"  # Unknown 
-
 # Planetary week
 sunday    = 0 
 monday    = 1 
@@ -31,15 +19,15 @@ function TestDateGregorian()
     SomeDateGregorian = [ 
         ("Gregorian",    1, 1,  1)::CDate, 
         ("Gregorian", 1756, 1, 27)::CDate, 
-        ("CE",        2022, 1,  1)::CDate, 
-        ("CE",        2022, 9, 26)::CDate 
+        (CE,          2022, 1,  1)::CDate, 
+        (CE,          2022, 9, 26)::CDate 
         ] 
 
     @testset "DateGregorian" begin
     for date in SomeDateGregorian
         dn = DayNumberFromDate(date)
         gdate = DateFromDayNumber("Gregorian", dn)
-        @test gdate == ("CE", date[2], date[3], date[4])
+        @test gdate == (CE, date[2], date[3], date[4])
         println(CDateStr(date), " -> ", CDateStr(EN, dn), " -> ", CDateStr(gdate))
     end
     end
@@ -60,15 +48,15 @@ function TestDateJulian()
     SomeDateJulian = [ 
         ("Julian",    1,  1,  3)::CDate,
         ("Julian", 1756,  1, 16)::CDate,
-        ("JD",     2021, 12, 19)::CDate,
-        ("JD",     2022,  9, 13)::CDate
+        (JD,       2021, 12, 19)::CDate,
+        (JD,       2022,  9, 13)::CDate
         ] 
 
     @testset "DateJulian" begin
     for date in SomeDateJulian
         dn = DayNumberFromDate(date)
         jdate = DateFromDayNumber("Julian", dn)
-        @test jdate == ("JD", date[2], date[3], date[4]) 
+        @test jdate == (JD, date[2], date[3], date[4]) 
         println(CDateStr(date), " -> ", CDateStr(EN, dn), " -> ", CDateStr(jdate))
     end
     end
@@ -87,15 +75,15 @@ function TestDateHebrew()
         ("Hebrew", 5516, 11, 25)::CDate, 
         ("Hebrew", 5782,  7,  1)::CDate,
         ("Hebrew", 5782, 10, 27)::CDate,
-        ("AM",     5782,  6, 29)::CDate,
-        ("AM",     5783,  7,  1)::CDate
+        (AM,       5782,  6, 29)::CDate,
+        (AM,       5783,  7,  1)::CDate
         ]
 
     @testset "DateHebrew" begin
     for date in SomeDateHebrew
         dn = DayNumberFromDate(date)
         hdate = DateFromDayNumber("Hebrew", dn)
-        @test hdate == ("AM", date[2], date[3], date[4])
+        @test hdate == (AM, date[2], date[3], date[4])
         println(CDateStr(date), " -> ", CDateStr(EN, dn), " -> ", CDateStr(hdate))
     end
     end
@@ -114,15 +102,15 @@ function TestDateIslamic()
     SomeDateIslamic = [ 
         ("Islamic",    1, 1,  1)::CDate,
         ("Islamic", 1756, 1, 27)::CDate,
-        ("AH",      2022, 1,  1)::CDate,
-        ("AH",      2022, 9, 26)::CDate 
+        (AH,        2022, 1,  1)::CDate,
+        (AH,        2022, 9, 26)::CDate 
         ] 
 
     @testset "DateIslamic" begin
     for date in SomeDateIslamic
         dn = DayNumberFromDate(date)
         idate = DateFromDayNumber("Islamic", dn)
-        @test idate == ("AH", date[2], date[3], date[4])
+        @test idate == (AH, date[2], date[3], date[4])
         println(CDateStr(date), " -> ", CDateStr(EN, dn), " -> ", CDateStr(idate))
     end
     end
@@ -140,15 +128,15 @@ function TestDateIso()
     SomeDateIso = [ 
         ("IsoDate",    1,  1, 1)::CDate,
         ("IsoDate", 1756,  5, 2)::CDate,
-        ("ID",      2021, 52, 6)::CDate,
-        ("ID",      2022, 39, 1)::CDate 
+        (ID,        2021, 52, 6)::CDate,
+        (ID,        2022, 39, 1)::CDate 
         ] 
 
     @testset "DateIso" begin
     for date in SomeDateIso
         dn = DayNumberFromDate(date)
         idate = DateFromDayNumber("IsoDate", dn)
-        @test idate == ("ID", date[2], date[3], date[4])
+        @test idate == (ID, date[2], date[3], date[4])
         println(CDateStr(date), " -> ", CDateStr(EN, dn), " -> ", CDateStr(idate))
     end
     end
@@ -179,20 +167,20 @@ function TestConversions()
     @test (CE, 7025,11,29) == ConvertDate(("Islamic", 6600, 11, 21), "Gregorian") 
     @test (AM, 9992,12,27) == ConvertDate(("Islamic", 5782, 10, 28), "Hebrew") 
 
-    @test (AM, 9543, 7,24) == ConvertDate(("CE", 5782, 10, 28), "AM") 
-    @test (AH, 5319, 8,25) == ConvertDate(("CE", 5782, 10, 28), "AH") 
-    @test (AM, 5516,11,25) == ConvertDate(("CE", 1756,  1, 27), "AM") 
-    @test (AH,    1, 1, 1) == ConvertDate(("CE", 622,   7, 19), "AH") 
+    @test (AM, 9543, 7,24) == ConvertDate((CE, 5782, 10, 28), AM) 
+    @test (AH, 5319, 8,25) == ConvertDate((CE, 5782, 10, 28), AH) 
+    @test (AM, 5516,11,25) == ConvertDate((CE, 1756,  1, 27), AM) 
+    @test (AH,    1, 1, 1) == ConvertDate((CE, 622,   7, 19), AH) 
 
     println("===")
-    @test (AH, 1443, 5,27) == ConvertDate(("AM", 5782, 10, 28), "AH") 
-    @test (CE, 5782,10,28) == ConvertDate(("AM", 9543,  7, 24), "CE") 
-    @test (AH, 4501, 8, 3) == ConvertDate(("AM", 8749, 11, 03), "AH") 
+    @test (AH, 1443, 5,27) == ConvertDate((AM, 5782, 10, 28), AH) 
+    @test (CE, 5782,10,28) == ConvertDate((AM, 9543,  7, 24), CE) 
+    @test (AH, 4501, 8, 3) == ConvertDate((AM, 8749, 11, 03), AH) 
 
     println("====")
-    @test (AM, 7025,11,23) == ConvertDate(("AH", 2724, 08, 23), "AM") 
-    @test (CE, 7025,11,29) == ConvertDate(("AH", 6600, 11, 21), "CE") 
-    @test (AM, 9992,12,27) == ConvertDate(("AH", 5782, 10, 28), "AM") 
+    @test (AM, 7025,11,23) == ConvertDate((AH, 2724, 08, 23), AM) 
+    @test (CE, 7025,11,29) == ConvertDate((AH, 6600, 11, 21), CE) 
+    @test (AM, 9992,12,27) == ConvertDate((AH, 5782, 10, 28), AM) 
 
     end
 
@@ -528,8 +516,8 @@ function TestJulianDayNumbers1()
         println(jdn, " ", edn)
     end
 
-    en = ConvertOrdinalDate(2440422, "JN", "EN") 
-    jn = ConvertOrdinalDate(719000,  "EN", "JN") 
+    en = ConvertOrdinalDate(2440422, JN, EN) 
+    jn = ConvertOrdinalDate(719000,  EN, JN) 
     @test en  == 719000
     @test jn  == 2440422
     end
@@ -584,7 +572,7 @@ function TestToday()
     println("\nMozart would be ", DayOfLife((EC, 1756, 1, 27)), " days old today.")
     println("\nToday on all calendars:\n")
     now = Dates.yearmonthday(Dates.now())
-    date = ("EC", now[1], now[2], now[3])
+    date = (EC, now[1], now[2], now[3])
     CalendarDates(date, true)
     doy = DayOfYear(date)
     println("\nThis is the $doy-th day of a EC-year.")
@@ -671,6 +659,46 @@ AH-1444 -> [EC-2022-07-30, EC-2023-07-18], 12, 354
 ID-2022 -> [EC-2022-01-03, EC-2023-01-01], 52, 364
 =#
 
+function TestStartEndYear() 
+
+    RHstart = [  # Dates for Rosh Hashana
+    ((CE, 1842, 09, 05), (AM, 5603, 7, 1)),
+    ((CE, 2020, 09, 19), (AM, 5781, 7, 1)),
+    ((CE, 2021, 09, 07), (AM, 5782, 7, 1)),
+    ((CE, 2022, 09, 26), (AM, 5783, 7, 1)),
+    ((CE, 2023, 09, 16), (AM, 5784, 7, 1)),
+    ((CE, 2024, 10, 03), (AM, 5785, 7, 1)),
+    ((CE, 2025, 09, 23), (AM, 5786, 7, 1)),
+    ((CE, 2026, 09, 12), (AM, 5787, 7, 1)),
+    ((CE, 2027, 10, 02), (AM, 5788, 7, 1)),
+    ((CE, 2043, 10, 05), (AM, 5804, 7, 1))
+    ]
+
+    RHend = [
+    ((CE, 1843, 09, 24), (AM, 5603, 6, 29)),
+    ((CE, 2021, 09, 06), (AM, 5781, 6, 29)),
+    ((CE, 2022, 09, 25), (AM, 5782, 6, 29)),
+    ((CE, 2023, 09, 15), (AM, 5783, 6, 29)),
+    ((CE, 2024, 10, 02), (AM, 5784, 6, 29)),
+    ((CE, 2025, 09, 22), (AM, 5785, 6, 29)),
+    ((CE, 2026, 09, 11), (AM, 5786, 6, 29)),
+    ((CE, 2027, 10, 01), (AM, 5787, 6, 29)),
+    ((CE, 2028, 09, 20), (AM, 5788, 6, 29)),
+    ((CE, 2044, 09, 21), (AM, 5804, 6, 29))
+    ]
+
+    @testset "RoshHashana" begin
+    for rh in RHstart
+        d = ConvertDate(rh[1], AM)
+        @test rh[2] == d
+    end
+    for rh in RHend
+        d = ConvertDate(rh[1], AM)
+        @test rh[2] == d
+    end
+    end
+end
+
 function TestAll()
     TestDateGregorian(); println() 
     TestDateJulian();    println()
@@ -684,6 +712,7 @@ function TestAll()
     TestJulianDayNumbers1(); println()
     TestJulianDayNumbers(); println()
     TestDayOfYear();     println()
+    TestStartEndYear();  println()
     ShowDayOfYear();     println()
     ShowProfileYear();   println()
     TestToday();         println()

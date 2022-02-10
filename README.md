@@ -32,9 +32,9 @@ The primary function provided is:
 
 It converts a calendar date to the representation of the date in the 'calendar.'
 
-* The calendar date (CDate) is a tuple (calendar, year, month, day). The parts of the date can be given as a tuple or individually.
+* The calendar date `CDate` is a tuple (calendar, year, month, day). The parts of the date can be given as a tuple or individually.
 
-* 'calendar' is one of "Common", "European", "Julian", "Hebrew", "Islamic", or "IsoDate". Alternatively, you can use the acronyms "CE," "EC," "JD," "AM," "AH," or "ID" explained in the table above. "Gregorian" is used synonymously with "Common," and "AD" is used synonymously with "JD."
+* 'calendar' is one of "Common", "European", "Julian", "Hebrew", "Islamic", or "IsoDate". Alternatively, you can use the acronyms CE, EC, JD, AM, AH, or ID explained in the table above. "Gregorian" is used synonymously with "Common," and AD is used synonymously with JD.
 
 * If the optional parameter 'show' is set to 'true,' both dates are printed. 'show' is 'false' by default.
 
@@ -47,7 +47,7 @@ julia> ConvertDate(("Common", 1756, 1, 27), "Hebrew")
 which can also be written
 
 ```julia
-julia> ConvertDate("CE", 1756, 1, 27, "AM")
+julia> ConvertDate(CE, 1756, 1, 27, AM)
 ```
 
 computes from the Common date (1756, 1, 27) the Hebrew date (5516, 11, 25). If 'show' is 'true' the line
@@ -190,11 +190,11 @@ The European date number is similar to the day number [Rata Die](https://en.wiki
 ```julia
 ConvertOrdinalDate(dnum::DPart, from::String, to::String)
 ```
-`dnum` is an ordinal day number. `from` and `to` are ordinal date names. Admissible ordinal date names are "EuroNum," "JulianNum," or their acronyms "EN" and "JN."
+`dnum` is an ordinal day number. `from` and `to` are ordinal date names. Admissible ordinal date names are "EuroNum", "JulianNum", or their acronyms EN and JN.
 
 For instance, to convert a Julian day number to a European day number, write
 ```julia
-julia> ConvertOrdinalDate(2440422, "JN", "EN") 
+julia> ConvertOrdinalDate(2440422, JN, EN) 
 ```
 It returns 719000, the European day number of the first crewed moon landing.
 
@@ -206,12 +206,12 @@ This function returns a 4-tuple (YearStart, YearEnd, MonthsInYear, DaysInYear) w
 
 Examples:
 ```julia
-julia> ProfileYearAsEuropean("EC", 2022, true) 
-julia> ProfileYearAsEuropean("CE", 2022, true) 
-julia> ProfileYearAsEuropean("JD", 2022, true) 
-julia> ProfileYearAsEuropean("AM", 5783, true) 
-julia> ProfileYearAsEuropean("AH", 1444, true) 
-julia> ProfileYearAsEuropean("ID", 2022, true) 
+julia> ProfileYearAsEuropean(EC, 2022, true) 
+julia> ProfileYearAsEuropean(CE, 2022, true) 
+julia> ProfileYearAsEuropean(JD, 2022, true) 
+julia> ProfileYearAsEuropean(AM, 5783, true) 
+julia> ProfileYearAsEuropean(AH, 1444, true) 
+julia> ProfileYearAsEuropean(ID, 2022, true) 
 ```
 These commands return:
 ```julia
