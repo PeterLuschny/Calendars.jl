@@ -11,13 +11,13 @@
 
 module Calendars
 
+export EC, CE, JD, AM, AH, ID, EN, JN, DN, XX
 export DayNumberFromDate, DateFromDayNumber, ConvertDate
 export CalendarDates, CDate, CDateStr, DateStr, DateTable
 export isValidDate, Duration, DayOfYear, ConvertOrdinalDate
 export PrintDateLine, PrintDateTable, PrintEuropeanMonth 
 export SaveEuropeanMonth, WeekDay, WeekDays, PrintIsoWeek, IDate
 export ProfileYearAsEuropean
-export EC, CE, JD, AM, AH, ID, EN, JN, DN, XX
 
 # Export only functions from CalendarUtils and from this file,
 # which basically is a wrapper around a collection of calendars.
@@ -38,34 +38,43 @@ include("InteractiveCalendar.jl")
 """
 
 ```julia
-DayNumberFromDate(date::Cdate, show::Bool)
+DayNumberFromDate(date::Cdate, string::Bool, show::Bool)
 ```
 
 Return the day number correspondig to the calendar date.
-If the optional parameter `show` is set to 'true', date 
+The parts of the date can also be given separately.
+
+If the optional parameter `string` is `true` the function returns 
+the day number in string format, otherwise as an integer.
+`string` is 'false' by default.
+
+If the optional parameter `show` is 'true', date 
 and number are printed. `show` is 'false' by default.
 
+For example:
 ```julia
-julia> DayNumberFromDate(("Gregorian", 1756, 1, 27)) 
+julia> DayNumberFromDate("Gregorian", 1756, 1, 27) 
 ```
 
-Alternatively you can also write
+Using the acronym CE for 'Common Epoch' which is synonymous with
+'Gregorian', this can also be written as
 
 ```julia
 julia> DayNumberFromDate(CE, 1756, 1, 27) 
 ```
 
-This returns the fix day number 641027. If `show` is 'true'
-the line "CE-1756-01-27 -> EN#641029" is printed.
+This returns the European day number 641027 as an integer by default. 
+If `string` is `true` the string "EN#641029" is returned. If `show` 
+is `true` the line "CE-1756-01-27 -> EN#641029" is printed.
 
 If an error occurs 0 (representing the invalid day 
 number) is returned.
 """
-function DayNumberFromDate(d::CDate, show=false)
+function DayNumberFromDate(d::CDate, string=false, show=false)
     # Don't process invalid dates
     ! isValidDate(d) && return 0
     
-    calendar = CName(d[1])
+    calendar = d[1]
     if calendar == CE 
         dn = DayNumberGregorian(d)
     elseif calendar == JD
@@ -84,137 +93,164 @@ function DayNumberFromDate(d::CDate, show=false)
         @warn("Unknown calendar: $calendar")
         return InvalidDayNumber
     end
-    en = FixNumToEuroNum(dn) 
+
+    enum = FixNumToEuroNum(dn) 
 
     if show
-        println(CDateStr(d), " -> ", CDateStr(EN, en))
+        println(CDateStr(d), " -> ", CDateStr(EN, enum))
     end
-    return en 
+
+    return string ? CDateStr(EN, enum) : enum
 end
 
-DayNumberFromDate(calendar::String, year::DPart, month::DPart, day::DPart, 
-show=false) = DayNumberFromDate((calendar, year, month, day), show)
+DayNumberFromDate(cal::String, year::DPart, month::DPart, day::DPart, string=false,
+show=false) = DayNumberFromDate((StringToSymbol(cal), year, month, day), string, show)
 
-DayNumberFromDate(calendar::String, d::Tuple{DPart, DPart, DPart}, 
-show=false) = DayNumberFromDate((calendar, d[1], d[2], d[3]), show)
+DayNumberFromDate(cal::String, d::Tuple{DPart, DPart, DPart}, string=false,
+show=false) = DayNumberFromDate((StringToSymbol(cal), d[1], d[2], d[3]), string, show)
+
+DayNumberFromDate(cal::DPart, year::DPart, month::DPart, day::DPart, string=false,
+show=false) = DayNumberFromDate((cal, year, month, day), string, show)
 
 
 """
 
 ```julia
-DateFromDayNumber(calendar::String, dn::DPart, show::Bool)
+DateFromDayNumber(calendar::DPart, enum::DPart, string::Bool, show::Bool)
 ```
 
 Return the calendar date from a European day number.
 
-The day number `dn` must be an integer >= 1. If the optional 
-parameter `show` is set to 'true', date and number are printed.
-`show` is 'false' by default.
+The day number `enum` must be an integer >= 1. 
 
+If the optional parameter `string` is `true` the function returns the date 
+as a string, otherwise as an integer tuple. `string` is `false` by default.
+
+If the optional parameter `show` is set to `true`, date and number 
+are printed. `show` is `false` by default.
+
+For example:
 ```julia
 julia> DateFromDayNumber("Gregorian", 641029) 
 ```
 
 Alternatively you can also write
-
 ```julia
 julia> DateFromDayNumber(CE, 641029) 
 ```
 
-This returns the date ("CE", 1756, 1, 27). If `show` is 
-'true' the line "EN#0641029 -> CE-1756-01-27" is printed.
+By default this returns the calendar representation (2, 1756, 1, 27). 
+If `string` is true the string "CE-1756-01-27" is returned.
+If `show` is 'true' the line "EN#0641029 -> CE-1756-01-27" 
+is printed.
 
-If an error occurs ("00", 0, 0, 0) (representing the 
-invalid date) is returned.
+If an error occurs (0, 0, 0, 0) (representing the invalid date) is returned.
 """
-function DateFromDayNumber(calendar::String, en::DPart, show=false)
+function DateFromDayNumber(calendar::DPart, enum::DPart, string=false, show=false)
     # Use a symbol for the calendar name.
-    dn = EuroNumToFixNum(en)
-    cal = CName(calendar)
-    if cal == CE
+    dn = EuroNumToFixNum(enum)
+
+    if calendar == CE
         date = DateGregorian(dn)
-    elseif cal == JD
+    elseif calendar == JD
         date = DateJulian(dn)
-    elseif cal == EC
+    elseif calendar == EC
         date = DateEuropean(dn)
-    elseif cal == AM
+    elseif calendar == AM
         date = DateHebrew(dn)
-    elseif cal == AH
+    elseif calendar == AH
         date = DateIslamic(dn) 
-    elseif cal == ID
+    elseif calendar == ID
         date = DateIso(dn) 
-    elseif cal == DN
-        date = (DN, 0, 0, EuroNumToFixNum(en)) 
-    elseif cal == EN 
-        date = (EN, 0, 0, en) 
-    elseif cal == JN 
-        date = (JN, 0, 0, EuroNumToJulianNum(en))
+    elseif calendar == DN
+        date = (DN, 0, 0, EuroNumToFixNum(enum)) 
+    elseif calendar == EN 
+        date = (EN, 0, 0, enum) 
+    elseif calendar == JN 
+        date = (JN, 0, 0, EuroNumToJulianNum(enum))
     else
         @warn("Unknown calendar: $calendar")
         return InvalidDate
     end
 
     if show 
-        println(CDateStr(EN, en), " -> ", CDateStr(date))
+        println(CDateStr(EN, enum), " -> ", CDateStr(date))
     end
-    return date 
+
+    return string ? CDateStr(date) : date
 end
+
+DateFromDayNumber(calendar::String, enum::DPart, string=false, show=false) =
+DateFromDayNumber(StringToSymbol(calendar, true), enum, string, show)
 
 """
 
 ```julia
-ConvertDate(date::CDate, to::String, show::Bool)
+ConvertDate(date::CDate, calendar::DPart, string::Bool, show::Bool)
 ```
 
-Convert the given date to a date in the calendar `to`.
-`to` is the name of a calendar where admissible names
-are listed in the CDate docstring. If the optional 
-parameter `show` is set to 'true', both dates are printed. 
-`show` is 'false' by default.
+Convert the given date to a date in the calendar `calendar`.
+Admissible names for the calendar are listed in the CDate docstring. 
 
-```julia
-julia> ConvertDate(("Gregorian", 1756, 1, 27), "Hebrew") 
-```
+If the optional parameter `string` is `true` the function returns the date 
+as a string, otherwise as an integer tuple. `string` is `false` by default.
 
-Alternatively you can also write
+If the optional parameter `show` is set to 'true', both dates 
+are printed. `show` is 'false' by default.
 
+For example:
 ```julia
 julia> ConvertDate(CE, 1756, 1, 27, AM) 
 ```
 
-This converts the Gregorian date ("CE", 1756, 1, 27) to the 
-Hebrew date ("AM", 5516, 11, 25). If `show` is 'true' the 
-following line is printed:
+Alternatively this can also be written as
+
+```julia
+julia> ConvertDate("Gregorian", 1756, 1, 27, "Hebrew") 
+```
+
+This converts the Gregorian date (1756, 1, 27) to the 
+Hebrew date (5516, 11, 25). By default the calendar
+representation (4, 5516, 11, 25) is returned.
+
+If `string` is true the string "AM-5516-11-25" is returned.
+If `show` is 'true' the following line is printed:
 
 ```julia
     "CE-1756-01-27 -> AM-5516-11-25"
 ```
 
-If an error occurs ("00", 0, 0, 0) (representing the invalid 
-date) is returned.
+If an error occurs (0, 0, 0, 0) (representing the invalid date) is returned.
 """
-function ConvertDate(date::CDate, to::String, show=false)
-    cal, year, month, day = date
-    inc = CName(cal) 
-    toc = CName(to)
-    if inc == XX || toc == XX
-        @warn("Unknown calendar: $cal")
+function ConvertDate(date::CDate, calto::DPart, string=false, show=false)
+    ! isValidDate(date) && return InvalidDate
+
+    # TODO There should be a general validation method in Utils.
+    if StringToSymbol(SymbolToString[calto]) != calto
+        @warn("Unknown calendar: $calto")
         return InvalidDate
     end 
-    d = (inc, year, month, day)
-    ! isValidDate(d) && return InvalidDate
-    dn = DayNumberFromDate(d)
-    rdate = DateFromDayNumber(toc, dn)  
+    
+    enum = DayNumberFromDate(date)
+    rdate = DateFromDayNumber(calto, enum)  
     show && println(CDateStr(date), " -> ", CDateStr(rdate))
 
-    return rdate 
+    return string ? CDateStr(rdate) : rdate
 end
 
-ConvertDate(calendar::String, year::Int, month::Int, day::Int, to::String, 
-show=false) = ConvertDate((calendar, year, month, day), to, show)
+ConvertDate(calendar::DPart, year::DPart, month::DPart, day::DPart, to::DPart, 
+string=false, show=false) = ConvertDate((calendar, year, month, day), to, string, show)
+
+ConvertDate(calendar::String, year::DPart, month::DPart, day::DPart, to::String, 
+string=false, show=false) = ConvertDate((StringToSymbol(calendar), year, month, day), 
+StringToSymbol(to), string, show)
 
 ConvertDate(calendar::String, d::Tuple{DPart, DPart, DPart}, to::String, 
-show=false) = ConvertDate((calendar, d[1], d[2], d[3]), to, show)
+string=false, show=false) = ConvertDate((StringToSymbol(calendar), d[1], d[2], d[3]), 
+StringToSymbol(to), string, show)
+
+ConvertDate(date::CDate, calto::String, string=false, show=false) =
+ConvertDate(date, StringToSymbol(calto), string, show)
 
 
 """
@@ -229,7 +265,7 @@ is set to 'true', the date table is printed. `show` is
 'false' by default.
 
 ```julia
-julia> CalendarDates(("Gregorian", 1756, 1, 27),  true) 
+julia> CalendarDates("Gregorian", 1756, 1, 27, true) 
 ```
 
 Alternatively you can also write
@@ -268,10 +304,13 @@ function CalendarDates(date::CDate, show=false)::DateTable
 end
 
 CalendarDates(calendar::String, year::DPart, month::DPart, day::DPart, 
-show=false) = CalendarDates((calendar, year, month, day), show)
+show=false) = CalendarDates((StringToSymbol(calendar), year, month, day), show)
 
 CalendarDates(calendar::String, d::Tuple{DPart, DPart, DPart}, 
-show=false) = CalendarDates((calendar, d[1], d[2], d[3]), show) 
+show=false) = CalendarDates((StringToSymbol(calendar), d[1], d[2], d[3]), show) 
+
+CalendarDates(cal::DPart, year::DPart, month::DPart, day::DPart, 
+show=false) = CalendarDates((cal, year, month, day), show) 
 
 
 """
@@ -282,8 +321,9 @@ isValidDate(date::CDate, warn=true)::Bool
 
 Query if the given `date`` is a valid calendar date.
 
+For example:
 ```julia
-julia> isValidDate(("Gregorian", 1756, 1, 27)) 
+julia> isValidDate("Gregorian", 1756, 1, 27) 
 ```
 
 Alternatively you can also write
@@ -301,7 +341,8 @@ julia> isValidDate(JD, 1900, 2, 29)
 ````
 """
 function isValidDate(d::CDate, warn=true)  
-    calendar = CName(d[1])
+    calendar = d[1]
+
     if calendar == CE
         val = isValidDateGregorian(d, warn)
     elseif calendar == JD
@@ -326,10 +367,13 @@ function isValidDate(d::CDate, warn=true)
 end
 
 isValidDate(calendar::String, year::DPart, month::DPart, 
+day::DPart) = isValidDate((StringToSymbol(calendar), year, month, day))
+
+isValidDate(calendar::DPart, year::DPart, month::DPart, 
 day::DPart) = isValidDate((calendar, year, month, day))
 
 isValidDate(calendar::String, d::Tuple{DPart, DPart, DPart}) = 
-isValidDate((calendar, d[1], d[2], d[3]))
+isValidDate((StringToSymbol(calendar), d[1], d[2], d[3]))
 
 """
 
@@ -368,18 +412,18 @@ function DayOfYear(date::CDate)
     end
 
     calendar, year, month, day = date
-    cname = CName(calendar)
-    if cname == CE
+    # cname = StringToSymbol(calendar)
+    if calendar == CE
         val = DayOfYearGregorian(year, month, day)
-    elseif cname == JD
+    elseif calendar == JD
         val = DayOfYearJulian(year, month, day)
-    elseif cname == EC
+    elseif calendar == EC
         val = DayOfYearEuropean(year, month, day)
-    elseif cname == AM
+    elseif calendar == AM
         val = DayOfYearHebrew(year, month, day)
-    elseif cname == AH
+    elseif calendar == AH
         val = DayOfYearIslamic(year, month, day)
-    elseif cname == ID
+    elseif calendar == ID
         val = DayOfYearIso(year, month, day)
     else
         @warn("Unknown calendar: $calendar")
@@ -389,9 +433,12 @@ function DayOfYear(date::CDate)
 end
 
 DayOfYear(calendar::String, year::DPart, month::DPart, day::DPart) = 
-DayOfYear((calendar, year, month, day)) 
+DayOfYear((StringToSymbol(calendar), year, month, day)) 
 
 DayOfYear(calendar::String, d::Tuple{DPart, DPart, DPart}) = 
+DayOfYear((StringToSymbol(calendar), d[1], d[2], d[3])) 
+
+DayOfYear(calendar::DPart, d::Tuple{DPart, DPart, DPart}) = 
 DayOfYear((calendar, d[1], d[2], d[3])) 
 
 
@@ -459,7 +506,7 @@ julia> ConvertOrdinalDate(719000, EN, JN)
 ```
 The Julian day number of the first crewed moon landing is 2440422.
 """
-function ConvertOrdinalDate(num::DPart, from::String, to::String)
+function ConvertOrdinalDate(num::DPart, from::DPart, to::DPart)
 
     if from == EN && to == JN
         re = EuroNumToJulianNum(num)
@@ -480,10 +527,13 @@ function ConvertOrdinalDate(num::DPart, from::String, to::String)
     return re
 end
 
+ConvertOrdinalDate(num::DPart, from::String, to::String) =
+ConvertOrdinalDate(num, StringToSymbol(from), StringToSymbol(to)) 
+
 
 """
 ```julia
-ProfileYearAsEuropean(calendar::String, year::DPart, show=false)
+ProfileYearAsEuropean(calendar::DPart, year::DPart, show=false)
 ```
 Return a 4-tuple (YearStart, YearEnd, MonthsInYear, DaysInYear) as represented in the European calendar. 
 
@@ -508,45 +558,44 @@ AH-1444 -> [EC-2022-07-30, EC-2023-07-18], 12, 354
 ID-2022 -> [EC-2022-01-03, EC-2023-01-01], 52, 364
 ```
 """
-function ProfileYearAsEuropean(calendar::String, year::DPart, show=false)
+function ProfileYearAsEuropean(calendar::DPart, year::DPart, show=false)
 
-    cname = CName(calendar)
-    if cname == CE
+    if calendar == CE
         p = (
             DateFromDayNumber(EC, YearStartGregorian(year) + 2),
             DateFromDayNumber(EC, YearEndGregorian(year) + 2),
             MonthsInYearGregorian(year), 
             DaysInYearGregorian(year)
         ) 
-    elseif cname == JD
+    elseif calendar == JD
         p = (
             DateFromDayNumber(EC, YearStartJulian(year) + 2),
             DateFromDayNumber(EC, YearEndJulian(year) + 2),
             MonthsInYearJulian(year), 
             DaysInYearJulian(year)
         ) 
-    elseif cname == EC
+    elseif calendar == EC
         p = (
             DateFromDayNumber(EC, YearStartEuropean(year) + 2),
             DateFromDayNumber(EC, YearEndEuropean(year) + 2),
             MonthsInYearEuropean(year), 
             DaysInYearEuropean(year)
         ) 
-    elseif cname == AM
+    elseif calendar == AM
         p = (
             DateFromDayNumber(EC, YearStartHebrew(year) + 2),
             DateFromDayNumber(EC, YearEndHebrew(year) + 2),
             MonthsInYearHebrew(year), 
             DaysInYearHebrew(year)
         ) 
-    elseif cname == AH
+    elseif calendar == AH
         p = (
             DateFromDayNumber(EC, YearStartIslamic(year) + 2),
             DateFromDayNumber(EC, YearEndIslamic(year) + 2),
             MonthsInYearIslamic(year), 
             DaysInYearIslamic(year)
         ) 
-    elseif cname == ID
+    elseif calendar == ID
         p = (
             DateFromDayNumber(EC, YearStartIso(year) + 2),
             DateFromDayNumber(EC, YearEndIso(year) + 2),
@@ -558,10 +607,14 @@ function ProfileYearAsEuropean(calendar::String, year::DPart, show=false)
         return (InvalidDate, InvalidDate, 0, 0)
     end
     if show
-        println(cname, "-", year, " -> [", CDateStr(p[1]), 
-               ", ", CDateStr(p[2]), "], ", p[3], ", ", p[4])
+        println(SymbolToString[calendar], "-", year, " -> [", 
+            CDateStr(p[1]), ", ", CDateStr(p[2]), "], ", p[3], ", ", p[4])
     end
+
     return p
 end
+
+ProfileYearAsEuropean(calendar::String, year::DPart, show=false) =
+ProfileYearAsEuropean(StringToSymbol(calendar), year, show)
 
 end # module

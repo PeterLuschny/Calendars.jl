@@ -85,7 +85,7 @@ function IDate()
                 return
             end
             println()
-            date = (cs, y, m, d)
+            date = (StringToSymbol(cs), y, m, d)
 
         elseif ct in ["TV", "SC", "LV", "SR", "FL", "SB"]
             ct == "TV" && (date = (EC, 843,8,10))  # Treaty of Verdun
@@ -99,6 +99,7 @@ function IDate()
             println(noi)
             @goto start
         end
+        
         if ! isValidDate(date) 
            println(nod)
         else

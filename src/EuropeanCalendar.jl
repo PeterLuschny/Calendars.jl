@@ -7,7 +7,7 @@
 # Is the date a valid European date?
 function isValidDateEuropean(cd::CDate, warn=true)
     cal, year, month, day = cd
-    if CName(cal) != EC 
+    if cal != EC 
         warn && @warn(Warning(cd))
         return false
     end

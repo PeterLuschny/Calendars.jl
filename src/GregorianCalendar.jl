@@ -31,7 +31,8 @@ end
 # Is the date a valid Gregorian date?
 function isValidDateGregorian(cd::CDate, warn=true)
     cal, year, month, day = cd
-    val = (CName(cal) == CE 
+    # val = (StringToSymbol(cal) == CE 
+    val = ( cal == CE 
         && (ValidYearsGregorian[1] <= year <= ValidYearsGregorian[2]) 
         && (1 <= month && month <= 12) 
         && (1 <= day <= LastDayOfMonthGregorian(year, month)))

@@ -36,7 +36,7 @@ end
 # Is the date a valid Islamic date?
 function isValidDateIslamic(cd::CDate, warn=true)
     cal, year, month, day = cd
-    val = (CName(cal) == AH 
+    val = ( cal == AH 
         && (ValidYearsIslamic[1] <= year && year <= ValidYearsIslamic[2]) 
         && (1 <= month && month <= LastMonthOfYearIslamic(year))
         && (1 <= day && day <= LastDayOfMonthIslamic(year, month)))

@@ -35,7 +35,7 @@ end
 # Is the date a valid Iso date?
 function isValidDateIso(cd::CDate, warn=true)
     cal, year, week, day = cd
-    val = ( CName(cal) == ID 
+    val = ( cal == ID 
         && (ValidYearsIso[1] <= year && year <= ValidYearsIso[2]) 
         && (1 <= week && week <= LastWeekOfYearIso(year)) 
         && (1 <= day && day <= 7) 

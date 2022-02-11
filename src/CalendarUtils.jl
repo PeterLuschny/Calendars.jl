@@ -41,20 +41,21 @@ const december  = 12
 const MonthLength = (31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
 
 
-# Calendar specifiers, symbols for calendar names
-CE = :"CE"  # Common Era
-EC = :"EC"  # European Calendar
-JD = :"JD"  # Julian (Roman Calendar)
-AM = :"AM"  # Anno Mundi
-AH = :"AH"  # Anno Hegirae
-ID = :"ID"  # ISO Date
-EN = :"EN"  # Euro Number
-JN = :"JN"  # Julian Number
-DN = :"DN"  # FixDay Number
-XX = :"00"  # Unknown 
+# Calendar specifiers, Int64-enumeration of calendar names
+XX = :0  # Unknown 
+EC = :1  # European Calendar
+CE = :2  # Common Era
+JD = :3  # Julian (Roman Calendar)
+AM = :4  # Anno Mundi
+AH = :5  # Anno Hegirae
+ID = :6  # ISO Date
+EN = :7  # Euro Number
+JN = :8  # Julian Number
+DN = :9  # FixDay Number
+
 
 # Map calendar specifiers to calendar names
-CalendarNames = Dict{String, String}(
+CalendarNames = Dict{Int64, String}(
     EC => "European ",
     CE => "Common   ",
     JD => "Julian   ",
@@ -67,9 +68,23 @@ CalendarNames = Dict{String, String}(
     XX => "INVALID  "
 )
 
+# Map calendar specifiers to calendar names
+SymbolToString = Dict{Int64, String}(
+    EC => "EC",
+    CE => "CE",
+    JD => "JD",
+    AM => "AM",
+    AH => "AH",
+    ID => "ID",
+    EN => "EN",
+    JN => "JN",
+    DN => "DN",
+    XX => "00"
+)
+
 # Return symbolic name representing a calendar. 
-# CName = CalendarName 
-function CName(calendar::String, warn=false) 
+# StringToSymbol = CalendarName 
+function StringToSymbol(calendar::String, warn=false)::Int64 
     (calendar == "European"   || calendar == "EC")  && return EC
     (calendar == "Common"     || calendar == "CE")  && return CE
     (calendar == "CurrentEpoch")                    && return CE
@@ -90,7 +105,7 @@ function CName(calendar::String, warn=false)
     return XX
 end
 
-const DPart = Int 
+const DPart = Int64 
 const InvalidDayNumber = DPart(0)
 const InvalidDayOfYear = DPart(0)
 const InvalidDuration = DPart(-1)
@@ -101,7 +116,7 @@ const JDN_DN  = DPart(1721424)
 const DN_MJDN = DPart(678576)
 
 # Days considered here start at midnight 00:00.
-# (Apply 'floor' to the /real/ Julian day number.)
+# (Apply 'floor' to the real-valued Julian day number.)
 
 # Convert a fix day number to a Julian day number.
 # If mod = true return the modified Julian day number.
@@ -159,13 +174,29 @@ const GregorysBreak = DPart(577736)
 A CDate (short for Calender Date) is defined as 
 
 ```julia
-CDate = Tuple{String, DPart, DPart, DPart}
+CDate = Tuple{DPart, DPart, DPart, DPart}
 ```
 
-    A tuple `date` of type `CDate` is unpacked by convention as (calendar, year, month, day) = 
-    date, where `calendar` is "Common", "Julian", "European", Hebrew", "Islamic", or "IsoDate". 
-    Alternatively the acronyms CE, EC, JD, AM, AH, and ID can be used. 
-    `DPart` (date part) is a typename for Int.
+    A tuple `date` of type `CDate` is unpacked by convention as
+    (calendar, year, month, day), where `calendar` is one of
+
+```julia 
+"European" 
+"Common" 
+"Julian" 
+"Hebrew" 
+"Islamic" 
+"IsoDate"
+``` 
+
+    Alternatively the acronyms 
+
+```julia
+EC, CE, JD, AM, AH, and ID 
+```
+
+    can be used. "Common" or CE denotes the proleptic Gregorian calendar
+    and `DPart` (date part) is a typename for Int64.
 
 ```julia
 CDateStr(cd::CDate) 
@@ -186,7 +217,7 @@ Examples for CDates and their string representation are:
 ("IsoDate",  2022,  3,  3)  -> "ID-2022-03-03"
 ``` 
 """
-const CDate = Tuple{String, DPart, DPart, DPart}
+const CDate = Tuple{DPart, DPart, DPart, DPart}
 const DateTable = NTuple{7, CDate}
 
 # TODO Write a 'get-' interface for the DateTable, like:
@@ -212,25 +243,34 @@ DateStr(d::CDate) = DateStr(d[2], d[3], d[4])
 
 function CDateStr(cd::CDate)
     cal, year, month, day = cd
-    cal = CName(cal)
     if cal == DN || cal == JN || cal == EN
         s = lpad(day, 7, "0")
-        return "$cal#$s"
+        return SymbolToString[cal]*"#$s"
     end
         s = DateStr(year, month, day)
-    return "$cal-$s"
+    return SymbolToString[cal]*"-$s"
 end
 
-CDateStr(cal::String, d::Tuple{DPart, DPart, DPart}) = CDateStr((cal, d[1], d[2], d[3]))
+CDateStr(cal::String, d::Tuple{DPart, DPart, DPart}) = 
+CDateStr((StringToSymbol(cal), d[1], d[2], d[3]))
 
-CDateStr(cal::String, day::DPart) = CDateStr((cal, DPart(0), DPart(0), day))
+CDateStr(cal::DPart, d::Tuple{DPart, DPart, DPart}) = 
+CDateStr((cal, d[1], d[2], d[3]))
 
-function CDateStr(cal::String, year::DPart, month::DPart) 
+CDateStr(cal::String, day::DPart) = 
+CDateStr((StringToSymbol(cal), DPart(0), DPart(0), day))
+
+CDateStr(cal::DPart, day::DPart) = 
+CDateStr((cal, DPart(0), DPart(0), day))
+
+function CDateStr(cal::DPart, year::DPart, month::DPart) 
     y = lpad(year,  4, "0")
     m = lpad(month, 2, "0")
-    cal = CName(cal)
-    return "$cal-$y-$m"
+    #cal = StringToSymbol(cal)
+    return SymbolToString[cal] * "-$y-$m"
 end
+CDateStr(cal::String, year::DPart, month::DPart) =
+CDateStr(StringToSymbol(cal), year, month) 
 
 """
 
@@ -240,7 +280,10 @@ Print a `DateTable` (which normally is build by `CalendarDates`) to `io`.
 """
 function PrintDateTable(D::DateTable, io=stdout)
     for d in D
-        println(io, CalendarNames[d[1]], " ", CDateStr(d))
+        if d[1] != XX  # Don't print invalid dates
+            cname = CalendarNames[d[1]]
+            println(io, cname, " ", CDateStr(d))
+        end
     end
 end
 
@@ -252,6 +295,7 @@ PrintDateLine(date::CDate, io=stdout)
 ```
 
 Given a `date` print a line with all representations of this date to `io`. The parts of the date can also be given separately.
+For example:
 
 ```julia
 julia> PrintDateLine(EC, 2022, 2, 2)
@@ -285,6 +329,7 @@ PrintEuropeanMonth(year::DPart, month::DPart, io=stdout)
 
 Print a calendar for the given European month as a markdown table to `io`.
 
+For example:
 ```julia
 julia> PrintEuropeanMonth(2022, 2)
 ```
@@ -317,6 +362,7 @@ SaveEuropeanMonth(year::DPart, month::DPart, dirname:String)
 Save the calendar of the given European month as a markdown table to a file in the directory
 `dirname`. If no directory is given the file is written to the execution directory.
 
+For example:
 ```julia
 julia> SaveEuropeanMonth(2022, 2)
 ```
@@ -351,6 +397,7 @@ PrintIsoWeek(year::DPart, week::DPart, io=stdout)
 
 Print a calendar for the given Iso week as a markdown table to `io`.
 
+For example:
 ```julia
 julia> PrintIsoWeek(2022, 2)
 ```

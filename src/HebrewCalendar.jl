@@ -59,7 +59,7 @@ end
 # Is the date a valid Hebrew date?
 function isValidDateHebrew(cd::CDate, warn=true)
     cal, year, month, day = cd
-    val = (CName(cal) == AM 
+    val = ( cal == AM 
         && (ValidYearsHebrew[1] <= year && year <= ValidYearsHebrew[2]) 
         && (1 <= month && month <= LastMonthOfYearHebrew(year)) 
         && (1 <= day && day <= LastDayOfMonthHebrew(year, month))) 

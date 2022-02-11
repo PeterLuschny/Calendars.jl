@@ -17,10 +17,10 @@ weeklen   = 7
 # has the acronym "CE" (Common Era).
 function TestDateGregorian()
     SomeDateGregorian = [ 
-        ("Gregorian",    1, 1,  1)::CDate, 
-        ("Gregorian", 1756, 1, 27)::CDate, 
-        (CE,          2022, 1,  1)::CDate, 
-        (CE,          2022, 9, 26)::CDate 
+        (CE,    1, 1,  1)::CDate, 
+        (CE, 1756, 1, 27)::CDate, 
+        (CE, 2022, 1,  1)::CDate, 
+        (CE, 2022, 9, 26)::CDate 
         ] 
 
     @testset "DateGregorian" begin
@@ -46,10 +46,10 @@ CE-2022-09-26 -> EN#0738426 -> CE-2022-09-26
 # has the acronym "JD" (Roman Calendar).
 function TestDateJulian()
     SomeDateJulian = [ 
-        ("Julian",    1,  1,  3)::CDate,
-        ("Julian", 1756,  1, 16)::CDate,
-        (JD,       2021, 12, 19)::CDate,
-        (JD,       2022,  9, 13)::CDate
+        (JD,    1,  1,  3)::CDate,
+        (JD, 1756,  1, 16)::CDate,
+        (JD, 2021, 12, 19)::CDate,
+        (JD, 2022,  9, 13)::CDate
         ] 
 
     @testset "DateJulian" begin
@@ -72,11 +72,11 @@ JD-2022-09-13 -> EN#0738426 -> JD-2022-09-13
 # See the comments above!
 function TestDateHebrew()
     SomeDateHebrew  = [ 
-        ("Hebrew", 5516, 11, 25)::CDate, 
-        ("Hebrew", 5782,  7,  1)::CDate,
-        ("Hebrew", 5782, 10, 27)::CDate,
-        (AM,       5782,  6, 29)::CDate,
-        (AM,       5783,  7,  1)::CDate
+        (AM, 5516, 11, 25)::CDate, 
+        (AM, 5782,  7,  1)::CDate,
+        (AM, 5782, 10, 27)::CDate,
+        (AM, 5782,  6, 29)::CDate,
+        (AM, 5783,  7,  1)::CDate
         ]
 
     @testset "DateHebrew" begin
@@ -100,10 +100,10 @@ AM-5783-07-01 -> EN#0738426 -> AM-5783-07-01
 # See the comments above!
 function TestDateIslamic()
     SomeDateIslamic = [ 
-        ("Islamic",    1, 1,  1)::CDate,
-        ("Islamic", 1756, 1, 27)::CDate,
-        (AH,        2022, 1,  1)::CDate,
-        (AH,        2022, 9, 26)::CDate 
+        (AH,    1, 1,  1)::CDate,
+        (AH, 1756, 1, 27)::CDate,
+        (AH, 2022, 1,  1)::CDate,
+        (AH, 2022, 9, 26)::CDate 
         ] 
 
     @testset "DateIslamic" begin
@@ -126,10 +126,10 @@ AH-2022-09-26 -> EN#0943453 -> AH-2022-09-26
 # See the comments above!
 function TestDateIso()
     SomeDateIso = [ 
-        ("IsoDate",    1,  1, 1)::CDate,
-        ("IsoDate", 1756,  5, 2)::CDate,
-        (ID,        2021, 52, 6)::CDate,
-        (ID,        2022, 39, 1)::CDate 
+        (ID,    1,  1, 1)::CDate,
+        (ID, 1756,  5, 2)::CDate,
+        (ID, 2021, 52, 6)::CDate,
+        (ID, 2022, 39, 1)::CDate 
         ] 
 
     @testset "DateIso" begin
@@ -152,43 +152,43 @@ ID-2022-39-01 -> EN#0738426 -> ID-2022-39-01
 function TestConversions()
     
     @testset "Conversions" begin
-    @test (AM, 9543, 7,24) == ConvertDate(("Gregorian", 5782, 10, 28), "Hebrew") 
-    @test (AH, 5319, 8,25) == ConvertDate(("Gregorian", 5782, 10, 28), "Islamic") 
-    @test (AM, 5516,11,25) == ConvertDate(("Gregorian", 1756,  1, 27), "Hebrew") 
-    @test (AH,    1, 1, 1) == ConvertDate(("Gregorian", 622,   7, 19), "Islamic") 
+    @test (AM, 9543, 7,24) == ConvertDate("Gregorian", 5782, 10, 28, "Hebrew") 
+    @test (AH, 5319, 8,25) == ConvertDate("Gregorian", 5782, 10, 28, "Islamic") 
+    @test (AM, 5516,11,25) == ConvertDate("Gregorian", 1756,  1, 27, "Hebrew") 
+    @test (AH,    1, 1, 1) == ConvertDate("Gregorian", 622,   7, 19, "Islamic") 
 
     println("=")
-    @test (AH, 1443, 5,27) == ConvertDate(("Hebrew", 5782, 10, 28), "Islamic") 
-    @test (CE, 5782,10,28) == ConvertDate(("Hebrew", 9543,  7, 24), "Gregorian") 
-    @test (AH, 4501, 8, 3) == ConvertDate(("Hebrew", 8749, 11, 03), "Islamic") 
+    @test (AH, 1443, 5,27) == ConvertDate("Hebrew", 5782, 10, 28, "Islamic") 
+    @test (CE, 5782,10,28) == ConvertDate("Hebrew", 9543,  7, 24, "Gregorian") 
+    @test (AH, 4501, 8, 3) == ConvertDate("Hebrew", 8749, 11, 03, "Islamic") 
 
     println("==")
-    @test (AM, 7025,11,23) == ConvertDate(("Islamic", 2724, 08, 23), "Hebrew") 
-    @test (CE, 7025,11,29) == ConvertDate(("Islamic", 6600, 11, 21), "Gregorian") 
-    @test (AM, 9992,12,27) == ConvertDate(("Islamic", 5782, 10, 28), "Hebrew") 
+    @test (AM, 7025,11,23) == ConvertDate("Islamic", 2724, 08, 23, "Hebrew") 
+    @test (CE, 7025,11,29) == ConvertDate("Islamic", 6600, 11, 21, "Gregorian") 
+    @test (AM, 9992,12,27) == ConvertDate("Islamic", 5782, 10, 28, "Hebrew") 
 
-    @test (AM, 9543, 7,24) == ConvertDate((CE, 5782, 10, 28), AM) 
-    @test (AH, 5319, 8,25) == ConvertDate((CE, 5782, 10, 28), AH) 
-    @test (AM, 5516,11,25) == ConvertDate((CE, 1756,  1, 27), AM) 
-    @test (AH,    1, 1, 1) == ConvertDate((CE, 622,   7, 19), AH) 
+    @test (AM, 9543, 7,24) == ConvertDate(CE, 5782, 10, 28, AM) 
+    @test (AH, 5319, 8,25) == ConvertDate(CE, 5782, 10, 28, AH) 
+    @test (AM, 5516,11,25) == ConvertDate(CE, 1756,  1, 27, AM) 
+    @test (AH,    1, 1, 1) == ConvertDate(CE, 622,   7, 19, AH) 
 
     println("===")
-    @test (AH, 1443, 5,27) == ConvertDate((AM, 5782, 10, 28), AH) 
-    @test (CE, 5782,10,28) == ConvertDate((AM, 9543,  7, 24), CE) 
-    @test (AH, 4501, 8, 3) == ConvertDate((AM, 8749, 11, 03), AH) 
+    @test (AH, 1443, 5,27) == ConvertDate(AM, 5782, 10, 28, AH) 
+    @test (CE, 5782,10,28) == ConvertDate(AM, 9543,  7, 24, CE) 
+    @test (AH, 4501, 8, 3) == ConvertDate(AM, 8749, 11, 03, AH) 
 
     println("====")
-    @test (AM, 7025,11,23) == ConvertDate((AH, 2724, 08, 23), AM) 
-    @test (CE, 7025,11,29) == ConvertDate((AH, 6600, 11, 21), CE) 
-    @test (AM, 9992,12,27) == ConvertDate((AH, 5782, 10, 28), AM) 
+    @test (AM, 7025,11,23) == ConvertDate(AH, 2724, 08, 23, AM) 
+    @test (CE, 7025,11,29) == ConvertDate(AH, 6600, 11, 21, CE) 
+    @test (AM, 9992,12,27) == ConvertDate(AH, 5782, 10, 28, AM) 
 
     end
 
     println("\nThe following 3 conversions test warnings, so worry only if you do not see them.\n")
     println("This Hebrew date is before the Julian epoch.")
-    ConvertDate(("Hebrew", 2022,  1,  1), "Gregorian") |> println
-    ConvertDate(("Hebrew", 5782, 10, 28), "Georgian")  |> println
-    ConvertDate(("Homebrew", 2022, 1, 1), "Gregorian") |> println
+    ConvertDate("Hebrew", 2022,  1,  1, "Gregorian") |> println
+    ConvertDate("Hebrew", 5782, 10, 28, "Georgian")  |> println
+    ConvertDate("Homebrew", 2022, 1, 1, "Gregorian") |> println
 end
 
 #=
@@ -507,7 +507,7 @@ function TestJulianDayNumbers1()
     @testset "JulianDayNumbers1" begin
     for t in test
         println()
-        edn  = DayNumberFromDate(t[1], true)
+        edn  = DayNumberFromDate(t[1])
         jdn  = ConvertOrdinalDate(edn, EN, JN)
         @test jdn  == t[3] 
         println(edn, " ", jdn, " ")
@@ -720,3 +720,4 @@ function TestAll()
 end
 
 TestAll()
+

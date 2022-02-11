@@ -29,7 +29,7 @@ end
 # Is the date a valid Julian date?
 function isValidDateJulian(cd::CDate, warn=true)
     cal, year, month, day = cd
-    val = (CName(cal) == JD 
+    val = ( cal == JD 
         && (ValidYearsJulian[1] <= year && year <= ValidYearsJulian[2]) 
         && (1 <= month && month <= 12) 
         && (1 <= day && day <= LastDayOfMonthJulian(year, month))) 
