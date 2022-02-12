@@ -131,7 +131,7 @@ The first four days of the calendar are
 | CE-0001-01-01 | EC-0001-01-03 | JD-0001-01-03 | AM-3761-10-18 | 00-0000-00-00 | ID-0001-01-01 |
 | CE-0001-01-02 | EC-0001-01-04 | JD-0001-01-04 | AM-3761-10-19 | 00-0000-00-00 | ID-0001-01-02 |
 
- We take advantage of the fact that there is no year zero in the Julian calendar and use it for uniform error handling: the tuple ("00", 0, 0, 0) represents the **invalid date** and is written as the string "00-0000-00-00". In case of invalid input or other errors, this representation is returned. The Islamic dates in the table above show this format because we do not backward extrapolate Islamic dates before JD-0622-07-16 (the start of the Islamic calendar).
+ We take advantage of the fact that there is no year zero in the Julian calendar and use it for uniform error handling: the tuple (0, 0, 0, 0) represents the **invalid date** and is written as the string "00-0000-00-00". In case of invalid input or other errors, this representation is returned. The Islamic dates in the table above show this format because we do not backward extrapolate Islamic dates before JD-0622-07-16 (the start of the Islamic calendar).
 
 The last four days of the calendar are
 

@@ -76,24 +76,13 @@ end
 DayNumberIslamic(d::CDate) = DayNumberIslamic(d[2], d[3], d[4])
 
 # Computes the Islamic date from the day number.
-function DateIslamic(dn::DPart)
-    ! isValidDateIslamic(dn, false) && return InvalidDate
+function DateIslamic(date)
 
     # Search forward year by year from approximate year.
-    year = div(dn - EpochIslamic, 355)
-    while dn >= DayNumberIslamic(year + 1, 1, 1)
-        year += 1
-    end
-
-    # Search forward month by month from Muharram.
-    month = 1
-    while dn > DayNumberIslamic(year, month,
-                  LastDayOfMonthIslamic(year, month))
-        month += 1
-    end
-
-    day = dn - DayNumberIslamic(year, month, 1) + 1
-
+    year = div(30 * (date - EpochIslamic) + 10646, 10631)
+    pdays = date - DayNumberIslamic(year, 1, 1)
+    month = div(11 * pdays + 330, 325)
+    day = date - DayNumberIslamic(year, month, 1) + 1
     return (AH, year, month, day)::CDate
 end
 

@@ -493,16 +493,17 @@ EC-1906-04-28 -> EN#0695906
 2417328 695906
 =#
 
+# Checked with https://www.arc.id.au/Calendar.html
 function TestJulianDayNumbers1()
   
     test = [  #  EC,       EuroNum, JulianNum, ModJulianNum
-    ((EC,800,12,25)::CDate, 292194, 2013616, -386384),  # Coronation of Carolus Magnus
-    ((EC, 843,8,10)::CDate, 307762, 2029184, -370816),  # Treaty of Verdun
-    ((EC,1204,4,12)::CDate, 439498, 2160920, -239080),  # Sack of Constantinople
-    ((EC,1452,4,15)::CDate, 530083, 2251505, -148495),  # Birth of Leonardo da Vinci
-    ((EC,1666,9, 2)::CDate, 608376, 2329798, -70202),   # Great Fire of London
-    ((EC,1789,7,14)::CDate, 653251, 2374673, -25327),   # The Storming of the Bastille
-    ((EC,1906,4,28)::CDate, 695906, 2417328, 17328)]    # Birth of Kurt Gödel
+    ((EC,800,12,25)::CDate, 292194, 2013617, -386384),  # Coronation of Carolus Magnus
+    ((EC, 843,8,10)::CDate, 307762, 2029185, -370816),  # Treaty of Verdun
+    ((EC,1204,4,12)::CDate, 439498, 2160921, -239080),  # Sack of Constantinople
+    ((EC,1452,4,15)::CDate, 530083, 2251506, -148495),  # Birth of Leonardo da Vinci
+    ((EC,1666,9, 2)::CDate, 608376, 2329799, -70202),   # Great Fire of London
+    ((EC,1789,7,14)::CDate, 653251, 2374674, -25327),   # The Storming of the Bastille
+    ((EC,1906,4,28)::CDate, 695906, 2417329, 17328)]    # Birth of Kurt Gödel
 
     @testset "JulianDayNumbers1" begin
     for t in test
@@ -516,10 +517,11 @@ function TestJulianDayNumbers1()
         println(jdn, " ", edn)
     end
 
-    en = ConvertOrdinalDate(2440422, JN, EN) 
+    en = ConvertOrdinalDate(2440423, JN, EN) 
     jn = ConvertOrdinalDate(719000,  EN, JN) 
     @test en  == 719000
-    @test jn  == 2440422
+    @test jn  == 2440423
+    println(en, " ", jn)
     end
 end
 
@@ -625,7 +627,7 @@ RDN = [ 25469, 49217, 171307, 210155, 253427, 369740, 400085, 434355, 452605, 47
         local jn = ConvertOrdinalDate(rdn + 2, EN, JN)
         CEdate = DateFromDayNumber(CE, rdn + 2)
         IDdate = DateFromDayNumber(ID, rdn + 2)
-        @test Int64(rd[3] - 0.5) == jn
+        @test Int64(rd[3] + 0.5) == jn  # Note: +0.5
         @test rd[4] == (CEdate[2], CEdate[3], CEdate[4])
         @test rd[5] == (IDdate[2], IDdate[3], IDdate[4])
    

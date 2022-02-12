@@ -112,7 +112,7 @@ const InvalidDuration = DPart(-1)
 const InvalidDate = (XX, DPart(0), DPart(0), DPart(0))
 const InvalidDateString = "0000-00-00"
 
-const JDN_DN  = DPart(1721424)
+const JDN_DN  = DPart(1721425)
 const DN_MJDN = DPart(678576)
 
 # Days considered here start at midnight 00:00.
