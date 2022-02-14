@@ -4,7 +4,7 @@
 # Interactively compute calendar dates in the REPL. 
 
 
-using Dates
+using Dates: yearmonthday, now
 
 """
 Interactively query the dates for all calendars in the REPL.
@@ -19,11 +19,11 @@ function IDate()
     noi = "This was not a valid input! Try again ..."
     nod = "This was not a valid date! Try again ..."
 
-    now = Dates.yearmonthday(Dates.now())
-    cd = CalendarDates("EC", now, true)
-    dy = DayOfYear("EC", now)
+    date = yearmonthday(now())
+    cd = CalendarDates("EC", date, true)
+    dy = DayOfYear("EC", date)
     wd = WeekDay(cd)
-    println("\nIt's ", wd, ", the ", dy, "-th day of the EC-year.")
+    println("\nIt's ", wd, " the ", dy, "-th day of the EC-year.")
     println()
 
     while true

@@ -1,7 +1,7 @@
 name = "Calendars"
 uuid = "2e69b1bb-2c9c-41e6-ab4b-04f4c0f206b8"
 authors = ["PeterLuschny"]
-version = "0.6.1"
+version = "0.6.2"
 
 [deps]
 Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"

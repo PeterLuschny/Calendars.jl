@@ -7,20 +7,26 @@ Registered on [JuliaHub](https://juliahub.com/ui/Packages/Calendars/yDHMq), read
 # Calendars, Conversions of Dates, Change of Calendars  
 
 
-The package _Calendar_ provides a Julia implementation of six calendars: 
+The package _Calendar_ provides a Julia implementation of six calendars and two day numbers: 
 
-| Acronym | Calendar |
-| :---:   |  :---    | 
-| CE      | Common   |
-| EC      | European |
-| JD      | Julian   |
-| AM      | Hebrew   |
-| AH      | Islamic  |
-| ID      | IsoDate  |
+| Enum | Acronym | Calendar  |
+| :-:  | :---:   |  :---     | 
+| (1)  | EC      | European  |
+| (2)  | CE      | Common    |
+| (3)  | JD      | Julian    |
+| (4)  | AM      | Hebrew    |
+| (5)  | AH      | Islamic   |
+| (6)  | ID      | IsoDate   |
+|  ~   | ~~      | ~~~~~~~   |
+| (7)  | EN      | EuroNum   |
+| (8)  | JN      | JulianNum |
+
 
  The *Common Era* `CE` dates are computed according to the [proleptic Gregorian](https://en.wikipedia.org/wiki/Proleptic_Gregorian_calendar) rules, *Julian dates* `JD` according to the rules of the reformed [Roman calendar](https://en.wikipedia.org/wiki/Julian_calendar) proposed by Julius Caesar. The *European calendar* `EC` uses the Gregorian calendar for dates on and after `CE` 1582-10-15 and otherwise the Julian calendar. 
 
-We recommend using the European calendar to avoid errors and confusion by extending the Gregorian calendar rules backward to the dates preceding its official introduction in 1582, as the common calendar `CE` does. However, if you are not working with dates older than 400 years, this distinction is irrelevant, and the use of `EC` brings no disadvantages. 
+The *Julian day number* `JN` is the count of days since the beginning of the Julian Period in 4713 BCE. There is also a `continuous` form of the Julian day number, `JC`, containing a fraction that represents the `daytime`. This form we will not use here; our counts are pure integers. However, we remark that if a day indicated by a common (midnight based) date starts with the `JC` N.5 and ends with `JC` (N+1).4999..., then the corresponding day number `JN` is (N+1), which is (N+1).0 in terms of `JC`, indicating the noon of that day.
+
+We recommend using the European calendar to avoid errors and confusion by extending the Gregorian calendar rules backward to the dates preceding its official introduction in 1582, as the common calendar `CE` does. However, if you are not working with dates older than 400 years, this distinction is irrelevant, and the use of `CE` brings no disadvantages. 
 
 We do not use the acronym `AD` ("Anno Domini nostri Jesu Christi") but use `JD` instead, which stands for the Julian dates. [AD](https://en.wikipedia.org/wiki/Anno_Domini) is an acronym invented by a 6th-century [monk](https://en.wikipedia.org/wiki/Dionysius_Exiguus), member of the Roman Curia, in a successful attempt to usurp the Roman calendar for the Catholic church. Nothing would have seemed more absurd to Julius Caesar, Pontifex Maximus, the Roman state religion chief priest. He wouldn't give his name to and put his calendar reform at the service of a Jewish sect--if it existed in his day. Nowadays, the `AD` terminology is exclusive to non-Christian people. However, we keep the start of the epoch and the same numbers for `AD` years and allow the use of `AD` as an option. 
 
@@ -34,14 +40,14 @@ It converts a calendar date to the representation of the date in the 'calendar.'
 
 * The calendar date `CDate` is a tuple (calendar, year, month, day). The parts of the date can be given as a tuple or individually.
 
-* 'calendar' is one of "Common", "European", "Julian", "Hebrew", "Islamic", or "IsoDate". Alternatively, you can use the acronyms CE, EC, JD, AM, AH, or ID explained in the table above. "Gregorian" is used synonymously with "Common," and AD is used synonymously with JD.
+* 'calendar' is one of "Common", "European", "Julian", "Hebrew", "Islamic", or "IsoDate". Alternatively, you can use the acronyms CE, EC, JD, AM, AH, or ID explained in the table above. "Gregorian" is used synonymously with "Common," and AD can be used synonymously with JD.
 
 * If the optional parameter 'show' is set to 'true,' both dates are printed. 'show' is 'false' by default.
 
 For example:
 
 ```julia
-julia> ConvertDate(("Common", 1756, 1, 27), "Hebrew") 
+julia> ConvertDate("Common", 1756, 1, 27, "Hebrew") 
 ```
 
 which can also be written
@@ -79,7 +85,8 @@ Julian    JD-1756-01-16
 Hebrew    AM-5516-11-25
 Islamic   AH-1169-04-24
 IsoDate   ID-1756-05-02
-EuroNum   EN#641029
+EuroNum   EN#0641029
+JulianNum JN#2362452
 ``` 
 
 But if you look up the birthday of Leonardo da Vinci, you better use the European calendar `EC` and not the Common calendar `CE.` This time, the `EC`-date and the `JD`-date are the same, and this is correct. But the Gregorian calendar misses Leonardo's birthday by nine days! This error occurs because the Gregorian calendar extrapolates the date backward from 1582, ignoring the historical course. That is why this calendar is called 'proleptic.' (But even that is not correct: `proleptic` refers to the future; it would be better to call it `preleptic.`) 
@@ -93,10 +100,37 @@ Julian     JD-1452-04-15
 Hebrew     AM-5212-01-26
 Islamic    AH-0856-03-25
 IsoDate    ID-1452-17-06
-EuroNum    EN#530083
+EuroNum    EN#0530083
+JulianNum  JN#2251506
 ``` 
 
 So the message is: use the European calendar, not the Common/Gregorian one.
+
+### Options and formats
+
+With many functions you can choose which format the return value has: an integer tuple or a string. For example the signature of `ConvertDate` is:
+
+```julia
+ConvertDate(date, calendar, string=false, show=false
+``` 
+
+The calls
+
+```julia
+ConvertDate("Gregorian", 1756, 1, 27, "Hebrew")
+ConvertDate("Gregorian", 1756, 1, 27, "Hebrew", true)
+```
+return respectively
+
+```julia
+(4, 5516, 11, 25)
+"AM-5516-11-25"
+```
+Here we see that the specifier for the Hebrew calendar, `AM`, is internally encoded as the integer 4. This integer is conventionally defined in the enumeration given in the table at the top of this page. 
+
+One can use the functions `Calendar`, `Year`, `Month`, `Day`, and `Date` to extract the parts of a calendar date. 
+
+### Range and tables
 
 A broader overview give the utility functions `PrintEuropeanMonth(year, month)` and `SaveEuropeanMonth(year, month, directory)`. The latter writes the `EC-year-month` month for all calendar representations to the given directory in a markdown file. The next example is particularly instructive.
 
@@ -116,9 +150,6 @@ It shows the month when Pope Gregory severely interfered with Chronos turning th
 | CE-1582-10-15 | EC-1582-10-15 | JD-1582-10-05 | AM-5343-07-19 | AH-0990-09-17 | ID-1582-41-05 |
 | CE-1582-10-16 | EC-1582-10-16 | JD-1582-10-06 | AM-5343-07-20 | AH-0990-09-18 | ID-1582-41-06 |
 | CE-1582-10-17 | EC-1582-10-17 | JD-1582-10-07 | AM-5343-07-21 | AH-0990-09-19 | ID-1582-41-07 |
-| CE-1582-10-18 | EC-1582-10-18 | JD-1582-10-08 | AM-5343-07-22 | AH-0990-09-20 | ID-1582-42-01 |
-
-### Range 
 
 The range of validity of the calendars is limited to the range from JD-0001-01-01 to CE-9999-12-31. This choice is by convention but has practical advantages: the four-digit year format of the ISO representation can be met (exception is the Hebrew case, which overflows this format); also, handling dates before the beginning of the Julian epoch is avoided in this way. This means that no year zero appears in our setup apart from the two dates CE-0000-12-30 and 31 (and their `ID` equivalents). We include them only for the sake of completeness at the beginning of the calendar.
 
@@ -131,7 +162,7 @@ The first four days of the calendar are
 | CE-0001-01-01 | EC-0001-01-03 | JD-0001-01-03 | AM-3761-10-18 | 00-0000-00-00 | ID-0001-01-01 |
 | CE-0001-01-02 | EC-0001-01-04 | JD-0001-01-04 | AM-3761-10-19 | 00-0000-00-00 | ID-0001-01-02 |
 
- We take advantage of the fact that there is no year zero in the Julian calendar and use it for uniform error handling: the tuple (0, 0, 0, 0) represents the **invalid date** and is written as the string "00-0000-00-00". In case of invalid input or other errors, this representation is returned. The Islamic dates in the table above show this format because we do not backward extrapolate Islamic dates before JD-0622-07-16 (the start of the Islamic calendar).
+ We take advantage of the fact that there is no date (0000-00-00) and use this for uniform error handling: the tuple (0, 0, 0) represents the **invalid date** and is written as the string "00-0000-00-00". In case of invalid input or other errors, this representation is returned. The Islamic dates in the table above show this format because we do not backward extrapolate Islamic dates before JD-0622-07-16 (the start of the Islamic calendar).
 
 The last four days of the calendar are
 
@@ -168,22 +199,22 @@ The package also implements two ordinal dates:
 | EN      | European day number|
 | JN      | Julian day number  |
 
-An ordinal date is an integer counting the elapsed days since the epoch of some calendar. For example, the first day of the European calendar (EC-0001-01-01) has the European date number 1 (denoted by EN#1) and the Julian date number 1721423 (denoted by JN#1721423). 
+An ordinal date is an integer counting the elapsed days since the epoch of some calendar. For example, the first day of the European calendar (EC-0001-01-01) has the European date number 1 (denoted by EN#1) and the Julian date number 1721424 (prefixed by `JN#`). 
 
 |   European    |  EuroNum   | JulianNum  |
 |     :---:     |   :---:    |   :---:    |
-| EC-0001-01-01 | EN#      1 | JN#1721423 |
-| EC-0001-01-02 | EN#      2 | JN#1721424 |
-| EC-0001-01-03 | EN#      3 | JN#1721425 |
+| EC-0001-01-01 | EN#      1 | JN#1721424 |
+| EC-0001-01-02 | EN#      2 | JN#1721425 |
+| EC-0001-01-03 | EN#      3 | JN#1721426 |
 | ...           | ...        | ...        |
-| EC-9999-12-29 | EN#3652059 | JN#5373481 |
-| EC-9999-12-30 | EN#3652060 | JN#5373482 |
-| EC-9999-12-31 | EN#3652061 | JN#5373483 |
+| EC-9999-12-29 | EN#3652059 | JN#5373482 |
+| EC-9999-12-30 | EN#3652060 | JN#5373483 |
+| EC-9999-12-31 | EN#3652061 | JN#5373484 |
 
 
-According to our convention, the last day represented by the calendar is EC-9999-12-31, has the Julian date number 5373483 and the European date number 3652061. Thus the European calendar gives 3652061 days a name. Both counters differ only by an additive constant. The European date number is formally defined as 
+According to our convention, the last day represented by the calendar is EC-9999-12-31, has the Julian date number 5373484 and the European date number 3652061. Thus the European calendar gives 3652061 days a name. Both counters differ only by an additive constant. The European date number is formally defined as 
 
-EN(date) = JN(date) − 1721422.
+EN(date) = JN(date) − 1721423.
 
 The European date number is similar to the day number [Rata Die](https://en.wikipedia.org/wiki/Rata_Die) defined by `R`eingold and `D`ershowitz. In fact, `RD` differs only by two days from the European date number since `RD` is based on the proleptic Gregorian calendar and CE-0001-01-01 = EC-0001-01-03. But we think it is much more natural to start at the beginning of the Julian calendar, JD-0001-01-01 = EC-0001-01-01, and not with a 'proleptic' relation.
 

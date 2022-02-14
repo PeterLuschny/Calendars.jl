@@ -1,5 +1,6 @@
 using Calendars
-using Test, Dates
+using Dates: yearmonthday, now
+using Test 
 
 # Planetary week
 sunday    = 0 
@@ -289,12 +290,12 @@ end
 function TestDateTables()
 
 TestDates = [
-((EN,0,0,405735),(CE,1111,11,11),(JD,1111,11,4), (EC,1111,11,4),(ID,1111,45,6),(AM,4872,9,2),  (AH, 505,4,29))::DateTable,
-((EN,0,0,811258),(CE,2222,2,22), (JD,2222,2,7),  (EC,2222,2,22),(ID,2222,8,5), (AM,5982,12,10),(AH,1649,9,10))::DateTable,
-((EN,0,0,641029),(CE,1756,1,27), (JD,1756,1,16), (EC,1756,1,27),(ID,1756,5,2), (AM,5516,11,25),(AH,1169,4,24))::DateTable,
-((EN,0,0,738158),(CE,2022,1,1),  (JD,2021,12,19),(EC,2022,1,1), (ID,2021,52,6),(AM,5782,10,28),(AH,1443,5,27))::DateTable,
-((EN,0,0,738426),(CE,2022,9,26), (JD,2022,9,13), (EC,2022,9,26),(ID,2022,39,1),(AM,5783,7,1),  (AH,1444,2,29))::DateTable,
-((EN,0,0,1146992),(CE, 3141,5,9),(JD,3141,4,17), (EC,3141,5,9), (ID,3141,19,5),(AM,6901,2,9),  (AH,2597,2,10))::DateTable
+((EN,0,0,405735),(CE,1111,11,11),(JD,1111,11,4), (EC,1111,11,4),(ID,1111,45,6),(AM,4872,9,2),  (AH, 505,4,29), (JN,0,0,2127158))::DateTable,
+((EN,0,0,811258),(CE,2222,2,22), (JD,2222,2,7),  (EC,2222,2,22),(ID,2222,8,5), (AM,5982,12,10),(AH,1649,9,10), (JN,0,0,2532681))::DateTable,
+((EN,0,0,641029),(CE,1756,1,27), (JD,1756,1,16), (EC,1756,1,27),(ID,1756,5,2), (AM,5516,11,25),(AH,1169,4,24), (JN,0,0,2362452))::DateTable,
+((EN,0,0,738158),(CE,2022,1,1),  (JD,2021,12,19),(EC,2022,1,1), (ID,2021,52,6),(AM,5782,10,28),(AH,1443,5,27), (JN,0,0,2459581))::DateTable,
+((EN,0,0,738426),(CE,2022,9,26), (JD,2022,9,13), (EC,2022,9,26),(ID,2022,39,1),(AM,5783,7,1),  (AH,1444,2,29), (JN,0,0,2459849))::DateTable,
+((EN,0,0,1146992),(CE, 3141,5,9),(JD,3141,4,17), (EC,3141,5,9), (ID,3141,19,5),(AM,6901,2,9),  (AH,2597,2,10), (JN,0,0,2868415))::DateTable
 ]
     @testset "DayNumbers" begin
     for D in TestDates
@@ -302,7 +303,7 @@ TestDates = [
         PrintDateTable(D)
         num = D[1][4]
         
-        for d in D[2:end]
+        for d in D[1:end]
             dn = DayNumberFromDate(d)
             if dn > 0
                 @test dn == num 
@@ -563,7 +564,7 @@ end
 # DayOfLife is an OrdinalDate, not a Duration!
 function DayOfLife(birthdate::CDate) 
     if isValidDate(birthdate) 
-        y, m, d = Dates.yearmonthday(Dates.now())
+        y, m, d = yearmonthday(now())
         return Duration(birthdate, (CE, y, m, d)) + 1
     end
     @warn("Invalid Date: $birthdate")
@@ -573,8 +574,8 @@ end
 function TestToday()
     println("\nMozart would be ", DayOfLife((EC, 1756, 1, 27)), " days old today.")
     println("\nToday on all calendars:\n")
-    now = Dates.yearmonthday(Dates.now())
-    date = (EC, now[1], now[2], now[3])
+    (year, month, day) = yearmonthday(now())
+    date = (EC, year, month, day)
     CalendarDates(date, true)
     doy = DayOfYear(date)
     println("\nThis is the $doy-th day of a EC-year.")

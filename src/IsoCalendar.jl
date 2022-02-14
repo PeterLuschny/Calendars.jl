@@ -1,11 +1,6 @@
 # This is part of Calendars.jl. See the copyright note there.
 # ========================= ISO dates =======================
 
-TEST = false
-if TEST
-    include("CalendarUtils.jl")
-end
-
 # Day number of the start of the ISO calendar.
 # ID-0001-01-01 = CE-0001-01-01 ~ DN#1 = EpochIso.
 # ID-1111-45-04 = CE-1111-11-11 ~ DN#0405733
@@ -125,64 +120,3 @@ end
 function DaysInYearIso(year::DPart) 
     return YearStartIso(year + 1) - YearStartIso(year)
 end
-
-if TEST
-
-    dn1 = -1; println(CDateStr(DN, dn1), " -> ", CDateStr(DateIso(dn1)))
-    dn0 =  0; println(CDateStr(DN, dn0), " -> ", CDateStr(DateIso(dn0)))
-
-    for n in 0:3
-        local dn = 1 + n
-        println(CDateStr(DN, dn), " -> ", CDateStr(DateIso(dn)))
-    end
-    for n in 0:3
-        local date = (ID, 1, 1, 1 + n)
-        println(CDateStr(date), " -> ", CDateStr(DN, DayNumberIso(date)))
-    end
-
-    for n in 0:3
-        local dn = 3652056 + n
-        println(CDateStr(DN, dn), " -> ", CDateStr(DateIso(dn)))
-    end
-    for n in 0:3
-        local date = (ID, 9999, 52, 2 + n)
-        println(CDateStr(date), " -> ", CDateStr(DN, DayNumberIso(date)))
-    end
-
-    for n in 0:2
-        local dn = 405732 + n
-        println(CDateStr(DN, dn), " -> ", CDateStr(DateIso(dn)))
-    end
-    for n in 0:2
-        local date = (ID, 1111, 45, 5 + n)
-        println(CDateStr(date), " -> ", CDateStr(DN, DayNumberIso(date)))
-    end
-
-#=
-DN#00000-1 -> ID-0000-52-06
-DN#0000000 -> ID-0000-52-07
-DN#0000001 -> ID-0001-01-01
-DN#0000002 -> ID-0001-01-02
-DN#0000003 -> ID-0001-01-03
-DN#0000004 -> ID-0001-01-04
-ID-0001-01-01 -> DN#0000001
-ID-0001-01-02 -> DN#0000002
-ID-0001-01-03 -> DN#0000003
-ID-0001-01-04 -> DN#0000004
-DN#3652056 -> ID-9999-52-02
-DN#3652057 -> ID-9999-52-03
-DN#3652058 -> ID-9999-52-04
-DN#3652059 -> ID-9999-52-05
-ID-9999-52-02 -> DN#3652056
-ID-9999-52-03 -> DN#3652057
-ID-9999-52-04 -> DN#3652058
-ID-9999-52-05 -> DN#3652059
-DN#0405732 -> ID-1111-45-05
-DN#0405733 -> ID-1111-45-06
-DN#0405734 -> ID-1111-45-07
-ID-1111-45-05 -> DN#0405732
-ID-1111-45-06 -> DN#0405733
-ID-1111-45-07 -> DN#0405734
-=#
-
-end  # TEST

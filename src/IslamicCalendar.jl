@@ -1,11 +1,6 @@
 # This is part of Calendars.jl. See the copyright note there.
 # ======================== Islamic dates ====================
 
-TEST = false
-if TEST
-    include("CalendarUtils.jl")
-end
-
 # The start of the Islamic calendar is AH 1, Muharram 1. 
 # That is equivalent to JD 622, July 16. We do not support
 # dates prior to this date (no 'proleptic' Islamic calendar).
@@ -36,6 +31,7 @@ end
 # Is the date a valid Islamic date?
 function isValidDateIslamic(cd::CDate, warn=true)
     cal, year, month, day = cd
+    println(cd)
     val = ( cal == AH 
         && (ValidYearsIslamic[1] <= year && year <= ValidYearsIslamic[2]) 
         && (1 <= month && month <= LastMonthOfYearIslamic(year))
@@ -76,13 +72,24 @@ end
 DayNumberIslamic(d::CDate) = DayNumberIslamic(d[2], d[3], d[4])
 
 # Computes the Islamic date from the day number.
-function DateIslamic(date)
+function DateIslamic(dn::DPart)
+    ! isValidDateIslamic(dn, false) && return InvalidDate
 
     # Search forward year by year from approximate year.
-    year = div(30 * (date - EpochIslamic) + 10646, 10631)
-    pdays = date - DayNumberIslamic(year, 1, 1)
-    month = div(11 * pdays + 330, 325)
-    day = date - DayNumberIslamic(year, month, 1) + 1
+    year = div(dn - EpochIslamic, 355)
+    while dn >= DayNumberIslamic(year + 1, 1, 1)
+        year += 1
+    end
+
+    # Search forward month by month from Muharram.
+    month = 1
+    while dn > DayNumberIslamic(year, month,
+                  LastDayOfMonthIslamic(year, month))
+        month += 1
+    end
+
+    day = dn - DayNumberIslamic(year, month, 1) + 1
+
     return (AH, year, month, day)::CDate
 end
 
@@ -105,57 +112,3 @@ end
 function DaysInYearIslamic(year::DPart) 
     return YearStartIslamic(year + 1) - YearStartIslamic(year) 
 end
-
-if TEST
-
-    for n in 0:3
-        local dn = 227015 + n
-        println(CDateStr(DN, dn), " -> ", CDateStr(DateIslamic(dn)))
-    end
-    for n in 0:3
-        local date = (AH, 1, 1, 1 + n)
-        println(CDateStr(date), " -> ", CDateStr(DN, DayNumberIslamic(date)))
-    end
-
-    for n in 0:2
-        local dn = 2589220 + n
-        println(CDateStr(DN, dn), " -> ", CDateStr(DateIslamic(dn)))
-    end
-    for n in 0:2
-        local date = (AH, 6666, 12, 27 + n)
-        println(CDateStr(date), " -> ", CDateStr(DN, DayNumberIslamic(date)))
-    end
-
-    for n in 0:2
-        local dn = 620666 + n
-        println(CDateStr(DN, dn), " -> ", CDateStr(DateIslamic(dn)))
-    end
-    for n in 0:2
-        local date = (AH, 1111, 11, 10 + n)
-        println(CDateStr(date), " -> ", CDateStr(DN, DayNumberIslamic(date)))
-    end
-
-#=
-DN#0227015 -> AH-0001-01-01
-DN#0227016 -> AH-0001-01-02
-DN#0227017 -> AH-0001-01-03
-DN#0227018 -> AH-0001-01-04
-AH-0001-01-01 -> DN#0227015
-AH-0001-01-02 -> DN#0227016
-AH-0001-01-03 -> DN#0227017
-AH-0001-01-04 -> DN#0227018
-DN#2589220 -> AH-6666-12-27
-DN#2589221 -> AH-6666-12-28
-DN#2589222 -> AH-6666-12-29
-AH-6666-12-27 -> DN#2589220
-AH-6666-12-28 -> DN#2589221
-AH-6666-12-29 -> DN#2589222
-DN#0620666 -> AH-1111-11-10
-DN#0620667 -> AH-1111-11-11
-DN#0620668 -> AH-1111-11-12
-AH-1111-11-10 -> DN#0620666
-AH-1111-11-11 -> DN#0620667
-AH-1111-11-12 -> DN#0620668
-=#
-
-end  # TEST

@@ -12,8 +12,9 @@
 module Calendars
 
 export EC, CE, JD, AM, AH, ID, EN, JN, DN, XX
-export DayNumberFromDate, DateFromDayNumber, ConvertDate
+export Calendar, Year, Month, Day, Date
 export CalendarDates, CDate, CDateStr, DateStr, DateTable
+export DayNumberFromDate, DateFromDayNumber, ConvertDate
 export isValidDate, Duration, DayOfYear, ConvertOrdinalDate
 export PrintDateLine, PrintDateTable, PrintEuropeanMonth 
 export SaveEuropeanMonth, WeekDay, WeekDays, PrintIsoWeek, IDate
@@ -89,6 +90,10 @@ function DayNumberFromDate(d::CDate, string=false, show=false)
         dn = DayNumberIso(d)
     elseif calendar == DN
         dn = d[4]
+    elseif calendar == JN
+        dn = JulianNumToFixNum(d[4])
+    elseif calendar == EN
+        dn = EuroNumToFixNum(d[4])
     else
         @warn("Unknown calendar: $calendar")
         return InvalidDayNumber
@@ -119,7 +124,7 @@ show=false) = DayNumberFromDate((cal, year, month, day), string, show)
 DateFromDayNumber(calendar::DPart, enum::DPart, string::Bool, show::Bool)
 ```
 
-Return the calendar date from a European day number.
+Return the date from a European day number expressed in the calendar.
 
 The day number `enum` must be an integer >= 1. 
 
@@ -252,7 +257,6 @@ StringToSymbol(to), string, show)
 ConvertDate(date::CDate, calto::String, string=false, show=false) =
 ConvertDate(date, StringToSymbol(calto), string, show)
 
-
 """
 
 ```julia
@@ -298,6 +302,7 @@ function CalendarDates(date::CDate, show=false)::DateTable
         DateFromDayNumber(AH, dn),
         DateFromDayNumber(ID, dn),
         DateFromDayNumber(EN, dn),
+        DateFromDayNumber(JN, dn)
     )
     show && PrintDateTable(Table)
     return Table
@@ -359,6 +364,8 @@ function isValidDate(d::CDate, warn=true)
         val = d[4] > 0
     elseif calendar == EN
         val = d[4] > 0
+    elseif calendar == JN
+        val = d[4] > 0    
     else
         @warn("Unknown calendar: $calendar")
         return false

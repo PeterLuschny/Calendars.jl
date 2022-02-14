@@ -1,11 +1,6 @@
 # This is part of Calendars.jl. See the copyright note there.
 # ========================= Hebrew dates ====================
 
-TEST = false
-if TEST
-    include("CalendarUtils.jl")
-end
-
 # Day number of the start of Hebrew calendar.
 # The Jewish calendar's epoch, 1 Tishri AM 1, 
 # is equivalent to Monday, 7 October 3761 BCE, 
@@ -182,60 +177,3 @@ end
 function MonthsInYearHebrew(year::DPart) 
     return LastMonthOfYearHebrew(year) 
 end
-
-
-if TEST
-
-    for n in 0:3
-        local dn = -1 + n  # EpochJulian = -1
-        println(CDateStr(DN, dn), " -> ", CDateStr(DateHebrew(dn)))
-    end
-    for n in 0:3
-        local date = (AM, 3761, 10, 16 + n)
-        println(CDateStr(date), " -> ", CDateStr(DN, DayNumberHebrew(date)))
-    end
-
-    for n in 0:3
-        local dn = 3652128 + n
-        println(CDateStr(DN, dn), " -> ", CDateStr(DateHebrew(dn)))
-    end
-    for n in 0:3
-        local date = (AM, 13760, 11, 9 + n)
-        println(CDateStr(date), " -> ", CDateStr(DN, DayNumberHebrew(date)))
-    end
-
-    for n in 0:2
-        local dn = 405739 + n
-        println(CDateStr(DN, dn), " -> ", CDateStr(DateHebrew(dn)))
-    end
-    for n in 0:2
-        local date = (AM, 4872, 9, 8 + n)
-        println(CDateStr(date), " -> ", CDateStr(DN, DayNumberHebrew(date)))
-    end
-
-#=
-DN#00000-1 -> AM-3761-10-16
-DN#0000000 -> AM-3761-10-17
-DN#0000001 -> AM-3761-10-18
-DN#0000002 -> AM-3761-10-19
-AM-3761-10-16 -> DN#00000-1
-AM-3761-10-17 -> DN#0000000
-AM-3761-10-18 -> DN#0000001
-AM-3761-10-19 -> DN#0000002
-DN#3652128 -> AM-13760-11-09
-DN#3652129 -> AM-13760-11-10
-DN#3652130 -> AM-13760-11-11
-DN#3652131 -> AM-13760-11-12
-AM-13760-11-09 -> DN#3652128
-AM-13760-11-10 -> DN#3652129
-AM-13760-11-11 -> DN#3652130
-AM-13760-11-12 -> DN#3652131
-DN#0405739 -> AM-4872-09-08
-DN#0405740 -> AM-4872-09-09
-DN#0405741 -> AM-4872-09-10
-AM-4872-09-08 -> DN#0405739
-AM-4872-09-09 -> DN#0405740
-AM-4872-09-10 -> DN#0405741
-=#
-
-end  # TEST

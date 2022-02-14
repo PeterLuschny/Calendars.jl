@@ -217,8 +217,17 @@ Examples for CDates and their string representation are:
 ("IsoDate",  2022,  3,  3)  -> "ID-2022-03-03"
 ``` 
 """
-const CDate = Tuple{DPart, DPart, DPart, DPart}
-const DateTable = NTuple{7, CDate}
+const CDate = NTuple{4, DPart} 
+
+const DateTable = NTuple{8, CDate}
+#const Date = NTuple{3, DPart} 
+
+Calendar(date::CDate) = date[1]
+Year(date::CDate) = date[2]
+Month(date::CDate) = date[3]
+Day(date::CDate) = date[4]
+Date(date::CDate) = (date[2], date[3], date[4])
+
 
 # TODO Write a 'get-' interface for the DateTable, like:
 GetFixNum(dt::DateTable) = dt[7][4] - 2
