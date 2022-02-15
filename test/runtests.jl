@@ -12,10 +12,6 @@ friday    = 5
 saturday  = 6 
 weeklen   = 7
 
-# Note that you can use "Gregorian" as the calendar name
-# when calling the function, but the System always returns
-# the CDate in standard form, where the Gregorian calendar 
-# has the acronym "CE" (Common Era).
 function TestDateGregorian()
     SomeDateGregorian = [ 
         (CE,    1, 1,  1)::CDate, 
@@ -34,17 +30,6 @@ function TestDateGregorian()
     end
 end
 
-#=
-CE-0001-01-01 -> EN#0000003 -> CE-0001-01-01
-CE-1756-01-27 -> EN#0641029 -> CE-1756-01-27
-CE-2022-01-01 -> EN#0738158 -> CE-2022-01-01
-CE-2022-09-26 -> EN#0738426 -> CE-2022-09-26
-=#
-
-# Note that you can use "Julian" as the calendar name
-# when calling the function, but the System always returns
-# the CDate in standard form, where the Julian calendar 
-# has the acronym "JD" (Roman Calendar).
 function TestDateJulian()
     SomeDateJulian = [ 
         (JD,    1,  1,  3)::CDate,
@@ -63,14 +48,6 @@ function TestDateJulian()
     end
 end
 
-#=
-JD-0001-01-03 -> EN#0000003 -> JD-0001-01-03
-JD-1756-01-16 -> EN#0641029 -> JD-1756-01-16
-JD-2021-12-19 -> EN#0738158 -> JD-2021-12-19
-JD-2022-09-13 -> EN#0738426 -> JD-2022-09-13
-=#
-
-# See the comments above!
 function TestDateHebrew()
     SomeDateHebrew  = [ 
         (AM, 5516, 11, 25)::CDate, 
@@ -90,15 +67,6 @@ function TestDateHebrew()
     end
 end
 
-#=
-AM-5516-11-25 -> EN#0641029 -> AM-5516-11-25
-AM-5782-07-01 -> EN#0738042 -> AM-5782-07-01
-AM-5782-10-27 -> EN#0738157 -> AM-5782-10-27
-AM-5782-06-29 -> EN#0738425 -> AM-5782-06-29
-AM-5783-07-01 -> EN#0738426 -> AM-5783-07-01
-=#
-
-# See the comments above!
 function TestDateIslamic()
     SomeDateIslamic = [ 
         (AH,    1, 1,  1)::CDate,
@@ -117,14 +85,6 @@ function TestDateIslamic()
     end
 end
 
-#=
-AH-0001-01-01 -> EN#0227017 -> AH-0001-01-01
-AH-1756-01-27 -> EN#0848956 -> AH-1756-01-27
-AH-2022-01-01 -> EN#0943192 -> AH-2022-01-01
-AH-2022-09-26 -> EN#0943453 -> AH-2022-09-26
-=# 
-
-# See the comments above!
 function TestDateIso()
     SomeDateIso = [ 
         (ID,    1,  1, 1)::CDate,
@@ -142,13 +102,6 @@ function TestDateIso()
     end
     end
 end
-
-#=
-ID-0001-01-01 -> EN#0000003 -> ID-0001-01-01
-ID-1756-05-02 -> EN#0641029 -> ID-1756-05-02
-ID-2021-52-06 -> EN#0738158 -> ID-2021-52-06
-ID-2022-39-01 -> EN#0738426 -> ID-2022-39-01
-=#
 
 function TestConversions()
     
@@ -193,21 +146,6 @@ function TestConversions()
 end
 
 #=
-DN 2111768 -> CE 5782-10-28 -> AM 9543-07-24
-DN 2111768 -> CE 5782-10-28 -> AH 5319-08-25
-DN  641027 -> CE 1756-01-27 -> AM 5516-11-25
-DN  227015 -> CE 0622-07-19 -> AH 0001-01-01
-
-DN  738156 -> AM 5782-10-28 -> AH 1443-05-27
-DN 2111768 -> AM 9543-07-24 -> CE 5782-10-28
-DN 1821874 -> AM 8749-11-03 -> AH 4501-08-03
-
-DN 1192184 -> AH 2724-08-23 -> AM 7025-11-23
-DN 2565796 -> AH 6600-11-21 -> CE 7025-11-29
-DN 2275902 -> AH 5782-10-28 -> AM 9992-12-27
-=#
-
-#=
 function PrintIntervall(date::CDate, len)
 
     en = DayNumberFromDate(date)
@@ -223,9 +161,6 @@ function PrintIntervall(date::CDate, len)
         en += 1
     end
 end
-
-PrintIntervall((CE, 1, 12, 27), 6)
-PrintIntervall((ID, 1, 52,  4), 6)
 
 PrintIntervall((EC, 2, 12, 27), 6)
 PrintIntervall((JD, 2, 12, 27), 6)
@@ -265,28 +200,6 @@ function TestIso()
     end
 end
 
-#=
-721722 = 721722
-721723 = 721723
-722086 = 722086
-722087 = 722087
-722088 = 722088
-722451 = 722451
-722452 = 722452
-722815 = 722815
-722816 = 722816
-722817 = 722817
-723179 = 723179
-723180 = 723180
-723181 = 723181
-723182 = 723182
-723183 = 723183
-723547 = 723547
-723548 = 723548
-723549 = 723549
-723550 = 723550
-=#
-
 function TestDateTables()
 
 TestDates = [
@@ -312,56 +225,6 @@ TestDates = [
     end
     end
 end
-
-#=
-EuroNum   EN#0405735
-Common    CE-1111-11-11
-Julian    JD-1111-11-04
-European  EC-1111-11-04
-IsoDate   ID-1111-45-06
-Hebrew    AM-4872-09-02
-Islamic   AH-0505-04-29
-
-EuroNum   EN#0811258
-Common    CE-2222-02-22
-Julian    JD-2222-02-07
-European  EC-2222-02-22
-IsoDate   ID-2222-08-05
-Hebrew    AM-5982-12-10
-Islamic   AH-1649-09-10
-
-EuroNum   EN#0641029
-Common    CE-1756-01-27
-Julian    JD-1756-01-16
-European  EC-1756-01-27
-IsoDate   ID-1756-05-02
-Hebrew    AM-5516-11-25
-Islamic   AH-1169-04-24
-
-EuroNum   EN#0738158
-Common    CE-2022-01-01
-Julian    JD-2021-12-19
-European  EC-2022-01-01
-IsoDate   ID-2021-52-06
-Hebrew    AM-5782-10-28
-Islamic   AH-1443-05-27
-
-EuroNum   EN#0738426
-Common    CE-2022-09-26
-Julian    JD-2022-09-13
-European  EC-2022-09-26
-IsoDate   ID-2022-39-01
-Hebrew    AM-5783-07-01
-Islamic   AH-1444-02-29
-
-EuroNum   EN#1146992
-Common    CE-3141-05-09
-Julian    JD-3141-04-17
-European  EC-3141-05-09
-IsoDate   ID-3141-19-05
-Hebrew    AM-6901-02-09
-Islamic   AH-2597-02-10
-=#
 
 function TestDuration()
     @testset "Duration" begin
@@ -417,36 +280,6 @@ function TestDayOfYear()
     end
 end
 
-#=
-CE-1901-02-29 ::   0   0 true
-CE-1949-11-29 :: 333 333 true
-CE-1990-10-20 :: 293 293 true
-CE-2000-02-28 ::  59  59 true
-CE-2000-02-29 ::  60  60 true
-CE-2020-02-28 ::  59  59 true
-CE-2020-02-29 ::  60  60 true
-CE-2020-07-30 :: 212 212 true
-CE-2020-08-20 :: 233 233 true
-CE-2021-09-07 :: 250 250 true
-CE-2022-01-01 ::   1   1 true
-CE-2022-09-26 :: 269 269 true
-CE-2023-07-19 :: 200 200 true
-CE-2040-02-28 ::  59  59 true
-CE-2040-02-29 ::  60  60 true
-CE-2040-09-08 :: 252 252 true
-CE-2222-02-22 ::  53  53 true
-CE-3141-05-09 :: 129 129 true
-
-EC-0022-01-01 ::   1
-EC-0756-01-27 ::  27
-EC-0949-11-29 :: 333
-EC-0990-10-20 :: 293
-EC-2022-01-01 ::   1
-EC-1756-01-27 ::  27
-EC-1949-11-29 :: 333
-EC-1990-10-20 :: 293
-=#
-
 function ShowDayOfYear()
 
     Dates = [ (22, 1, 1), (756, 1, 27), (949, 11, 29), (990, 10, 20), 
@@ -463,36 +296,6 @@ function ShowDayOfYear()
     end
     end
 end
-
-#=
-EC-0800-12-25 -> EN#0292194
-292194 2013616
-2013616 292194
-
-EC-0843-08-10 -> EN#0307762
-307762 2029184
-2029184 307762
-
-EC-1204-04-12 -> EN#0439498
-439498 2160920
-2160920 439498
-
-EC-1452-04-15 -> EN#0530083
-530083 2251505
-2251505 530083
-
-EC-1666-09-02 -> EN#0608376
-608376 2329798
-2329798 608376
-
-EC-1789-07-14 -> EN#0653251
-653251 2374673
-2374673 653251
-
-EC-1906-04-28 -> EN#0695906
-695906 2417328
-2417328 695906
-=#
 
 # Checked with https://www.arc.id.au/Calendar.html
 function TestJulianDayNumbers1()
@@ -536,32 +339,6 @@ function TestSaveCalendars()
     PrintIsoWeek(2525, 25)
 end
 
-#=
-# Days of week 41 of the year 1582. 
-# Note the jump in the European calendar!
-|  Weekday  |  European  |   Hebrew   |  Islamic   |
-|    ---:   |    :---:   |   :---:    |   :---:    |
-| Monday    | 1582-10-01 | 5343-07-15 | 0990-09-13 | 
-| Tuesday   | 1582-10-02 | 5343-07-16 | 0990-09-14 |
-| Wednesday | 1582-10-03 | 5343-07-17 | 0990-09-15 |
-| Thursday  | 1582-10-04 | 5343-07-18 | 0990-09-16 |
-| Friday    | 1582-10-15 | 5343-07-19 | 0990-09-17 |
-| Saturday  | 1582-10-16 | 5343-07-20 | 0990-09-18 |
-| Sunday    | 1582-10-17 | 5343-07-21 | 0990-09-19 |
-
-# Days of week 25 of the year 2525.
-|  Weekday  |  European  |   Hebrew   |  Islamic   |
-|    ---:   |    :---:   |   :---:    |   :---:    |
-| Monday    | 2525-06-18 | 6285-03-25 | 1962-04-25 |
-| Tuesday   | 2525-06-19 | 6285-03-26 | 1962-04-26 |
-| Wednesday | 2525-06-20 | 6285-03-27 | 1962-04-27 |
-| Thursday  | 2525-06-21 | 6285-03-28 | 1962-04-28 |
-| Friday    | 2525-06-22 | 6285-03-29 | 1962-04-29 |
-| Saturday  | 2525-06-23 | 6285-03-30 | 1962-05-01 | 
-| Sunday    | 2525-06-24 | 6285-04-01 | 1962-05-02 |
-=#
-
-# DayOfLife is an OrdinalDate, not a Duration!
 function DayOfLife(birthdate::CDate) 
     if isValidDate(birthdate) 
         y, m, d = yearmonthday(now())
@@ -652,15 +429,6 @@ function ShowProfileYear()
     ProfileYearAsEuropean(AH, 1444, true) 
     ProfileYearAsEuropean(ID, 2022, true) 
 end
-
-#=
-EC-2022 -> [EC-2022-01-01, EC-2022-12-31], 12, 365
-CE-2022 -> [EC-2022-01-01, EC-2022-12-31], 12, 365
-JD-2022 -> [EC-2022-01-14, EC-2023-01-13], 12, 365
-AM-5783 -> [EC-2022-09-26, EC-2023-09-15], 12, 355
-AH-1444 -> [EC-2022-07-30, EC-2023-07-18], 12, 354
-ID-2022 -> [EC-2022-01-03, EC-2023-01-01], 52, 364
-=#
 
 function TestStartEndYear() 
 

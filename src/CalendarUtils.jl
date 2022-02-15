@@ -218,9 +218,8 @@ Examples for CDates and their string representation are:
 ``` 
 """
 const CDate = NTuple{4, DPart} 
-
+const YMD = NTuple{3, DPart} 
 const DateTable = NTuple{8, CDate}
-#const Date = NTuple{3, DPart} 
 
 Calendar(date::CDate) = date[1]
 Year(date::CDate) = date[2]

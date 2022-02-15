@@ -12,8 +12,8 @@
 module Calendars
 
 export EC, CE, JD, AM, AH, ID, EN, JN, DN, XX
-export Calendar, Year, Month, Day, Date
-export CalendarDates, CDate, CDateStr, DateStr, DateTable
+export Calendar, Year, Month, Day, Date, CDate, YMD
+export CalendarDates, CDateStr, DateStr, DateTable
 export DayNumberFromDate, DateFromDayNumber, ConvertDate
 export isValidDate, Duration, DayOfYear, ConvertOrdinalDate
 export PrintDateLine, PrintDateTable, PrintEuropeanMonth 
@@ -111,8 +111,8 @@ end
 DayNumberFromDate(cal::String, year::DPart, month::DPart, day::DPart, string=false,
 show=false) = DayNumberFromDate((StringToSymbol(cal), year, month, day), string, show)
 
-DayNumberFromDate(cal::String, d::Tuple{DPart, DPart, DPart}, string=false,
-show=false) = DayNumberFromDate((StringToSymbol(cal), d[1], d[2], d[3]), string, show)
+DayNumberFromDate(cal::String, d::YMD, string=false, show=false) = 
+DayNumberFromDate((StringToSymbol(cal), d[1], d[2], d[3]), string, show)
 
 DayNumberFromDate(cal::DPart, year::DPart, month::DPart, day::DPart, string=false,
 show=false) = DayNumberFromDate((cal, year, month, day), string, show)
@@ -250,9 +250,8 @@ ConvertDate(calendar::String, year::DPart, month::DPart, day::DPart, to::String,
 string=false, show=false) = ConvertDate((StringToSymbol(calendar), year, month, day), 
 StringToSymbol(to), string, show)
 
-ConvertDate(calendar::String, d::Tuple{DPart, DPart, DPart}, to::String, 
-string=false, show=false) = ConvertDate((StringToSymbol(calendar), d[1], d[2], d[3]), 
-StringToSymbol(to), string, show)
+ConvertDate(calendar::String, d::YMD, to::String, string=false, show=false) = 
+ConvertDate((StringToSymbol(calendar), d[1], d[2], d[3]), StringToSymbol(to), string, show)
 
 ConvertDate(date::CDate, calto::String, string=false, show=false) =
 ConvertDate(date, StringToSymbol(calto), string, show)
@@ -311,8 +310,8 @@ end
 CalendarDates(calendar::String, year::DPart, month::DPart, day::DPart, 
 show=false) = CalendarDates((StringToSymbol(calendar), year, month, day), show)
 
-CalendarDates(calendar::String, d::Tuple{DPart, DPart, DPart}, 
-show=false) = CalendarDates((StringToSymbol(calendar), d[1], d[2], d[3]), show) 
+CalendarDates(calendar::String, d::YMD, show=false) = 
+CalendarDates((StringToSymbol(calendar), d[1], d[2], d[3]), show) 
 
 CalendarDates(cal::DPart, year::DPart, month::DPart, day::DPart, 
 show=false) = CalendarDates((cal, year, month, day), show) 
@@ -373,13 +372,13 @@ function isValidDate(d::CDate, warn=true)
     return val
 end
 
-isValidDate(calendar::String, year::DPart, month::DPart, 
-day::DPart) = isValidDate((StringToSymbol(calendar), year, month, day))
+isValidDate(calendar::String, year::DPart, month::DPart, day::DPart) = 
+isValidDate((StringToSymbol(calendar), year, month, day))
 
-isValidDate(calendar::DPart, year::DPart, month::DPart, 
-day::DPart) = isValidDate((calendar, year, month, day))
+isValidDate(calendar::DPart, year::DPart, month::DPart, day::DPart) = 
+isValidDate((calendar, year, month, day))
 
-isValidDate(calendar::String, d::Tuple{DPart, DPart, DPart}) = 
+isValidDate(calendar::String, d::YMD) = 
 isValidDate((StringToSymbol(calendar), d[1], d[2], d[3]))
 
 """
@@ -442,10 +441,10 @@ end
 DayOfYear(calendar::String, year::DPart, month::DPart, day::DPart) = 
 DayOfYear((StringToSymbol(calendar), year, month, day)) 
 
-DayOfYear(calendar::String, d::Tuple{DPart, DPart, DPart}) = 
+DayOfYear(calendar::String, d::YMD) = 
 DayOfYear((StringToSymbol(calendar), d[1], d[2], d[3])) 
 
-DayOfYear(calendar::DPart, d::Tuple{DPart, DPart, DPart}) = 
+DayOfYear(calendar::DPart, d::YMD) = 
 DayOfYear((calendar, d[1], d[2], d[3])) 
 
 

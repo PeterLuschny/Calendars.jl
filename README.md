@@ -24,23 +24,27 @@ The package _Calendar_ provides a Julia implementation of six calendars and two 
 
  The *Common Era* `CE` dates are computed according to the [proleptic Gregorian](https://en.wikipedia.org/wiki/Proleptic_Gregorian_calendar) rules, *Julian dates* `JD` according to the rules of the reformed [Roman calendar](https://en.wikipedia.org/wiki/Julian_calendar) proposed by Julius Caesar. The *European calendar* `EC` uses the Gregorian calendar for dates on and after `CE` 1582-10-15 and otherwise the Julian calendar. 
 
-The *Julian day number* `JN` is the count of days since the beginning of the Julian Period in 4713 BCE. There is also a `continuous` form of the Julian day number, `JC`, containing a fraction that represents the `daytime`. This form we will not use here; our counts are pure integers. However, we remark that if a day indicated by a common (midnight based) date starts with the `JC` N.5 and ends with `JC` (N+1).4999..., then the corresponding day number `JN` is (N+1), which is (N+1).0 in terms of `JC`, indicating the noon of that day.
-
 We recommend using the European calendar to avoid errors and confusion by extending the Gregorian calendar rules backward to the dates preceding its official introduction in 1582, as the common calendar `CE` does. However, if you are not working with dates older than 400 years, this distinction is irrelevant, and the use of `CE` brings no disadvantages. 
 
 We do not use the acronym `AD` ("Anno Domini nostri Jesu Christi") but use `JD` instead, which stands for the Julian dates. [AD](https://en.wikipedia.org/wiki/Anno_Domini) is an acronym invented by a 6th-century [monk](https://en.wikipedia.org/wiki/Dionysius_Exiguus), member of the Roman Curia, in a successful attempt to usurp the Roman calendar for the Catholic church. Nothing would have seemed more absurd to Julius Caesar, Pontifex Maximus, the Roman state religion chief priest. He wouldn't give his name to and put his calendar reform at the service of a Jewish sect--if it existed in his day. Nowadays, the `AD` terminology is exclusive to non-Christian people. However, we keep the start of the epoch and the same numbers for `AD` years and allow the use of `AD` as an option. 
 
-Dates can be converted from one to another. We follow ISO 8601 for calendar date representations: Year, followed by the month, then the day, `YYYY-MM-DD.` This order is also used in the signature of the functions. For example, 2022-07-12 represents the 12th of July 2022. We extend this notation by prefixing it with two letters, the acronyms of the names of calendars given in the table above: `CE-YYYY-MM-DD,` `JD-YYYY-MM-DD,` `AM-YYYY-MM-DD` and so on.
+Dates can be converted from one to another. We follow ISO 8601 for calendar date representations: Year, followed by the month, then the day, `YYYY-MM-DD`. This order is also used in the signature of the functions. For example, 2022-07-12 represents the 12th of July 2022. We extend this notation by prefixing it with two letters, the acronyms of the names of calendars given in the table above: `CE-YYYY-MM-DD`, `JD-YYYY-MM-DD`, `AM-YYYY-MM-DD` and so on.
+
+Roughly speaking a calendar date `CDate` is a pair (CC, YMD) where `CC` is a calendar specifier and `YMD` is 3-tuple of integers which, as a string, is written `YYYY-MM-DD`. However, internally we represent a calendar specifier also as an integer. Therefore a `CDate` is implemented as 4-tuple of integers extending the calendar date representation of ISO 8601.
 
 The primary function provided is:
 
-    ConvertDate(date, calendar, show=false). 
+```julia
+ConvertDate(date::CDate, calendar::DPart, string=false::Bool, show=false::Bool)
+```
 
 It converts a calendar date to the representation of the date in the 'calendar.'
 
 * The calendar date `CDate` is a tuple (calendar, year, month, day). The parts of the date can be given as a tuple or individually.
 
 * 'calendar' is one of "Common", "European", "Julian", "Hebrew", "Islamic", or "IsoDate". Alternatively, you can use the acronyms CE, EC, JD, AM, AH, or ID explained in the table above. "Gregorian" is used synonymously with "Common," and AD can be used synonymously with JD.
+
+* If the optional parameter 'string' is set to 'true,' the date is returned as a string in the format `CC-YYYY-MM-DD`. Otherwise a integer 4-tuple is returned, where the first item is the calendar specifier as defined in the enumeration in the table at the top of this page. By default the integer representation is returned. 
 
 * If the optional parameter 'show' is set to 'true,' both dates are printed. 'show' is 'false' by default.
 
@@ -64,15 +68,17 @@ is printed.
 
 A second function returns a table of the dates of all supported calendars.
 
-    CalendarDates(date, show=false).
+```julia
+CalendarDates(date::CDate, show=false::Bool)
+```
 
-The parameters follow the same conventions as those of ConvertDate. For example:
+The parameters follow the same conventions as those of `ConvertDate`. The components of the date can also be given separately. For example:
 
 ```julia
 julia> CalendarDates("Common", 1756, 1, 27, true) 
 ```
 
-computes a table, which is a tuple of six dates plus the day number. If 'show' is 'true' the table below will be printed.
+computes a table, which is a tuple of six dates plus the European and the Julian day number. If 'show' is 'true' the date table below will be printed.
 
 ### Why using the European calendar?
 
@@ -111,7 +117,7 @@ So the message is: use the European calendar, not the Common/Gregorian one.
 With many functions you can choose which format the return value has: an integer tuple or a string. For example the signature of `ConvertDate` is:
 
 ```julia
-ConvertDate(date, calendar, string=false, show=false
+ConvertDate(date, calendar, string=false, show=false)
 ``` 
 
 The calls
@@ -217,6 +223,9 @@ According to our convention, the last day represented by the calendar is EC-9999
 EN(date) = JN(date) − 1721423.
 
 The European date number is similar to the day number [Rata Die](https://en.wikipedia.org/wiki/Rata_Die) defined by `R`eingold and `D`ershowitz. In fact, `RD` differs only by two days from the European date number since `RD` is based on the proleptic Gregorian calendar and CE-0001-01-01 = EC-0001-01-03. But we think it is much more natural to start at the beginning of the Julian calendar, JD-0001-01-01 = EC-0001-01-01, and not with a 'proleptic' relation.
+
+The `Julian day number` `JN` is the count of days since the beginning of the Julian Period in 4713 BCE. There is also a `continuous` form of the Julian day number, `JC`, containing a fraction that represents a `daytime`. This form we will not use here; our counts are pure integers. However, we remark that if a day indicated by a common (midnight based) date starts with the `JC` N.5 and ends with `JC` (N+1).4999..., then the corresponding day number `JN` is (N+1), which could be seen as (N+1).0 in terms of `JC`, indicating the noon of that day. But conceptually, a counter is different from a point in time. 
+
 
 ```julia
 ConvertOrdinalDate(dnum::DPart, from::String, to::String)
