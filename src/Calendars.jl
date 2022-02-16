@@ -13,7 +13,7 @@ module Calendars
 
 export EC, CE, JD, AM, AH, ID, EN, JN, DN, XX
 export Calendar, Year, Month, Day, Date, CDate, YMD
-export CalendarDates, CDateStr, DateStr, DateTable
+export CalendarDates, CalendarName, CDateStr, DateStr, DateTable
 export DayNumberFromDate, DateFromDayNumber, ConvertDate
 export isValidDate, Duration, DayOfYear, ConvertOrdinalDate
 export PrintDateLine, PrintDateTable, PrintEuropeanMonth 
@@ -28,6 +28,7 @@ include("CalendarUtils.jl")
 # do not export their functions directly. Their algorithms
 # follow Dershowitz/Reingold and use RataDie-numbers 
 # whereas here we use EuroDay-numbers. 
+include("DayNumbers.jl")
 include("GregorianCalendar.jl")
 include("JulianCalendar.jl")
 include("EuropeanCalendar.jl")
@@ -214,9 +215,8 @@ Alternatively this can also be written as
 julia> ConvertDate("Gregorian", 1756, 1, 27, "Hebrew") 
 ```
 
-This converts the Gregorian date (1756, 1, 27) to the 
-Hebrew date (5516, 11, 25). By default the calendar
-representation (4, 5516, 11, 25) is returned.
+This converts the Gregorian date (1756, 1, 27) to the Hebrew date (5516, 11, 25).
+By default the calendar representation (4, 5516, 11, 25) is returned.
 
 If `string` is true the string "AM-5516-11-25" is returned.
 If `show` is 'true' the following line is printed:
@@ -277,9 +277,9 @@ Alternatively you can also write
 julia> CalendarDates(CE, 1756, 1, 27, true) 
 ```
 
-This computes a `DateTable`, which is a tuple of six
-calendar dates plus the day number. If `show` is 'true'
-the table below will be printed.
+This computes a `DateTable`, which is a tuple of six calendar 
+dates plus the Euro day number and the Julian day number.
+If `show` is 'true' the table below will be printed.
 ```julia
     European  EC-1756-01-27
     Common    CE-1756-01-27
@@ -288,6 +288,7 @@ the table below will be printed.
     Islamic   AH-1169-04-24
     IsoDate   ID-1756-05-02
     EuroNum   EN#0641029
+    JulianNum JN#2362452
 ```
 """
 function CalendarDates(date::CDate, show=false)::DateTable

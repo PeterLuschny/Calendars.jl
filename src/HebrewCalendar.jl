@@ -27,6 +27,7 @@ function isLeapYearHebrew(year::DPart)
     rem(7 * year + 1, 19) < 7
 end
 
+# True if month is long (30 days).
 function isLongMonth(year::DPart, month::DPart)
     (  month == 2   || month == 4 || month == 6
     || month == 10  || month == 13

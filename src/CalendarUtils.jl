@@ -68,6 +68,8 @@ CalendarNames = Dict{Int64, String}(
     XX => "INVALID  "
 )
 
+CalendarName(cal) = CalendarNames[cal]
+
 # Map calendar specifiers to calendar names
 SymbolToString = Dict{Int64, String}(
     EC => "EC",
@@ -82,9 +84,11 @@ SymbolToString = Dict{Int64, String}(
     XX => "00"
 )
 
+const DPart = Int64 
+
 # Return symbolic name representing a calendar. 
 # StringToSymbol = CalendarName 
-function StringToSymbol(calendar::String, warn=false)::Int64 
+function StringToSymbol(calendar::String, warn=false)::DPart
     (calendar == "European"   || calendar == "EC")  && return EC
     (calendar == "Common"     || calendar == "CE")  && return CE
     (calendar == "CurrentEpoch")                    && return CE
@@ -105,69 +109,11 @@ function StringToSymbol(calendar::String, warn=false)::Int64
     return XX
 end
 
-const DPart = Int64 
 const InvalidDayNumber = DPart(0)
 const InvalidDayOfYear = DPart(0)
 const InvalidDuration = DPart(-1)
 const InvalidDate = (XX, DPart(0), DPart(0), DPart(0))
 const InvalidDateString = "0000-00-00"
-
-const JDN_DN  = DPart(1721425)
-const DN_MJDN = DPart(678576)
-
-# Days considered here start at midnight 00:00.
-# (Apply 'floor' to the real-valued Julian day number.)
-
-# Convert a fix day number to a Julian day number.
-# If mod = true return the modified Julian day number.
-# (which has epoch CE 1858-11-17, 00:00 UT).
-function FixNumToJulianNum(rd::DPart, mod=false) 
-    if mod 
-        return rd - DN_MJDN
-    else 
-        return rd + JDN_DN
-    end
-end
-
-# Convert a Julian day number to a fix day number.
-# If mod = true assume a modified Julian day number.
-function JulianNumToFixNum(jdn::DPart, mod=false) 
-    if mod 
-        return jdn + DN_MJDN
-    else
-        return jdn - JDN_DN
-    end
-end
-
-# Convert a fix day number to an European day number.
-FixNumToEuroNum(fn::DPart) = fn + 2
-
-# Convert an European day number to a fix day number.
-EuroNumToFixNum(en::DPart) = en - 2
-
-"""
-Convert a Julian day number to an European day number.
-```julia
-julia> JulianNumToEuroNum(2440422)
-```
-The European day number of the first crewed moon landing (Apollo 11) is EN#719000.
-"""
-JulianNumToEuroNum(jn::DPart) = jn - JDN_DN + 2
-
-
-"""
-Convert an European day number to an Julian day number.
-```julia
-julia> EuroNumToJulianNum(719000)
-```
-The Julian day number of the first crewed moon landing (Apollo 11) is JN#2440422.
-"""
-EuroNumToJulianNum(en::DPart) = en + JDN_DN - 2
-
-
-# The fix day number of CE 1582-10-15.
-const GregorysBreak = DPart(577736)
-
 
 """
 
@@ -206,7 +152,7 @@ The function CDateStr converts a date of type CDate to a string representation, 
 numeric part follows the recommendation of ISO 8601 and is prefixed by one of the acronyms 
 for the calendar names indicated above. 
 
-Examples for CDates and their string representation are:
+Examples for `CDates` and their string representation given by `CDateStr`:
 
 ```julia
 ("European", 2022,  1,  6)  -> "EC-2022-01-19"
@@ -216,6 +162,15 @@ Examples for CDates and their string representation are:
 ("Islamic",  1443,  6, 15)  -> "AH-1443-06-15"
 ("IsoDate",  2022,  3,  3)  -> "ID-2022-03-03"
 ``` 
+
+The components of a `CDate` can be accessed by applying the functions
+```julia
+Calendar, Year, Month, Day and Date 
+```
+to a calendar date.
+
+The function CalendarName(CC) returns the calendar name from a calendar specifier CC. 
+For example both CalendarName(ID) and CalendarName(6) return the string "IsoDate".
 """
 const CDate = NTuple{4, DPart} 
 const YMD = NTuple{3, DPart} 
@@ -227,10 +182,14 @@ Month(date::CDate) = date[3]
 Day(date::CDate) = date[4]
 Date(date::CDate) = (date[2], date[3], date[4])
 
+Calendar(d::Tuple{String, DPart, DPart, DPart}) = StringToSymbol(d[1])
+Year(d::Tuple{String, DPart, DPart, DPart}) = d[2]
+Month(d::Tuple{String, DPart, DPart, DPart}) = d[3]
+Day(d::Tuple{String, DPart, DPart, DPart}) = d[4]
+Date(d::Tuple{String, DPart, DPart, DPart}) = (d[2], d[3], d[4])
 
 # TODO Write a 'get-' interface for the DateTable, like:
 GetFixNum(dt::DateTable) = dt[7][4] - 2
-
 
 # Return the name of the weekday for the given fix day number.
 function WeekDay(dn::DPart)::String
@@ -259,10 +218,10 @@ function CDateStr(cd::CDate)
     return SymbolToString[cal]*"-$s"
 end
 
-CDateStr(cal::String, d::Tuple{DPart, DPart, DPart}) = 
+CDateStr(cal::String, d::YMD) = 
 CDateStr((StringToSymbol(cal), d[1], d[2], d[3]))
 
-CDateStr(cal::DPart, d::Tuple{DPart, DPart, DPart}) = 
+CDateStr(cal::DPart, d::YMD) = 
 CDateStr((cal, d[1], d[2], d[3]))
 
 CDateStr(cal::String, day::DPart) = 
@@ -274,11 +233,14 @@ CDateStr((cal, DPart(0), DPart(0), day))
 function CDateStr(cal::DPart, year::DPart, month::DPart) 
     y = lpad(year,  4, "0")
     m = lpad(month, 2, "0")
-    #cal = StringToSymbol(cal)
     return SymbolToString[cal] * "-$y-$m"
 end
+
 CDateStr(cal::String, year::DPart, month::DPart) =
 CDateStr(StringToSymbol(cal), year, month) 
+
+CDateStr(cal::String, year::DPart, month::DPart, day::DPart) =
+CDateStr((StringToSymbol(cal), year, month, day)) 
 
 """
 
@@ -294,7 +256,6 @@ function PrintDateTable(D::DateTable, io=stdout)
         end
     end
 end
-
 
 """
 

@@ -1,3 +1,6 @@
+# This is part of Calendars.jl. See the copyright note there.
+# ============================ Tests ========================
+
 using Calendars
 using Dates: yearmonthday, now
 using Test 
@@ -18,7 +21,7 @@ function TestDateGregorian()
         (CE, 1756, 1, 27)::CDate, 
         (CE, 2022, 1,  1)::CDate, 
         (CE, 2022, 9, 26)::CDate 
-        ] 
+    ] 
 
     @testset "DateGregorian" begin
     for date in SomeDateGregorian
@@ -36,7 +39,7 @@ function TestDateJulian()
         (JD, 1756,  1, 16)::CDate,
         (JD, 2021, 12, 19)::CDate,
         (JD, 2022,  9, 13)::CDate
-        ] 
+    ] 
 
     @testset "DateJulian" begin
     for date in SomeDateJulian
@@ -55,7 +58,7 @@ function TestDateHebrew()
         (AM, 5782, 10, 27)::CDate,
         (AM, 5782,  6, 29)::CDate,
         (AM, 5783,  7,  1)::CDate
-        ]
+    ]
 
     @testset "DateHebrew" begin
     for date in SomeDateHebrew
@@ -73,7 +76,7 @@ function TestDateIslamic()
         (AH, 1756, 1, 27)::CDate,
         (AH, 2022, 1,  1)::CDate,
         (AH, 2022, 9, 26)::CDate 
-        ] 
+    ] 
 
     @testset "DateIslamic" begin
     for date in SomeDateIslamic
@@ -91,7 +94,7 @@ function TestDateIso()
         (ID, 1756,  5, 2)::CDate,
         (ID, 2021, 52, 6)::CDate,
         (ID, 2022, 39, 1)::CDate 
-        ] 
+    ] 
 
     @testset "DateIso" begin
     for date in SomeDateIso
@@ -144,27 +147,6 @@ function TestConversions()
     ConvertDate("Hebrew", 5782, 10, 28, "Georgian")  |> println
     ConvertDate("Homebrew", 2022, 1, 1, "Gregorian") |> println
 end
-
-#=
-function PrintIntervall(date::CDate, len)
-
-    en = DayNumberFromDate(date)
-    println("Starting ", CDateStr(date), " ", en)
-
-    for day in 1:len
-        jn = ConvertOrdinalDate(en, EN, JN) 
-        println( "| ",
-            CDateStr(DateFromDayNumber(date[1], en)), " | ",
-            CDateStr((EN, 0, 0, en)),  " | ",
-            CDateStr((JN, 0, 0, jn)),
-            " |" )
-        en += 1
-    end
-end
-
-PrintIntervall((EC, 2, 12, 27), 6)
-PrintIntervall((JD, 2, 12, 27), 6)
-=#
 
 function TestIso()
 
