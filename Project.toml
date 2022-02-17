@@ -1,7 +1,7 @@
 name = "Calendars"
 uuid = "2e69b1bb-2c9c-41e6-ab4b-04f4c0f206b8"
 authors = ["PeterLuschny"]
-version = "0.6.4"
+version = "0.6.5"
 
 # In fact "Calendars" is independent of "Dates".
 # It only uses the line "using Dates: yearmonthday, now"

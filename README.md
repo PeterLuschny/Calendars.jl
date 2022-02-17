@@ -7,7 +7,7 @@ Registered on [JuliaHub](https://juliahub.com/ui/Packages/Calendars/yDHMq), read
 # Calendars, Conversions of Dates, Change of Calendars  
 
 
-The package _Calendar_ provides a Julia implementation of six calendars and two day numbers: 
+The package _Calendars.jl_ provides a Julia implementation of six calendars and two day numbers: 
 
 | Enum | Acronym | Calendar  |
 | :-:  | :---:   |  :---     | 
