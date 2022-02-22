@@ -95,7 +95,7 @@ EuroNum   EN#0641029
 JulianNum JN#2362452
 ``` 
 
-But if you look up the birthday of Leonardo da Vinci, you better use the European calendar `EC` and not the Common calendar `CE.` This time, the `EC`-date and the `JD`-date are the same, and this is correct. But the Gregorian calendar misses Leonardo's birthday by nine days! This error occurs because the Gregorian calendar extrapolates the date backward from 1582, ignoring the historical course. That is why this calendar is called 'proleptic.' (But even that is not correct: `proleptic` refers to the future; it would be better to call it `preleptic.`) 
+But if you look up the birthday of Leonardo da Vinci, you better use the European calendar `EC` and not the Common calendar `CE.` This time, the `EC`-date and the `JD`-date are the same, and this is correct. But the Gregorian calendar misses Leonardo's birthday by nine days! This error occurs because the Gregorian calendar extrapolates the date backward from 1582, ignoring the historical course. (Or because you forgot that Gregory lived 100 years after Leonardo.) 
 
 ```julia
 julia> CalendarDates("European", 1452, 4, 15, true) 
@@ -110,7 +110,7 @@ EuroNum    EN#0530083
 JulianNum  JN#2251506
 ``` 
 
-So the message is: use the European calendar, not the Common/Gregorian one.
+Extrapolating backwards is why the Gregorian calendar is called 'proleptic.' But even that is not correct: `proleptic` refers to the future; it would be better to call it `preleptic.` In any case, the message is: use the European calendar, not the Common/Gregorian one.
 
 ### Options and formats
 
@@ -126,7 +126,7 @@ The calls
 ConvertDate("Gregorian", 1756, 1, 27, "Hebrew")
 ConvertDate("Gregorian", 1756, 1, 27, "Hebrew", true)
 ```
-return respectively
+return, respectively,
 
 ```julia
 (4, 5516, 11, 25)
@@ -265,7 +265,7 @@ AH-1444 -> [EC-2022-07-30, EC-2023-07-18], 12, 354
 ID-2022 -> [EC-2022-01-03, EC-2023-01-01], 52, 364
 ```
 
-The package provides additional functions; read the documentation for this. You might start exploring with a Jupyter [notebook](https://github.com/PeterLuschny/Calendars.jl/blob/main/notebook/Calendars.ipynb).
+The package provides additional functions; read the documentation for this. You might start exploring with a Jupyter [notebook](https://github.com/PeterLuschny/Calendars.jl/blob/main/notebook/Calendars.ipynb). For a quick interactive date conversion you can also use the function `IDate()` in the REPL.
 
 ### Online Calendars 
 
