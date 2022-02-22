@@ -155,7 +155,7 @@ for the calendar names indicated above.
 Examples for `CDates` and their string representation given by `CDateStr`:
 
 ```julia
-("European", 2022,  1,  6)  -> "EC-2022-01-19"
+("European", 2022,  1,  6)  -> "EC-2022-01-06"
 ("Common",   2022,  1, 19)  -> "CE-2022-01-19"
 ("Julian",   2022,  1,  6)  -> "JD-2022-01-06"
 ("Hebrew",   5782, 11, 17)  -> "AM-5782-11-17"
